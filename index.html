@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>فون فلكس - Phone Flex</title>
 <link rel="icon" href="icon.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#667eea">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
@@ -72,7 +74,6 @@
 <footer>
   جميع الحقوق محفوظة لدى فون فلكس © <span id="year"></span>
 </footer>
-
 <script>
   document.getElementById('year').innerText = new Date().getFullYear();
    const companies = [
@@ -139,8 +140,8 @@
     });
     html += `</div>`;
     document.getElementById('content').innerHTML = html;
-   }
-   function showAddProduct(){
+  }
+  function showAddProduct(){
     document.getElementById('content').innerHTML = `
     <button class="backBtn" onclick="showAccessories()">⬅️ رجوع</button>
     <h2 style="text-align:center;margin:20px 0;color:#f5576c">اضافة منتج جديد</h2>
@@ -151,7 +152,7 @@
       <button onclick="addProduct()" style="width:100%;padding:15px;background:#f5576c;border:none;color:#fff;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;margin-top:10px">حفظ المنتج</button>
     </div>`;
   }
-  function addProduct(){
+   function addProduct(){
     const name = document.getElementById('prodName').value.trim();
     const price = document.getElementById('prodPrice').value.trim();
     const img = document.getElementById('prodEmoji').value.trim() || "📦";
@@ -159,11 +160,11 @@
     accessories.push({id:Date.now(),name,price,img});
     saveAccess();alert("✅ تمت الاضافة بنجاح");showAccessories();
   }
-   function deleteProduct(i){
+  function deleteProduct(i){
     if(confirm("⚠️ متاكد تريد حذف المنتج؟")){
       accessories.splice(i,1);saveAccess();showAccessories();
     }
-   }
+  }
    const adminNumber = "07738105665";
   const adminName = "سيد عباس";
    function showOnline(){
@@ -182,23 +183,27 @@
         <a href="https://wa.me/964${adminNumber.substring(1)}" target="_blank" style="display:inline-block;margin-top:10px;padding:12px 28px;background:#25D366;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:16px;">واتساب</a>
       </div>
     </div>`;
-   }
-   function activateCode(){
+  }
+  function activateCode(){
     const code = document.getElementById('activationCode').value.trim();
     if(!code) return alert("⚠️ دخل الكود اول");
     alert(`✅ تم استلام الكود: ${code}\n\nراح نتواصل وياك على رقم ${adminNumber}`);
     window.open(`https://wa.me/964${adminNumber.substring(1)}?text=السلام عليكم اريد افعل الكود: ${code}`);
-   }
+  }
    function goHome(){
     document.getElementById('mainScreen').style.display='block';
     document.getElementById('content').innerHTML='';
     window.scrollTo(0,0);
   }
   
-  // انيميشن ظهور
   const style = document.createElement('style');
   style.innerHTML = `@keyframes fadeIn{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}} #content{animation:fadeIn 0.3s ease;}`;
   document.head.appendChild(style);
+
+  // تسجيل Service Worker للـ PWA
+  if('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
  </script>
- </body>
+</body>
 </html>
