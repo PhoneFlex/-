@@ -1,0 +1,20 @@
+{
+  "name": "فون فلكس Phone Flex",
+  "short_name": "فون فلكس",
+  "description": "متجر فون فلكس لبيع الهواتف والاكسسوارات في البصرة. افضل الاسعار والعروض",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#667eea",
+  "orientation": "portrait",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
