@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>فون فلكس - Phone Flex</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
+  body{background:#0a0a0a;color:#fff;min-height:100vh;padding-bottom:90px;}
+  
+  header{
+    background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+    padding:18px;
+    font-size:26px;
+    font-weight:900;
+    box-shadow:0 4px 20px rgba(102,126,234,0.5);
+    position:sticky;top:0;z-index:999;
+  }
+  
+  .container{max-width:700px;margin:auto;padding:20px;}
+  
+  .mainButtons{display:flex;flex-direction:column;gap:18px;margin-top:30px;}
+  
+  .mainBtn{
+    padding:22px;border-radius:18px;font-size:20px;font-weight:700;
+    border:none;cursor:pointer;transition:0.3s;color:#fff;
+    box-shadow:0 5px 15px rgba(0,0,0,0.3);
+  }
+  .mainBtn:active{transform:scale(0.97);}
+  
+  .btn-phones{background:linear-gradient(135deg,#667eea,#764ba2);}
+  .btn-access{background:linear-gradient(135deg,#f093fb,#f5576c);}
+  .btn-online{background:linear-gradient(135deg,#4facfe,#00f2fe);}
+  
+  .backBtn{
+    margin:15px;padding:12px 22px;background:#2a2a2a;border:none;color:#fff;
+    border-radius:10px;cursor:pointer;font-size:15px;font-weight:600;
+  }
+  
+  footer{
+    position:fixed;bottom:0;width:100%;background:#111;
+    padding:14px;font-size:13px;color:#ccc;border-top:3px solid #667eea;
+    text-align:center;z-index:999;
+  }
+  
+  .card{background:#1a1a1a;border-radius:14px;padding:14px;margin:10px 0;border-right:4px solid #667eea;text-align:right;}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  input{width:100%;padding:13px;margin:10px 0;border-radius:10px;border:2px solid #333;background:#222;color:#fff;font-size:16px;}
+  input:focus{border-color:#667eea;outline:none;}
+</style>
+</head>
+<body>
+  <header>📱 فون فلكس Phone Flex</header>
+
+<div class="container">
+  <div id="mainScreen">
+    <div class="mainButtons">
+      <button class="mainBtn btn-phones" onclick="showPhones()">📱 الهواتف</button>
+      <button class="mainBtn btn-access" onclick="showAccessories()">🔌 الاكسسوارات</button>
+      <button class="mainBtn btn-online" onclick="showOnline()">💳 دورس اون لاين</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+<footer>
+  جميع الحقوق محفوظة لدى فون فلكس © <span id="year"></span>
+</footer>
+
+<script>
+  // تحديث السنة تلقائي
+  document.getElementById('year').innerText = new Date().getFullYear();
+    // 8 شركات باللون والشعار الحقي
+  const companies = [
+    {name:"سامسونج", color:"#1428A0", logo:"📱", bg:"#0D47A1"},
+    {name:"ابل", color:"#FFFFFF", logo:"🍎", bg:"#000"},
+    {name:"شاومي", color:"#FF6900", logo:"📲", bg:"#E65100"},
+    {name:"هواوي", color:"#FF0000", logo:"📳", bg:"#C62828"},
+    {name:"اوبو", color:"#2DCC70", logo:"📞", bg:"#2E7D32"},
+    {name:"فيفو", color:"#415DFF", logo:"📶", bg:"#303F9F"},
+    {name:"ريلمي", color:"#FFD700", logo:"📱", bg:"#F9A825"},
+    {name:"نوكيا", color:"#124191", logo:"📟", bg:"#1565C0"}
+  ];
+    function showPhones(){
+    document.getElementById('mainScreen').style.display='none';
+    let html = `<button class="backBtn" onclick="goHome()">⬅️ رجوع للرئيسية</button><h2 style="text-align:center;margin:20px 0;color:#667eea">اختر الشركة</h2><div class="grid">`;
+    companies.forEach(c=>{
+      html += `<div onclick="showCompanyModels('${c.name}')" style="background:${c.bg};padding:25px;border-radius:15px;cursor:pointer;border:3px solid ${c.color};text-align:center;">
+        <div style="font-size:45px">${c.logo}</div>
+        <div style="color:${c.color};font-weight:700;font-size:18px;margin-top:8px">${c.name}</div>
+      </div>`;
+    });
+    html += `</div>`;
+    document.getElementById('content').innerHTML = html;
+    }
+    const models = {
+    "سامسونج": ["Galaxy S24 Ultra 5G", "Galaxy S24+ 5G", "Galaxy S24 5G", "Galaxy A55 5G", "Galaxy A35 5G", "Galaxy A15 4G", "Galaxy M34 5G", "Galaxy F34 5G"],
+    "ابل": ["iPhone 15 Pro Max", "iPhone 15 Pro", "iPhone 15 Plus", "iPhone 15", "iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14", "iPhone 13"],
+    "شاومي": ["Redmi Note 13 Pro+ 5G", "Redmi Note 13 Pro 5G", "Redmi Note 13 4G", "Poco X6 Pro 5G", "Poco X6 5G", "Xiaomi 14 Ultra", "Redmi 13C", "Redmi A3"],
+    "هواوي": ["HUAWEI P60 Pro", "HUAWEI Mate 60 Pro", "HUAWEI Nova 12i", "HUAWEI Nova 11", "HUAWEI Y9a", "HUAWEI Y61", "HUAWEI Enjoy 60", "HUAWEI Mate X3"],
+    "اوبو": ["OPPO Reno 11 Pro", "OPPO Reno 11", "OPPO A78 5G", "OPPO A38", "OPPO Find X7 Ultra", "OPPO F23 5G", "OPPO A58", "OPPO A18"],
+    "فيفو": ["Vivo V30 Pro", "Vivo V30", "Vivo Y100", "Vivo X100 Pro", "Vivo Y27 5G", "Vivo T2 Pro", "Vivo Y36", "Vivo Y17s"],
+    "ريلمي": ["Realme 12 Pro+ 5G", "Realme 12 Pro 5G", "Realme C55", "Realme GT 3", "Realme 11 4G", "Realme Note 50", "Realme C53", "Realme 10"],
+    "نوكيا": ["Nokia G42 5G", "Nokia C32", "Nokia X30 5G", "Nokia 105 2023", "Nokia 2660 Flip", "Nokia C22", "Nokia G22", "Nokia 8210 4G"]
+  };
+    function showCompanyModels(company){
+    let html = `<button class="backBtn" onclick="showPhones()">⬅️ رجوع للشركات</button><h2 style="text-align:center;margin:20px 0;color:#667eea">${company}</h2>`;
+    models[company].forEach(m=>{
+      html += `<div class="card">${m}</div>`;
+    });
+    document.getElementById('content').innerHTML = html;
+    }
+    // تحميل من التخزين المحلي
+  let accessories = JSON.parse(localStorage.getItem('phoneFlexAccess')) || [
+    {id:1,name:"شاحن سامسونج اصلي 25W", price:"25000", img:"🔌"},
+    {id:2,name:"كفر ايفون 15 برو ماكس", price:"15000", img:"📱"},
+    {id:3,name:"سماعة ايربودز برو 2", price:"40000", img:"🎧"},
+    {id:4,name:"باور بانك 20000mAh", price:"35000", img:"🔋"}
+  ];
+
+  function saveAccess(){
+    localStorage.setItem('phoneFlexAccess', JSON.stringify(accessories));
+  }
+    function showAccessories(){
+    document.getElementById('mainScreen').style.display='none';
+    let html = `<button class="backBtn" onclick="goHome()">⬅️ رجوع للرئيسية</button>`;
+    html += `<button class="backBtn" onclick="showAddProduct()" style="background:#f5576c">➕ اضافة منتج جديد</button>`;
+    html += `<h2 style="text-align:center;margin:20px 0;color:#f5576c">الاكسسوارات</h2><div class="grid">`;
+    
+    accessories.forEach((p,i)=>{
+      html += `<div style="background:#1a1a1a;padding:16px;border-radius:15px;border:2px solid #f5576c;text-align:center;">
+        <div style="font-size:45px">${p.img}</div>
+        <div style="font-weight:700;margin:10px 0;font-size:15px">${p.name}</div>
+        <div style="color:#4facfe;font-size:18px;font-weight:900">${p.price} دينار</div>
+        <button onclick="deleteProduct(${i})" style="margin-top:10px;padding:7px 14px;background:#d32f2f;border:none;color:#fff;border-radius:8px;cursor:pointer;font-weight:600">حذف</button>
+      </div>`;
+    });
+    html += `</div>`;
+    document.getElementById('content').innerHTML = html;
+    }
+    function showAddProduct(){
+    document.getElementById('content').innerHTML = `
+    <button class="backBtn" onclick="showAccessories()">⬅️ رجوع</button>
+    <h2 style="text-align:center;margin:20px 0;color:#f5576c">اضافة منتج جديد</h2>
+    <div style="max-width:450px;margin:auto;">
+      <input id="prodName" placeholder="اسم المنتج">
+      <input id="prodPrice" placeholder="السعر بالدينار" type="number">
+      <input id="prodEmoji" placeholder="ايموجي للمنتج 🔌🎧📱">
+      <button onclick="addProduct()" style="width:100%;padding:15px;background:#f5576c;border:none;color:#fff;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;margin-top:10px">حفظ المنتج</button>
+    </div>`;
+  }
+
+  function addProduct(){
+    const name = document.getElementById('prodName').value.trim();
+    const price = document.getElementById('prodPrice').value.trim();
+    const img = document.getElementById('prodEmoji').value.trim() || "📦";
+    if(!name || !price) return alert("⚠️ املأ اسم المنتج والسعر");
+    accessories.push({id:Date.now(),name,price,img});
+    saveAccess();
+    alert("✅ تمت الاضافة بنجاح");
+    showAccessories();
+  }
+    function deleteProduct(i){
+    if(confirm("⚠️ متاكد تريد حذف المنتج؟")){
+      accessories.splice(i,1);
+      saveAccess();
+      showAccessories();
+    }
+    }
+    const adminNumber = "07738105665";
+  const adminName = "سيد عباس";
+    function showOnline(){
+    document.getElementById('mainScreen').style.display='none';
+    document.getElementById('content').innerHTML = `
+    <button class="backBtn" onclick="goHome()">⬅️ رجوع للرئيسية</button>
+    <h2 style="text-align:center;margin:20px 0;color:#4facfe">💳 دورس اون لاين</h2>
+    <div style="max-width:500px;margin:auto;">
+      <h3 style="color:#4facfe;margin-bottom:15px;text-align:center">لتفعيل الكود</h3>
+      <input id="activationCode" placeholder="اكتب الكود هنا">
+      <button onclick="activateCode()" style="width:100%;padding:15px;background:#4facfe;border:none;color:#fff;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer">تفعيل الكود</button>
+      
+      <div style="margin-top:30px;background:#1a1a1a;padding:20px;border-radius:15px;border:3px solid #4facfe;text-align:center">
+        <p style="margin-bottom:10px;font-size:16px">للتواصل وتفعيل الكود:</p>
+        <p style="font-size:24px;font-weight:900;color:#4facfe;margin:10px 0">${adminName}</p>
+        <a href="tel:${adminNumber}" style="font-size:20px;color:#00f2fe;text-decoration:none;display:block;margin:12px 0;font-weight:700">📞 ${adminNumber}</a>
+        <a href="https://wa.me/964${adminNumber.substring(1)}" target="_blank" style="display:inline-block;margin-top:10px;padding:12px 28px;background:#25D366;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:16px;">واتساب</a>
+      </div>
+    </div>`;
+    }
+    function activateCode(){
+    const code = document.getElementById('activationCode').value.trim();
+    if(!code) return alert("⚠️ دخل الكود اول");
+    alert(`✅ تم استلام الكود: ${code}\n\nراح نتواصل وياك على رقم ${adminNumber}`);
+    window.open(`https://wa.me/964${adminNumber.substring(1)}?text=السلام عليكم اريد افعل الكود: ${code}`);
+    }
+    function goHome(){
+    document.getElementById('mainScreen').style.display='block';
+    document.getElementById('content').innerHTML='';
+    window.scrollTo(0,0);
+    }
+    <style>
+  @keyframes fadeIn{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+  #content{animation:fadeIn 0.3s ease;}
+  </style>
+  </script>
+</body>
+</html>
