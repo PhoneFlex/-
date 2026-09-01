@@ -11,46 +11,24 @@
 <style>
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
   body{background:#0a0a0a;color:#fff;min-height:100vh;padding-bottom:90px;}
-  
-  header{
-    background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-    padding:15px;display:flex;align-items:center;justify-content:center;gap:12px;
-    font-size:24px;font-weight:900;box-shadow:0 4px 20px rgba(102,126,234,0.5);
-    position:sticky;top:0;z-index:999;
-  }
+  header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:15px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:24px;font-weight:900;box-shadow:0 4px 20px rgba(102,126,234,0.5);position:sticky;top:0;z-index:999;}
   header img{width:40px;height:40px;border-radius:10px;border:2px solid #fff;}
-  
-  .banner{width:100%;max-width:700px;margin:15px auto;display:block;border-radius:15px;border:3px solid #667eea;}
-  
-  .container{max-width:700px;margin:auto;padding:20px;}
-  .mainButtons{display:flex;flex-direction:column;gap:18px;margin-top:20px;}
-  
-  .mainBtn{
-    padding:22px;border-radius:18px;font-size:20px;font-weight:700;
-    border:none;cursor:pointer;transition:0.3s;color:#fff;
-    box-shadow:0 5px 15px rgba(0,0,0,0.3);
-  }
-  .mainBtn:active{transform:scale(0.97);}
-  
-  .btn-phones{background:linear-gradient(135deg,#667eea,#764ba2);}
-  .btn-access{background:linear-gradient(135deg,#f093fb,#f5576c);}
-  .btn-online{background:linear-gradient(135deg,#4facfe,#00f2fe);}
-  
-  .backBtn{
-    margin:15px;padding:12px 22px;background:#2a2a2a;border:none;color:#fff;
-    border-radius:10px;cursor:pointer;font-size:15px;font-weight:600;
-  }
-  
-  footer{
-    position:fixed;bottom:0;width:100%;background:#111;
-    padding:14px;font-size:13px;color:#ccc;border-top:3px solid #667eea;
-    text-align:center;z-index:999;
-  }
-  
-  .card{background:#1a1a1a;border-radius:14px;padding:14px;margin:10px 0;border-right:4px solid #667eea;text-align:right;font-size:16px;}
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+ .banner{width:100%;max-width:700px;margin:15px auto;display:block;border-radius:15px;border:3px solid #667eea;}
+ .container{max-width:700px;margin:auto;padding:20px;}
+ .mainButtons{display:flex;flex-direction:column;gap:18px;margin-top:20px;}
+ .mainBtn{padding:22px;border-radius:18px;font-size:20px;font-weight:700;border:none;cursor:pointer;transition:0.3s;color:#fff;box-shadow:0 5px 15px rgba(0,0,0,0.3);}
+ .mainBtn:active{transform:scale(0.97);}
+ .btn-phones{background:linear-gradient(135deg,#667eea,#764ba2);}
+ .btn-access{background:linear-gradient(135deg,#f093fb,#f5576c);}
+ .btn-online{background:linear-gradient(135deg,#4facfe,#00f2fe);}
+ .backBtn{margin:15px;padding:12px 22px;background:#2a2a2a;border:none;color:#fff;border-radius:10px;cursor:pointer;font-size:15px;font-weight:600;}
+  footer{position:fixed;bottom:0;width:100%;background:#111;padding:14px;font-size:13px;color:#ccc;border-top:3px solid #667eea;text-align:center;z-index:999;}
+ .card{background:#1a1a1a;border-radius:14px;padding:14px;margin:10px 0;border-right:4px solid #667eea;text-align:right;font-size:16px;}
+ .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
   input{width:100%;padding:13px;margin:10px 0;border-radius:10px;border:2px solid #333;background:#222;color:#fff;font-size:16px;}
   input:focus{border-color:#667eea;outline:none;}
+ .option-box{background:#1a1a1a;padding:20px;border-radius:15px;margin:15px 0;border:2px solid #333;cursor:pointer;transition:0.3s;}
+ .option-box:hover{border-color:#4facfe;}
 </style>
 </head>
 <body>
@@ -77,22 +55,22 @@
 <script>
   document.getElementById('year').innerText = new Date().getFullYear();
    const companies = [
-    {name:"سامسونج", color:"#1428A0", logo:"📱", bg:"#0D47A1"},
-    {name:"ابل", color:"#FFFFFF", logo:"🍎", bg:"#000"},
-    {name:"شاومي", color:"#FF6900", logo:"📲", bg:"#E65100"},
-    {name:"هواوي", color:"#FF0000", logo:"📳", bg:"#C62828"},
-    {name:"اوبو", color:"#2DCC70", logo:"📞", bg:"#2E7D32"},
-    {name:"فيفو", color:"#415DFF", logo:"📶", bg:"#303F9F"},
-    {name:"ريلمي", color:"#FFD700", logo:"📱", bg:"#F9A825"},
-    {name:"نوكيا", color:"#124191", logo:"📟", bg:"#1565C0"}
+    {name:"سامسونج", logo:"https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg", color:"#1428A0"},
+    {name:"ابل", logo:"https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", color:"#FFFFFF"},
+    {name:"شاومي", logo:"https://upload.wikimedia.org/wikipedia/commons/ae/Xiaomi_logo_%282021-%29.svg", color:"#FF6900"},
+    {name:"هواوي", logo:"https://upload.wikimedia.org/wikipedia/commons/6/6d/Huawei_Standard_logo.svg", color:"#FF0000"},
+    {name:"اوبو", logo:"https://upload.wikimedia.org/wikipedia/commons/3/32/Oppo_logo.svg", color:"#2DCC70"},
+    {name:"فيفو", logo:"https://upload.wikimedia.org/wikipedia/commons/8/81/Vivo_logo.svg", color:"#415DFF"},
+    {name:"ريلمي", logo:"https://upload.wikimedia.org/wikipedia/commons/4/48/Realme_Logo.svg", color:"#FFD700"},
+    {name:"نوكيا", logo:"https://upload.wikimedia.org/wikipedia/commons/9/9e/Nokia_wordmark.svg", color:"#124191"}
   ];
    function showPhones(){
     document.getElementById('mainScreen').style.display='none';
     let html = `<button class="backBtn" onclick="goHome()">⬅️ رجوع للرئيسية</button>`;
     html += `<h2 style="text-align:center;margin:20px 0;color:#667eea">اختر الشركة</h2><div class="grid">`;
     companies.forEach(c=>{
-      html += `<div onclick="showCompanyModels('${c.name}')" style="background:${c.bg};padding:25px;border-radius:15px;cursor:pointer;border:3px solid ${c.color};text-align:center;transition:0.3s;">
-        <div style="font-size:45px">${c.logo}</div>
+      html += `<div onclick="showCompanyModels('${c.name}')" style="background:#111;padding:20px;border-radius:15px;cursor:pointer;border:3px solid ${c.color};text-align:center;transition:0.3s;">
+        <img src="${c.logo}" style="width:80px;height:40px;object-fit:contain;filter:brightness(0) invert(1);">
         <div style="color:${c.color};font-weight:700;font-size:18px;margin-top:8px">${c.name}</div>
       </div>`;
     });
@@ -100,14 +78,14 @@
     document.getElementById('content').innerHTML = html;
    }
    const models = {
-    "سامسونج": ["Galaxy S24 Ultra 5G", "Galaxy S24+ 5G", "Galaxy S24 5G", "Galaxy A55 5G", "Galaxy A35 5G", "Galaxy A15 4G", "Galaxy M34 5G"],
-    "ابل": ["iPhone 15 Pro Max", "iPhone 15 Pro", "iPhone 15 Plus", "iPhone 15", "iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14", "iPhone 13"],
-    "شاومي": ["Redmi Note 13 Pro+ 5G", "Redmi Note 13 Pro 5G", "Redmi Note 13 4G", "Poco X6 Pro 5G", "Poco X6 5G", "Xiaomi 14 Ultra", "Redmi 13C"],
-    "هواوي": ["HUAWEI P60 Pro", "HUAWEI Mate 60 Pro", "HUAWEI Nova 12i", "HUAWEI Nova 11", "HUAWEI Y9a", "HUAWEI Y61", "HUAWEI Enjoy 60"],
-    "اوبو": ["OPPO Reno 11 Pro", "OPPO Reno 11", "OPPO A78 5G", "OPPO A38", "OPPO Find X7 Ultra", "OPPO F23 5G", "OPPO A58"],
-    "فيفو": ["Vivo V30 Pro", "Vivo V30", "Vivo Y100", "Vivo X100 Pro", "Vivo Y27 5G", "Vivo T2 Pro", "Vivo Y36"],
-    "ريلمي": ["Realme 12 Pro+ 5G", "Realme 12 Pro 5G", "Realme C55", "Realme GT 3", "Realme 11 4G", "Realme Note 50", "Realme C53"],
-    "نوكيا": ["Nokia G42 5G", "Nokia C32", "Nokia X30 5G", "Nokia 105 2023", "Nokia 2660 Flip", "Nokia C22", "Nokia G22"]
+    "سامسونج": ["Galaxy S24 Ultra 5G", "Galaxy S24+ 5G", "Galaxy S24 5G", "Galaxy Z Fold5", "Galaxy Z Flip5", "Galaxy A55 5G", "Galaxy A35 5G", "Galaxy A15 4G", "Galaxy M34 5G", "Galaxy F54 5G"],
+    "ابل": ["iPhone 15 Pro Max", "iPhone 15 Pro", "iPhone 15 Plus", "iPhone 15", "iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14 Plus", "iPhone 14", "iPhone 13", "iPhone SE 2022"],
+    "شاومي": ["Xiaomi 14 Ultra", "Xiaomi 14 Pro", "Xiaomi 14", "Redmi Note 13 Pro+ 5G", "Redmi Note 13 Pro 5G", "Redmi Note 13 4G", "Poco X6 Pro 5G", "Poco X6 5G", "Poco F5", "Redmi 13C"],
+    "هواوي": ["HUAWEI P60 Pro", "HUAWEI Mate 60 Pro", "HUAWEI Mate X5", "HUAWEI Nova 12i", "HUAWEI Nova 11", "HUAWEI Nova 10", "HUAWEI Y9a", "HUAWEI Y61", "HUAWEI Enjoy 60", "HUAWEI P50 Pocket"],
+    "اوبو": ["OPPO Find X7 Ultra", "OPPO Find X7", "OPPO Reno 11 Pro", "OPPO Reno 11", "OPPO A78 5G", "OPPO A38", "OPPO F23 5G", "OPPO A58", "OPPO A18", "OPPO Reno 10"],
+    "فيفو": ["Vivo X100 Pro", "Vivo X100", "Vivo V30 Pro", "Vivo V30", "Vivo V29", "Vivo Y100", "Vivo Y36", "Vivo Y27 5G", "Vivo T2 Pro", "Vivo Y17s"],
+    "ريلمي": ["Realme GT 5 Pro", "Realme GT 3", "Realme 12 Pro+ 5G", "Realme 12 Pro 5G", "Realme 11 Pro+", "Realme 11 4G", "Realme C67", "Realme C55", "Realme Note 50", "Realme C53"],
+    "نوكيا": ["Nokia X30 5G", "Nokia G60 5G", "Nokia G42 5G", "Nokia C32", "Nokia C22", "Nokia G22", "Nokia 105 2023", "Nokia 2660 Flip", "Nokia 110 4G", "Nokia 3210 2024"]
   };
    function showCompanyModels(company){
     let html = `<button class="backBtn" onclick="showPhones()">⬅️ رجوع للشركات</button>`;
@@ -152,11 +130,11 @@
       <button onclick="addProduct()" style="width:100%;padding:15px;background:#f5576c;border:none;color:#fff;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;margin-top:10px">حفظ المنتج</button>
     </div>`;
   }
-   function addProduct(){
+  function addProduct(){
     const name = document.getElementById('prodName').value.trim();
     const price = document.getElementById('prodPrice').value.trim();
     const img = document.getElementById('prodEmoji').value.trim() || "📦";
-    if(!name || !price) return alert("⚠️ املأ اسم المنتج والسعر");
+    if(!name ||!price) return alert("⚠️ املأ اسم المنتج والسعر");
     accessories.push({id:Date.now(),name,price,img});
     saveAccess();alert("✅ تمت الاضافة بنجاح");showAccessories();
   }
@@ -164,7 +142,7 @@
     if(confirm("⚠️ متاكد تريد حذف المنتج؟")){
       accessories.splice(i,1);saveAccess();showAccessories();
     }
-  }
+         }
    const adminNumber = "07738105665";
   const adminName = "سيد عباس";
    function showOnline(){
@@ -172,16 +150,31 @@
     document.getElementById('content').innerHTML = `
     <button class="backBtn" onclick="goHome()">⬅️ رجوع للرئيسية</button>
     <h2 style="text-align:center;margin:20px 0;color:#4facfe">💳 دورس اون لاين</h2>
+
+    <div class="option-box" onclick="showActivation()">
+      <h3 style="color:#4facfe;font-size:20px;">1️⃣ الاشتراك عن طريق كود التفعيل</h3>
+      <p style="color:#ccc;margin-top:8px;">اذا عندك كود اشتراك دخل الكود هنا</p>
+    </div>
+
+    <div class="option-box" onclick="showFree()">
+      <h3 style="color:#25D366;font-size:20px;">2️⃣ الطريقة المجانية</h3>
+      <p style="color:#ccc;margin-top:8px;">شاهد اعلان 30 ثانية واحصل على درس مجاني</p>
+    </div>
+
+    <div style="margin-top:30px;background:#1a1a1a;padding:20px;border-radius:15px;border:3px solid #4facfe;text-align:center">
+      <p style="margin-bottom:10px;font-size:16px">للتواصل وتفعيل الكود:</p>
+      <p style="font-size:24px;font-weight:900;color:#4facfe;margin:10px 0">${adminName}</p>
+      <a href="tel:${adminNumber}" style="font-size:20px;color:#00f2fe;text-decoration:none;display:block;margin:12px 0;font-weight:700">📞 ${adminNumber}</a>
+      <a href="https://wa.me/964${adminNumber.substring(1)}" target="_blank" style="display:inline-block;margin-top:10px;padding:12px 28px;background:#25D366;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:16px;">واتساب</a>
+    </div>`;
+   }
+   function showActivation(){
+    document.getElementById('content').innerHTML = `
+    <button class="backBtn" onclick="showOnline()">⬅️ رجوع</button>
+    <h2 style="text-align:center;margin:20px 0;color:#4facfe">تفعيل الكود</h2>
     <div style="max-width:500px;margin:auto;">
-      <h3 style="color:#4facfe;margin-bottom:15px;text-align:center">لتفعيل الكود</h3>
-      <input id="activationCode" placeholder="اكتب الكود هنا">
+      <input id="activationCode" placeholder="اكتب كود التفعيل هنا">
       <button onclick="activateCode()" style="width:100%;padding:15px;background:#4facfe;border:none;color:#fff;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer">تفعيل الكود</button>
-      <div style="margin-top:30px;background:#1a1a1a;padding:20px;border-radius:15px;border:3px solid #4facfe;text-align:center">
-        <p style="margin-bottom:10px;font-size:16px">للتواصل وتفعيل الكود:</p>
-        <p style="font-size:24px;font-weight:900;color:#4facfe;margin:10px 0">${adminName}</p>
-        <a href="tel:${adminNumber}" style="font-size:20px;color:#00f2fe;text-decoration:none;display:block;margin:12px 0;font-weight:700">📞 ${adminNumber}</a>
-        <a href="https://wa.me/964${adminNumber.substring(1)}" target="_blank" style="display:inline-block;margin-top:10px;padding:12px 28px;background:#25D366;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:16px;">واتساب</a>
-      </div>
     </div>`;
   }
   function activateCode(){
@@ -190,20 +183,36 @@
     alert(`✅ تم استلام الكود: ${code}\n\nراح نتواصل وياك على رقم ${adminNumber}`);
     window.open(`https://wa.me/964${adminNumber.substring(1)}?text=السلام عليكم اريد افعل الكود: ${code}`);
   }
+  function showFree(){
+    document.getElementById('content').innerHTML = `
+    <button class="backBtn" onclick="showOnline()">⬅️ رجوع</button>
+    <h2 style="text-align:center;margin:20px 0;color:#25D366">الطريقة المجانية</h2>
+    <div style="max-width:500px;margin:auto;text-align:center;">
+      <p style="font-size:18px;margin-bottom:20px;">شاهد اعلان كامل واحصل على درس مجاني</p>
+      <button onclick="watchAd()" style="width:100%;padding:20px;background:#25D366;border:none;color:#fff;border-radius:12px;font-size:20px;font-weight:700;cursor:pointer">▶️ شاهد الاعلان</button>
+      <p style="margin-top:15px;color:#999;font-size:14px;">ملاحظة: بعد انتهاء الاعلان راح ينفتح الدرس تلقائي</p>
+    </div>`;
+  }
+  function watchAd(){
+    alert("⏳ جاري تشغيل الاعلان...\nبعد 30 ثانية راح ينفتح الدرس");
+    setTimeout(()=>{
+      alert("✅ مبروك! تم فتح الدرس المجاني");
+      window.open("https://youtube.com", "_blank");
+    }, 3000);
+  }
    function goHome(){
     document.getElementById('mainScreen').style.display='block';
     document.getElementById('content').innerHTML='';
     window.scrollTo(0,0);
   }
-  
+
   const style = document.createElement('style');
   style.innerHTML = `@keyframes fadeIn{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}} #content{animation:fadeIn 0.3s ease;}`;
   document.head.appendChild(style);
 
-  // تسجيل Service Worker للـ PWA
   if('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');
   }
- </script>
+</script>
 </body>
 </html>
