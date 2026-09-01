@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>فون فلكس - Phone Flex</title>
-<link rel="icon" href="icon.png" type="image/png">
+<link rel="icon" href="icon-192.png" type="image/png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#667eea">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -33,7 +33,7 @@
 </head>
 <body>
  <header>
-  <img src="icon.png" alt="logo">
+  <img src="icon-192.png" alt="logo">
   فون فلكس Phone Flex
 </header>
 
@@ -57,7 +57,7 @@
    const companies = [
     {name:"سامسونج", logo:"https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg", color:"#1428A0"},
     {name:"ابل", logo:"https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", color:"#FFFFFF"},
-    {name:"شاومي", logo:"https://upload.wikimedia.org/wikipedia/commons/ae/Xiaomi_logo_%282021-%29.svg", color:"#FF6900"},
+    {name:"شاومي", logo:"https://upload.wikimedia.org/wikipedia/commons/a/ae/Xiaomi_logo_%282021-%29.svg", color:"#FF6900"},
     {name:"هواوي", logo:"https://upload.wikimedia.org/wikipedia/commons/6/6d/Huawei_Standard_logo.svg", color:"#FF0000"},
     {name:"اوبو", logo:"https://upload.wikimedia.org/wikipedia/commons/3/32/Oppo_logo.svg", color:"#2DCC70"},
     {name:"فيفو", logo:"https://upload.wikimedia.org/wikipedia/commons/8/81/Vivo_logo.svg", color:"#415DFF"},
@@ -142,7 +142,7 @@
     if(confirm("⚠️ متاكد تريد حذف المنتج؟")){
       accessories.splice(i,1);saveAccess();showAccessories();
     }
-         }
+  }
    const adminNumber = "07738105665";
   const adminName = "سيد عباس";
    function showOnline(){
@@ -168,7 +168,9 @@
       <a href="https://wa.me/964${adminNumber.substring(1)}" target="_blank" style="display:inline-block;margin-top:10px;padding:12px 28px;background:#25D366;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:16px;">واتساب</a>
     </div>`;
    }
-   function showActivation(){
+   const AD_UNIT_ID = "ca-app-pub-xxxxxxxxxxxxxxxx/wwwwwwwwww"; // ← حط معرفك مال AdMob هنا
+
+  function showActivation(){
     document.getElementById('content').innerHTML = `
     <button class="backBtn" onclick="showOnline()">⬅️ رجوع</button>
     <h2 style="text-align:center;margin:20px 0;color:#4facfe">تفعيل الكود</h2>
@@ -189,15 +191,19 @@
     <h2 style="text-align:center;margin:20px 0;color:#25D366">الطريقة المجانية</h2>
     <div style="max-width:500px;margin:auto;text-align:center;">
       <p style="font-size:18px;margin-bottom:20px;">شاهد اعلان كامل واحصل على درس مجاني</p>
-      <button onclick="watchAd()" style="width:100%;padding:20px;background:#25D366;border:none;color:#fff;border-radius:12px;font-size:20px;font-weight:700;cursor:pointer">▶️ شاهد الاعلان</button>
-      <p style="margin-top:15px;color:#999;font-size:14px;">ملاحظة: بعد انتهاء الاعلان راح ينفتح الدرس تلقائي</p>
+      <button id="watchAdBtn" onclick="watchAd()" style="width:100%;padding:20px;background:#25D366;border:none;color:#fff;border-radius:12px;font-size:20px;font-weight:700;cursor:pointer">▶️ شاهد الاعلان</button>
+      <p style="margin-top:15px;color:#999;font-size:14px;">ملاحظة: الاعلان لازم يكمل حتى ينفتح الدرس</p>
     </div>`;
   }
   function watchAd(){
-    alert("⏳ جاري تشغيل الاعلان...\nبعد 30 ثانية راح ينفتح الدرس");
+    document.getElementById('watchAdBtn').innerText = "⏳ جاري تحميل الاعلان...";
+    document.getElementById('watchAdBtn').disabled = true;
+    // هسه وهمي. من تبني APK نربطه بـ AdMob الحقي
     setTimeout(()=>{
       alert("✅ مبروك! تم فتح الدرس المجاني");
       window.open("https://youtube.com", "_blank");
+      document.getElementById('watchAdBtn').innerText = "▶️ شاهد الاعلان";
+      document.getElementById('watchAdBtn').disabled = false;
     }, 3000);
   }
    function goHome(){
