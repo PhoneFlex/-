@@ -3,37 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>فون فلكس Phone Flex - البصرة العشار</title>
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icon-192.png">
-<meta name="theme-color" content="#667eea">
+<title>فون فلكس Phone Flex</title>
 <style>
- * {margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Tahoma, sans-serif;}
-body {background: linear-gradient(135deg, #0a0a0a, #1a1a2e); color:#fff;}
-header {background: rgba(0,0,0,0.8); padding:15px; text-align:center; position:sticky; top:0; z-index:1000;}
-header h1 {color:#667eea; font-size:24px;}
-header p {font-size:12px; color:#aaa; margin-top:5px;}
-nav {display:flex; justify-content:space-around; background:#111; padding:10px 0;}
-nav button {background:none; border:none; color:#fff; font-size:14px; cursor:pointer; padding:8px;}
-nav button.active {color:#667eea; border-bottom:2px solid #667eea;}
+* {margin:0; padding:0; box-sizing:border-box; font-family: 'Cairo', sans-serif;}
+body {background:#0a0a0a; color:#fff;}
+header {background:#111; padding:20px; text-align:center; border-bottom:2px solid #667eea;}
+header h1 {color:#667eea;}
+header p {color:#aaa; font-size:14px; margin-top:5px;}
+nav {display:flex; background:#1a1a1a;}
+nav button {flex:1; padding:15px; background:none; border:none; color:#fff; cursor:pointer; font-size:16px;}
+nav button.active {background:#667eea;}
 .container {padding:20px; max-width:1200px; margin:auto;}
 .hidden {display:none;}
- .phones-grid {display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:20px; margin-top:20px;}
-.phone-card {background: rgba(255,255,255,0.05); border-radius:15px; padding:15px; text-align:center; transition:0.3s; cursor:pointer;}
-.phone-card:hover {transform: translateY(-5px); background: rgba(102,126,234,0.2);}
-.phone-card img {width:100%; height:200px; object-fit:contain; border-radius:10px; background:#222;}
-.phone-card h3 {margin:10px 0 5px; color:#fff; font-size:16px;}
-.phone-card .price {color:#4ade80; font-size:18px; font-weight:bold;} 
- .video-section {}
-.video-player {width:100%; height:300px; background:#000; border-radius:10px; margin-bottom:20px;}
-.videos-icons {display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:15px; margin-top:20px;}
-.video-item {background: rgba(255,255,255,0.05); padding:10px; border-radius:10px; text-align:center; cursor:pointer;}
-.video-item img {width:100%; height:100px; object-fit:cover; border-radius:8px;}
-.video-item p {margin-top:8px; font-size:13px;} 
- .ads-section, .contact-section {text-align:center; padding:40px 20px;}
-.ads-section button, .contact-section button {background:#667eea; color:#fff; border:none; padding:15px 30px; border-radius:10px; font-size:16px; cursor:pointer; margin-top:15px;}
-footer {text-align:center; padding:20px; background:#000; margin-top:40px; font-size:14px;}
-h2 {margin-bottom:20px; color:#667eea;}
+ .companies {display:flex; justify-content:center; gap:15px; margin:20px 0; flex-wrap:wrap;}
+.company-btn {padding:10px 20px; background:#222; border:2px solid #333; border-radius:10px; cursor:pointer; color:#fff; transition:0.3s;}
+.company-btn.active {border-color:#667eea; background:#667eea;}
+.phones-grid {display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:20px;}
+.phone-card {background:#1a1a1a; border-radius:15px; padding:15px; text-align:center; border:1px solid #333;}
+.phone-card img {width:100%; height:180px; object-fit:contain; background:#000; border-radius:10px; padding:10px;}
+.phone-card h3 {margin:10px 0; font-size:15px;}
+.phone-card .price {color:#4ade80; font-weight:bold; font-size:18px;} 
+ .lessons-choice {display:flex; gap:20px; justify-content:center; margin:20px 0; flex-wrap:wrap;}
+.choice-btn {padding:20px 30px; background:#222; border:2px solid #667eea; border-radius:15px; cursor:pointer; text-align:center; min-width:250px;}
+.choice-btn:hover {background:#667eea;}
+.video-player {width:100%; height:300px; background:#000; border-radius:10px; margin:15px 0;}
+.code-input {padding:12px; width:250px; border-radius:8px; border:2px solid #667eea; background:#000; color:#fff; margin:10px;}
+.code-btn {padding:12px 25px; background:#667eea; border:none; border-radius:8px; color:#fff; cursor:pointer;}
+.contact-box {background:#1a1a1a; padding:20px; border-radius:15px; text-align:center;}
 </style>
 </head>
 <body> 
@@ -44,107 +40,135 @@ h2 {margin-bottom:20px; color:#667eea;}
 <nav>
   <button class="tab-btn active" onclick="showTab('phones')">الهواتف</button>
   <button class="tab-btn" onclick="showTab('lessons')">دروس اونلاين</button>
-  <button class="tab-btn" onclick="showTab('ads')">الاعلانات</button>
   <button class="tab-btn" onclick="showTab('contact')">اتصل بنا</button>
 </nav>
 <div class="container">
  <div id="phones" class="tab-content">
-  <h2>احدث الهواتف</h2>
+  <h2 style="text-align:center; margin-bottom:20px;">اختر الشركة</h2>
+  <div class="companies">
+    <button class="company-btn active" onclick="filterCompany('all')">الكل</button>
+    <button class="company-btn" onclick="filterCompany('apple')">Apple</button>
+    <button class="company-btn" onclick="filterCompany('samsung')">Samsung</button>
+    <button class="company-btn" onclick="filterCompany('xiaomi')">Xiaomi</button>
+    <button class="company-btn" onclick="filterCompany('huawei')">Huawei</button>
+    <button class="company-btn" onclick="filterCompany('oppo')">Oppo</button>
+  </div>
   <div class="phones-grid">
-    <div class="phone-card">
-      <img src="https://fdn.gsmarena.com/imgroot/reviews/23/apple-iphone-15-pro-max/-1024x768w2/gsmarena_001.jpg" alt="iPhone 15 Pro Max">
-      <h3>iPhone 15 Pro Max 256GB</h3>
+    <div class="phone-card" data-company="apple">
+      <img src="https://www.apple.com/v/iphone-15-pro/c/images/meta/iphone-15-pro_overview__4tkombpcbvm2_og.png">
+      <h3>iPhone 15 Pro Max</h3>
       <p class="price">1,850,000 دينار</p>
     </div>
-    <div class="phone-card">
-      <img src="https://fdn.gsmarena.com/imgroot/reviews/24/samsung-galaxy-s24-ultra/-1024x768w2/gsmarena_001.jpg" alt="Galaxy S24 Ultra">
-      <h3>Samsung S24 Ultra 512GB</h3>
+    <div class="phone-card" data-company="samsung">
+      <img src="https://images.samsung.com/levant/smartphones/galaxy-s24-ultra/images/galaxy-s24-ultra-highlights-design-end.jpg">
+      <h3>Galaxy S24 Ultra</h3>
       <p class="price">1,750,000 دينار</p>
     </div>
-        <div class="phone-card">
-      <img src="https://fdn.gsmarena.com/imgroot/reviews/23/xiaomi-13-pro/-1024x768w2/gsmarena_001.jpg" alt="Xiaomi 13 Pro">
-      <h3>Xiaomi 13 Pro 256GB</h3>
+        <div class="phone-card" data-company="xiaomi">
+      <img src="https://i02.appmifile.com/833_operator_sg/25/04/2023/mi13pro.png">
+      <h3>Xiaomi 13 Pro</h3>
       <p class="price">950,000 دينار</p>
     </div>
-    <div class="phone-card">
-      <img src="https://fdn.gsmarena.com/imgroot/reviews/23/google-pixel-8-pro/-1024x768w2/gsmarena_001.jpg" alt="Google Pixel 8 Pro">
-      <h3>Google Pixel 8 Pro 128GB</h3>
-      <p class="price">1,400,000 دينار</p>
+    <div class="phone-card" data-company="huawei">
+      <img src="https://consumer.huawei.com/content/dam/huawei-cbg-site/common/mkt/pdp/phones/p60-pro/list/p60-pro-black.png">
+      <h3>Huawei P60 Pro</h3>
+      <p class="price">1,200,000 دينار</p>
+    </div>
+    <div class="phone-card" data-company="oppo">
+      <img src="https://image.oppo.com/content/dam/oppo/common/mkt/v2/find-x6-pro-en/listpage/white.png">
+      <h3>Oppo Find X6 Pro</h3>
+      <p class="price">1,100,000 دينار</p>
     </div>
   </div>
  </div>
  <div id="lessons" class="tab-content hidden">
-  <h2>دروس اونلاين</h2>
-  <div id="ad-video">
-    <h3>شاهد الاعلان لفتح الدروس</h3>
-    <video id="mainVideo" class="video-player" controls>
-      <source src="ad.mp4" type="video/mp4">
-      متصفحك لا يدعم الفيديو
-    </video>
-  </div>
-  <div id="videosList" class="hidden">
-    <h3>قائمة الدروس</h3>
-    <div class="videos-icons">
-      <div class="video-item">
-        <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg">
-        <p>درس 1: اساسيات التصوير</p>
-      </div>
-      <div class="video-item">
-        <img src="https://img.youtube.com/vi/9bZkp7q19f0/0.jpg">
-        <p>درس 2: تعديل الصور</p>
-      </div>
-      <div class="video-item">
-        <img src="https://img.youtube.com/vi/JGwWLGScXU8/0.jpg">
-        <p>درس 3: مونتاج الموبايل</p>
-      </div>
-    </div>
-  </div>
- </div>
- <div id="ads" class="tab-content hidden">
-  <div class="ads-section">
-    <h2>عروض فون فلكس</h2>
-    <p>تابعنا لتحصل على افضل العروض والخصومات</p>
-    <button>تابعنا على انستغرام</button>
-  </div>
- </div>
- <div id="contact" class="tab-content hidden">
-  <div class="contact-section">
-    <h2>اتصل بنا</h2>
-    <p>📍 العنوان: البصرة - العشار - قرب شركة الجبال</p>
-    <p>📞 واتساب: 07701234567</p>
-    <button onclick="window.open('https://wa.me/9647701234567')">راسلنا واتساب</button>
-    
-    <div style="margin-top:20px;">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3456!2d47.819!3d30.518!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzDCsDMxJzA3LjIiTiA0N8KwNDknMDguNCJF!5e0!3m2!1sar!2siq!4v1234567890" 
-      width="100%" height="250" style="border:0; border-radius:10px;" allowfullscreen="" loading="lazy"></iframe>
-    </div>
-  </div>
-</div>
-</div>
-<footer>
-  <p>© 2026 فون فلكس Phone Flex - البصرة العشار قرب شركة الجبال</p>
-</footer>
-
-<script>
-function showTab(tabName) {
-  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-  document.getElementById(tabName).classList.remove('hidden');
+  <h2 style="text-align:center;">دروس اونلاين</h2>
   
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  <div id="choiceBox">
+    <p style="text-align:center; margin-bottom:20px;">اختر طريقة المشاهدة:</p>
+    <div class="lessons-choice">
+      <div class="choice-btn" onclick="showFree()">
+        <h3>📺 مجاني</h3>
+        <p>شاهد الاعلان ثم افتح الدروس</p>
+      </div>
+      <div class="choice-btn" onclick="showSubscription()">
+        <h3>🔑 اشتراك</h3>
+        <p>ادخل كود وتابع بدون اعلانات</p>
+      </div>
+    </div>
+  </div>
+  
+  <div id="freeSection" class="hidden">
+    <h3>الطريقة المجانية</h3>
+    <video id="adVideo" class="video-player" controls>
+      <source src="ad.mp4" type="video/mp4">
+    </video>
+    <div id="freeVideos" class="hidden">
+      <h4>الدروس:</h4>
+      <video class="video
+         <div id="subSection" class="hidden">
+    <h3>الطريقة بالاشتراك</h3>
+    <p>ادخل كود الاشتراك لمشاهدة الدروس مباشرة بدون اعلانات</p>
+    <input type="text" id="codeInput" class="code-input" placeholder="ادخل الكود هنا">
+    <button class="code-btn" onclick="checkCode()">تفعيل</button>
+    <p style="color:#aaa; font-size:12px; margin-top:10px;">للحصول على الكود راسلنا واتساب: 07701234567</p>
+    <div id="subVideos" class="hidden">
+      <h4>الدروس:</h4>
+      <video class="video-player"
+       <div id="contact" class="tab-content hidden">
+  <div class="contact-box">
+    <h2>اتصل بنا</h2>
+    <p>📍 البصرة - العشار - قرب شركة الجبال</p>
+    <p>📞 07701234567</p>
+    <div style="margin:20px 0;">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3454.1!2d47.8201234!3d30.5189876!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3fcb39e8a1234567%3A0x123456789abcdef!2z2KfZhNiv2YjZitmG2KfYqiDYp9mE2YXYs9mK2KfZhNmF2KfZhNin2YYg2KfZhNin2LPYs9mK2KfZhw!5e0!3m2!1sar!2siq!4v1720000" 
+      width="100%" height="300" style="border:0; border-radius:10px;" allowfullscreen="" loading="lazy"></iframe>
+    </div>
+  </div>
+</div>
+    </div>
+    <script>
+function showTab(tabName) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+  document.getElementById(tabName).classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
 }
 
-const video = document.getElementById('mainVideo');
-const videosList = document.getElementById('videosList');
-if(video){
-  video.addEventListener('ended', function() {
-    videosList.classList.remove('hidden');
+function filterCompany(company) {
+  document.querySelectorAll('.phone-card').forEach(card => {
+    card.style.display = (company === 'all' || card.dataset.company === company) ? 'block' : 'none';
+  });
+  document.querySelectorAll('.company-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function showFree() {
+  document.getElementById('choiceBox').classList.add('hidden');
+  document.getElementById('freeSection').classList.remove('hidden');
+}
+
+function showSubscription() {
+  document.getElementById('choiceBox').classList.add('hidden');
+  document.getElementById('subSection').classList.remove('hidden');
+}
+
+const adVideo = document.getElementById('adVideo');
+if(adVideo){
+  adVideo.addEventListener('ended', () => {
+    document.getElementById('freeVideos').classList.remove('hidden');
   });
 }
 
-if('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
+function checkCode() {
+  const code = document.getElementById('codeInput').value;
+  if(code === 'FLEX2026') { // غير الكود بكيفك
+    document.getElementById('subVideos').classList.remove('hidden');
+  } else {
+    alert('الكود خطأ! تواصل واتساب للحصول على كود الاشتراك');
+  }
 }
 </script>
 </body>
-</html>
+  </html>
+   
