@@ -3,222 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>فون فلكس - Phone Flex</title>
-<link rel="icon" href="icon-192.png" type="image/png">
+<title>فون فلكس Phone Flex - البصرة العشار</title>
 <link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
 <meta name="theme-color" content="#667eea">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;}
-  body{background:#0a0a0a;color:#fff;min-height:100vh;padding-bottom:90px;}
-  header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:15px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:24px;font-weight:900;box-shadow:0 4px 20px rgba(102,126,234,0.5);position:sticky;top:0;z-index:999;}
-  header img{width:40px;height:40px;border-radius:10px;border:2px solid #fff;}
- .banner{width:100%;max-width:700px;margin:15px auto;display:block;border-radius:15px;border:3px solid #667eea;}
- .container{max-width:700px;margin:auto;padding:20px;}
- .mainButtons{display:flex;flex-direction:column;gap:18px;margin-top:20px;}
- .mainBtn{padding:22px;border-radius:18px;font-size:20px;font-weight:700;border:none;cursor:pointer;transition:0.3s;color:#fff;box-shadow:0 5px 15px rgba(0,0,0,0.3);}
- .mainBtn:active{transform:scale(0.97);}
- .btn-phones{background:linear-gradient(135deg,#667eea,#764ba2);}
- .btn-access{background:linear-gradient(135deg,#f093fb,#f5576c);}
- .btn-online{background:linear-gradient(135deg,#4facfe,#00f2fe);}
- .backBtn{margin:15px;padding:12px 22px;background:#2a2a2a;border:none;color:#fff;border-radius:10px;cursor:pointer;font-size:15px;font-weight:600;}
-  footer{position:fixed;bottom:0;width:100%;background:#111;padding:14px;font-size:13px;color:#ccc;border-top:3px solid #667eea;text-align:center;z-index:999;}
- .card{background:#1a1a1a;border-radius:14px;padding:14px;margin:10px 0;border-right:4px solid #667eea;text-align:right;font-size:16px;}
- .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
-  input{width:100%;padding:13px;margin:10px 0;border-radius:10px;border:2px solid #333;background:#222;color:#fff;font-size:16px;}
-  input:focus{border-color:#667eea;outline:none;}
- .option-box{background:#1a1a1a;padding:20px;border-radius:15px;margin:15px 0;border:2px solid #333;cursor:pointer;transition:0.3s;}
- .option-box:hover{border-color:#4facfe;}
+ * {margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Tahoma, sans-serif;}
+body {background: linear-gradient(135deg, #0a0a0a, #1a1a2e); color:#fff;}
+header {background: rgba(0,0,0,0.8); padding:15px; text-align:center; position:sticky; top:0; z-index:1000;}
+header h1 {color:#667eea; font-size:24px;}
+header p {font-size:12px; color:#aaa; margin-top:5px;}
+nav {display:flex; justify-content:space-around; background:#111; padding:10px 0;}
+nav button {background:none; border:none; color:#fff; font-size:14px; cursor:pointer; padding:8px;}
+nav button.active {color:#667eea; border-bottom:2px solid #667eea;}
+.container {padding:20px; max-width:1200px; margin:auto;}
+.hidden {display:none;}
+ .phones-grid {display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:20px; margin-top:20px;}
+.phone-card {background: rgba(255,255,255,0.05); border-radius:15px; padding:15px; text-align:center; transition:0.3s; cursor:pointer;}
+.phone-card:hover {transform: translateY(-5px); background: rgba(102,126,234,0.2);}
+.phone-card img {width:100%; height:200px; object-fit:contain; border-radius:10px; background:#222;}
+.phone-card h3 {margin:10px 0 5px; color:#fff; font-size:16px;}
+.phone-card .price {color:#4ade80; font-size:18px; font-weight:bold;} 
+ .video-section {}
+.video-player {width:100%; height:300px; background:#000; border-radius:10px; margin-bottom:20px;}
+.videos-icons {display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:15px; margin-top:20px;}
+.video-item {background: rgba(255,255,255,0.05); padding:10px; border-radius:10px; text-align:center; cursor:pointer;}
+.video-item img {width:100%; height:100px; object-fit:cover; border-radius:8px;}
+.video-item p {margin-top:8px; font-size:13px;} 
+ .ads-section, .contact-section {text-align:center; padding:40px 20px;}
+.ads-section button, .contact-section button {background:#667eea; color:#fff; border:none; padding:15px 30px; border-radius:10px; font-size:16px; cursor:pointer; margin-top:15px;}
+footer {text-align:center; padding:20px; background:#000; margin-top:40px; font-size:14px;}
+h2 {margin-bottom:20px; color:#667eea;}
 </style>
 </head>
-<body>
+<body> 
  <header>
-  <img src="icon-192.png" alt="logo">
-  فون فلكس Phone Flex
+  <h1>فون فلكس Phone Flex</h1>
+  <p>البصرة - العشار - قرب شركة الجبال</p>
 </header>
-
-<img src="banner.png" alt="banner" class="banner">
-
+<nav>
+  <button class="tab-btn active" onclick="showTab('phones')">الهواتف</button>
+  <button class="tab-btn" onclick="showTab('lessons')">دروس اونلاين</button>
+  <button class="tab-btn" onclick="showTab('ads')">الاعلانات</button>
+  <button class="tab-btn" onclick="showTab('contact')">اتصل بنا</button>
+</nav>
 <div class="container">
-  <div id="mainScreen">
-    <div class="mainButtons">
-      <button class="mainBtn btn-phones" onclick="showPhones()">📱 الهواتف</button>
-      <button class="mainBtn btn-access" onclick="showAccessories()">🔌 الاكسسوارات</button>
-      <button class="mainBtn btn-online" onclick="showOnline()">💳 دورس اون لاين</button>
+ <div id="phones" class="tab-content">
+  <h2>احدث الهواتف</h2>
+  <div class="phones-grid">
+    <div class="phone-card">
+      <img src="https://fdn.gsmarena.com/imgroot/reviews/23/apple-iphone-15-pro-max/-1024x768w2/gsmarena_001.jpg" alt="iPhone 15 Pro Max">
+      <h3>iPhone 15 Pro Max 256GB</h3>
+      <p class="price">1,850,000 دينار</p>
+    </div>
+    <div class="phone-card">
+      <img src="https://fdn.gsmarena.com/imgroot/reviews/24/samsung-galaxy-s24-ultra/-1024x768w2/gsmarena_001.jpg" alt="Galaxy S24 Ultra">
+      <h3>Samsung S24 Ultra 512GB</h3>
+      <p class="price">1,750,000 دينار</p>
+    </div>
+        <div class="phone-card">
+      <img src="https://fdn.gsmarena.com/imgroot/reviews/23/xiaomi-13-pro/-1024x768w2/gsmarena_001.jpg" alt="Xiaomi 13 Pro">
+      <h3>Xiaomi 13 Pro 256GB</h3>
+      <p class="price">950,000 دينار</p>
+    </div>
+    <div class="phone-card">
+      <img src="https://fdn.gsmarena.com/imgroot/reviews/23/google-pixel-8-pro/-1024x768w2/gsmarena_001.jpg" alt="Google Pixel 8 Pro">
+      <h3>Google Pixel 8 Pro 128GB</h3>
+      <p class="price">1,400,000 دينار</p>
     </div>
   </div>
-  <div id="content"></div>
+ </div>
+ <div id="lessons" class="tab-content hidden">
+  <h2>دروس اونلاين</h2>
+  <div id="ad-video">
+    <h3>شاهد الاعلان لفتح الدروس</h3>
+    <video id="mainVideo" class="video-player" controls>
+      <source src="ad.mp4" type="video/mp4">
+      متصفحك لا يدعم الفيديو
+    </video>
+  </div>
+  <div id="videosList" class="hidden">
+    <h3>قائمة الدروس</h3>
+    <div class="videos-icons">
+      <div class="video-item">
+        <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg">
+        <p>درس 1: اساسيات التصوير</p>
+      </div>
+      <div class="video-item">
+        <img src="https://img.youtube.com/vi/9bZkp7q19f0/0.jpg">
+        <p>درس 2: تعديل الصور</p>
+      </div>
+      <div class="video-item">
+        <img src="https://img.youtube.com/vi/JGwWLGScXU8/0.jpg">
+        <p>درس 3: مونتاج الموبايل</p>
+      </div>
+    </div>
+  </div>
+ </div>
+ <div id="ads" class="tab-content hidden">
+  <div class="ads-section">
+    <h2>عروض فون فلكس</h2>
+    <p>تابعنا لتحصل على افضل العروض والخصومات</p>
+    <button>تابعنا على انستغرام</button>
+  </div>
+ </div>
+ <div id="contact" class="tab-content hidden">
+  <div class="contact-section">
+    <h2>اتصل بنا</h2>
+    <p>📍 العنوان: البصرة - العشار - قرب شركة الجبال</p>
+    <p>📞 واتساب: 07701234567</p>
+    <button onclick="window.open('https://wa.me/9647701234567')">راسلنا واتساب</button>
+    
+    <div style="margin-top:20px;">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3456!2d47.819!3d30.518!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzDCsDMxJzA3LjIiTiA0N8KwNDknMDguNCJF!5e0!3m2!1sar!2siq!4v1234567890" 
+      width="100%" height="250" style="border:0; border-radius:10px;" allowfullscreen="" loading="lazy"></iframe>
+    </div>
+  </div>
+</div>
 </div>
 <footer>
-  جميع الحقوق محفوظة لدى فون فلكس © <span id="year"></span>
+  <p>© 2026 فون فلكس Phone Flex - البصرة العشار قرب شركة الجبال</p>
 </footer>
+
 <script>
-  document.getElementById('year').innerText = new Date().getFullYear();
-   const companies = [
-    {name:"سامسونج", logo:"https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg", color:"#1428A0"},
-    {name:"ابل", logo:"https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", color:"#FFFFFF"},
-    {name:"شاومي", logo:"https://upload.wikimedia.org/wikipedia/commons/a/ae/Xiaomi_logo_%282021-%29.svg", color:"#FF6900"},
-    {name:"هواوي", logo:"https://upload.wikimedia.org/wikipedia/commons/6/6d/Huawei_Standard_logo.svg", color:"#FF0000"},
-    {name:"اوبو", logo:"https://upload.wikimedia.org/wikipedia/commons/3/32/Oppo_logo.svg", color:"#2DCC70"},
-    {name:"فيفو", logo:"https://upload.wikimedia.org/wikipedia/commons/8/81/Vivo_logo.svg", color:"#415DFF"},
-    {name:"ريلمي", logo:"https://upload.wikimedia.org/wikipedia/commons/4/48/Realme_Logo.svg", color:"#FFD700"},
-    {name:"نوكيا", logo:"https://upload.wikimedia.org/wikipedia/commons/9/9e/Nokia_wordmark.svg", color:"#124191"}
-  ];
-   function showPhones(){
-    document.getElementById('mainScreen').style.display='none';
-    let html = `<button class="backBtn" onclick="goHome()">⬅️ رجوع للرئيسية</button>`;
-    html += `<h2 style="text-align:center;margin:20px 0;color:#667eea">اختر الشركة</h2><div class="grid">`;
-    companies.forEach(c=>{
-      html += `<div onclick="showCompanyModels('${c.name}')" style="background:#111;padding:20px;border-radius:15px;cursor:pointer;border:3px solid ${c.color};text-align:center;transition:0.3s;">
-        <img src="${c.logo}" style="width:80px;height:40px;object-fit:contain;filter:brightness(0) invert(1);">
-        <div style="color:${c.color};font-weight:700;font-size:18px;margin-top:8px">${c.name}</div>
-      </div>`;
-    });
-    html += `</div>`;
-    document.getElementById('content').innerHTML = html;
-   }
-   const models = {
-    "سامسونج": ["Galaxy S24 Ultra 5G", "Galaxy S24+ 5G", "Galaxy S24 5G", "Galaxy Z Fold5", "Galaxy Z Flip5", "Galaxy A55 5G", "Galaxy A35 5G", "Galaxy A15 4G", "Galaxy M34 5G", "Galaxy F54 5G"],
-    "ابل": ["iPhone 15 Pro Max", "iPhone 15 Pro", "iPhone 15 Plus", "iPhone 15", "iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14 Plus", "iPhone 14", "iPhone 13", "iPhone SE 2022"],
-    "شاومي": ["Xiaomi 14 Ultra", "Xiaomi 14 Pro", "Xiaomi 14", "Redmi Note 13 Pro+ 5G", "Redmi Note 13 Pro 5G", "Redmi Note 13 4G", "Poco X6 Pro 5G", "Poco X6 5G", "Poco F5", "Redmi 13C"],
-    "هواوي": ["HUAWEI P60 Pro", "HUAWEI Mate 60 Pro", "HUAWEI Mate X5", "HUAWEI Nova 12i", "HUAWEI Nova 11", "HUAWEI Nova 10", "HUAWEI Y9a", "HUAWEI Y61", "HUAWEI Enjoy 60", "HUAWEI P50 Pocket"],
-    "اوبو": ["OPPO Find X7 Ultra", "OPPO Find X7", "OPPO Reno 11 Pro", "OPPO Reno 11", "OPPO A78 5G", "OPPO A38", "OPPO F23 5G", "OPPO A58", "OPPO A18", "OPPO Reno 10"],
-    "فيفو": ["Vivo X100 Pro", "Vivo X100", "Vivo V30 Pro", "Vivo V30", "Vivo V29", "Vivo Y100", "Vivo Y36", "Vivo Y27 5G", "Vivo T2 Pro", "Vivo Y17s"],
-    "ريلمي": ["Realme GT 5 Pro", "Realme GT 3", "Realme 12 Pro+ 5G", "Realme 12 Pro 5G", "Realme 11 Pro+", "Realme 11 4G", "Realme C67", "Realme C55", "Realme Note 50", "Realme C53"],
-    "نوكيا": ["Nokia X30 5G", "Nokia G60 5G", "Nokia G42 5G", "Nokia C32", "Nokia C22", "Nokia G22", "Nokia 105 2023", "Nokia 2660 Flip", "Nokia 110 4G", "Nokia 3210 2024"]
-  };
-   function showCompanyModels(company){
-    let html = `<button class="backBtn" onclick="showPhones()">⬅️ رجوع للشركات</button>`;
-    html += `<h2 style="text-align:center;margin:20px 0;color:#667eea">${company}</h2>`;
-    models[company].forEach(m=>{
-      html += `<div class="card">${m}</div>`;
-    });
-    document.getElementById('content').innerHTML = html;
-   }
-   let accessories = JSON.parse(localStorage.getItem('phoneFlexAccess')) || [
-    {id:1,name:"شاحن سامسونج اصلي 25W", price:"25000", img:"🔌"},
-    {id:2,name:"كفر ايفون 15 برو ماكس", price:"15000", img:"📱"},
-    {id:3,name:"سماعة ايربودز برو 2", price:"40000", img:"🎧"},
-    {id:4,name:"باور بانك 20000mAh", price:"35000", img:"🔋"},
-    {id:5,name:"زجاج حماية ايفون 15", price:"8000", img:"🛡️"}
-  ];
-  function saveAccess(){localStorage.setItem('phoneFlexAccess', JSON.stringify(accessories));}
-   function showAccessories(){
-    document.getElementById('mainScreen').style.display='none';
-    let html = `<button class="backBtn" onclick="goHome()">⬅️ رجوع للرئيسية</button>`;
-    html += `<button class="backBtn" onclick="showAddProduct()" style="background:#f5576c">➕ اضافة منتج جديد</button>`;
-    html += `<h2 style="text-align:center;margin:20px 0;color:#f5576c">الاكسسوارات</h2><div class="grid">`;
-    accessories.forEach((p,i)=>{
-      html += `<div style="background:#1a1a1a;padding:16px;border-radius:15px;border:2px solid #f5576c;text-align:center;">
-        <div style="font-size:45px">${p.img}</div>
-        <div style="font-weight:700;margin:10px 0;font-size:15px">${p.name}</div>
-        <div style="color:#4facfe;font-size:18px;font-weight:900">${p.price} دينار</div>
-        <button onclick="deleteProduct(${i})" style="margin-top:10px;padding:7px 14px;background:#d32f2f;border:none;color:#fff;border-radius:8px;cursor:pointer;font-weight:600">حذف</button>
-      </div>`;
-    });
-    html += `</div>`;
-    document.getElementById('content').innerHTML = html;
-  }
-  function showAddProduct(){
-    document.getElementById('content').innerHTML = `
-    <button class="backBtn" onclick="showAccessories()">⬅️ رجوع</button>
-    <h2 style="text-align:center;margin:20px 0;color:#f5576c">اضافة منتج جديد</h2>
-    <div style="max-width:450px;margin:auto;">
-      <input id="prodName" placeholder="اسم المنتج">
-      <input id="prodPrice" placeholder="السعر بالدينار" type="number">
-      <input id="prodEmoji" placeholder="ايموجي للمنتج 🔌🎧📱">
-      <button onclick="addProduct()" style="width:100%;padding:15px;background:#f5576c;border:none;color:#fff;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;margin-top:10px">حفظ المنتج</button>
-    </div>`;
-  }
-  function addProduct(){
-    const name = document.getElementById('prodName').value.trim();
-    const price = document.getElementById('prodPrice').value.trim();
-    const img = document.getElementById('prodEmoji').value.trim() || "📦";
-    if(!name ||!price) return alert("⚠️ املأ اسم المنتج والسعر");
-    accessories.push({id:Date.now(),name,price,img});
-    saveAccess();alert("✅ تمت الاضافة بنجاح");showAccessories();
-  }
-  function deleteProduct(i){
-    if(confirm("⚠️ متاكد تريد حذف المنتج؟")){
-      accessories.splice(i,1);saveAccess();showAccessories();
-    }
-  }
-   const adminNumber = "07738105665";
-  const adminName = "سيد عباس";
-   function showOnline(){
-    document.getElementById('mainScreen').style.display='none';
-    document.getElementById('content').innerHTML = `
-    <button class="backBtn" onclick="goHome()">⬅️ رجوع للرئيسية</button>
-    <h2 style="text-align:center;margin:20px 0;color:#4facfe">💳 دورس اون لاين</h2>
+function showTab(tabName) {
+  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+  document.getElementById(tabName).classList.remove('hidden');
+  
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+}
 
-    <div class="option-box" onclick="showActivation()">
-      <h3 style="color:#4facfe;font-size:20px;">1️⃣ الاشتراك عن طريق كود التفعيل</h3>
-      <p style="color:#ccc;margin-top:8px;">اذا عندك كود اشتراك دخل الكود هنا</p>
-    </div>
+const video = document.getElementById('mainVideo');
+const videosList = document.getElementById('videosList');
+if(video){
+  video.addEventListener('ended', function() {
+    videosList.classList.remove('hidden');
+  });
+}
 
-    <div class="option-box" onclick="showFree()">
-      <h3 style="color:#25D366;font-size:20px;">2️⃣ الطريقة المجانية</h3>
-      <p style="color:#ccc;margin-top:8px;">شاهد اعلان 30 ثانية واحصل على درس مجاني</p>
-    </div>
-
-    <div style="margin-top:30px;background:#1a1a1a;padding:20px;border-radius:15px;border:3px solid #4facfe;text-align:center">
-      <p style="margin-bottom:10px;font-size:16px">للتواصل وتفعيل الكود:</p>
-      <p style="font-size:24px;font-weight:900;color:#4facfe;margin:10px 0">${adminName}</p>
-      <a href="tel:${adminNumber}" style="font-size:20px;color:#00f2fe;text-decoration:none;display:block;margin:12px 0;font-weight:700">📞 ${adminNumber}</a>
-      <a href="https://wa.me/964${adminNumber.substring(1)}" target="_blank" style="display:inline-block;margin-top:10px;padding:12px 28px;background:#25D366;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:16px;">واتساب</a>
-    </div>`;
-   }
-   const AD_UNIT_ID = "ca-app-pub-xxxxxxxxxxxxxxxx/wwwwwwwwww"; // ← حط معرفك مال AdMob هنا
-
-  function showActivation(){
-    document.getElementById('content').innerHTML = `
-    <button class="backBtn" onclick="showOnline()">⬅️ رجوع</button>
-    <h2 style="text-align:center;margin:20px 0;color:#4facfe">تفعيل الكود</h2>
-    <div style="max-width:500px;margin:auto;">
-      <input id="activationCode" placeholder="اكتب كود التفعيل هنا">
-      <button onclick="activateCode()" style="width:100%;padding:15px;background:#4facfe;border:none;color:#fff;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer">تفعيل الكود</button>
-    </div>`;
-  }
-  function activateCode(){
-    const code = document.getElementById('activationCode').value.trim();
-    if(!code) return alert("⚠️ دخل الكود اول");
-    alert(`✅ تم استلام الكود: ${code}\n\nراح نتواصل وياك على رقم ${adminNumber}`);
-    window.open(`https://wa.me/964${adminNumber.substring(1)}?text=السلام عليكم اريد افعل الكود: ${code}`);
-  }
-  function showFree(){
-    document.getElementById('content').innerHTML = `
-    <button class="backBtn" onclick="showOnline()">⬅️ رجوع</button>
-    <h2 style="text-align:center;margin:20px 0;color:#25D366">الطريقة المجانية</h2>
-    <div style="max-width:500px;margin:auto;text-align:center;">
-      <p style="font-size:18px;margin-bottom:20px;">شاهد اعلان كامل واحصل على درس مجاني</p>
-      <button id="watchAdBtn" onclick="watchAd()" style="width:100%;padding:20px;background:#25D366;border:none;color:#fff;border-radius:12px;font-size:20px;font-weight:700;cursor:pointer">▶️ شاهد الاعلان</button>
-      <p style="margin-top:15px;color:#999;font-size:14px;">ملاحظة: الاعلان لازم يكمل حتى ينفتح الدرس</p>
-    </div>`;
-  }
-  function watchAd(){
-    document.getElementById('watchAdBtn').innerText = "⏳ جاري تحميل الاعلان...";
-    document.getElementById('watchAdBtn').disabled = true;
-    // هسه وهمي. من تبني APK نربطه بـ AdMob الحقي
-    setTimeout(()=>{
-      alert("✅ مبروك! تم فتح الدرس المجاني");
-      window.open("https://youtube.com", "_blank");
-      document.getElementById('watchAdBtn').innerText = "▶️ شاهد الاعلان";
-      document.getElementById('watchAdBtn').disabled = false;
-    }, 3000);
-  }
-   function goHome(){
-    document.getElementById('mainScreen').style.display='block';
-    document.getElementById('content').innerHTML='';
-    window.scrollTo(0,0);
-  }
-
-  const style = document.createElement('style');
-  style.innerHTML = `@keyframes fadeIn{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}} #content{animation:fadeIn 0.3s ease;}`;
-  document.head.appendChild(style);
-
-  if('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
 </script>
 </body>
 </html>
