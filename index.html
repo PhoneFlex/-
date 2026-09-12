@@ -13,29 +13,24 @@ body {background:#0a0a0a; color:#fff; padding-bottom:70px;}
 .welcome h1 {color:#00aaff; font-size:28px; margin-bottom:15px;}
 .welcome p {font-size:16px; margin:8px 0; color:#ddd;}
 .welcome .phone {font-size:20px; color:#4ade80; margin:15px 0;}
- header {background:#111; padding:15px; text-align:center; border-bottom:2px solid #00aaff;}
+header {background:#111; padding:15px; text-align:center; border-bottom:2px solid #00aaff;}
 header h1 {color:#00aaff; font-size:20px;}
 header p {font-size:12px; color:#aaa;}
 .container {padding:15px;}
-.companies {display:flex; flex-wrap:wrap; gap:10px; padding:10px 0; margin-bottom:15px; justify-content:center;}
+ .companies {display:flex; flex-wrap:wrap; gap:10px; padding:10px 0; margin-bottom:15px; justify-content:center;}
 .company {width:100%; padding:12px; border-radius:10px; text-align:center; cursor:pointer; font-weight:bold; font-size:16px; margin-bottom:8px;}
-.company.apple {background:#555;}
-.company.samsung {background:#1428a0;}
-.company.xiaomi {background:#ff6900;}
-.company.huawei {background:#c00;}
-.company.oppo {background:#2ecc71;}
-.company.active {border:3px solid #00aaff;}
- .phones {display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:12px;}
+.company.apple {background:#555;} .company.samsung {background:#1428a0;} .company.xiaomi {background:#ff6900;}
+.company.huawei {background:#c00;} .company.oppo {background:#2ecc71;} .company.active {border:3px solid #00aaff;}
+.phones {display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:12px;}
 .phone {background:#1a1a1a; padding:10px; border-radius:10px; text-align:center;}
 .phone img {width:100%; height:120px; object-fit:contain; background:#000; border-radius:8px;}
-.phone h4 {font-size:12px; margin:6px 0;}
-.phone .price {color:#4ade80; font-size:14px;}
+.phone h4 {font-size:12px; margin:6px 0;} .phone .price {color:#4ade80; font-size:14px;}
 .acc-tabs {display:flex; gap:8px; margin-bottom:15px;}
 .acc-tab {flex:1; padding:10px; background:#222; border:1px solid #333; border-radius:8px; text-align:center; cursor:pointer; font-size:13px;}
 .acc-tab.active {background:#00aaff; color:#000; border-color:#00aaff;}
 .accessories {display:grid; grid-template-columns: repeat(2, 1fr); gap:12px;}
 .acc-item {background:#1a1a1a; padding:12px; border-radius:10px; text-align:center;}
-.acc-item img {width:80px; height:80px; object-fit:contain; margin-bottom:8px;} 
+.acc-item img {width:80px; height:80px; object-fit:contain; background:#000; border-radius:8px; margin-bottom:8px;} 
  .lesson-box {background:#1a1a1a; padding:15px; border-radius:10px;}
 .choice-btn {width:100%; padding:12px; margin:8px 0; background:#222; color:#fff; border:1px solid #00aaff; border-radius:8px; cursor:pointer;}
 .video-icons {display:grid; grid-template-columns: repeat(2, 1fr); gap:10px; margin-top:15px;}
@@ -63,7 +58,8 @@ header p {font-size:12px; color:#aaa;}
   <p>السيد عباس - البصرة العشار قرب شركة الجبال</p>
 </header>
 <div class="container">
- <div id="phones" class="tab-content">
+
+<div id="phones" class="tab-content">
   <h3 style="text-align:center; margin-bottom:10px;">جميع الشركات والاصناف</h3>
   <div class="companies">
     <div class="company apple" onclick="toggleCompany('apple')">Apple</div>
@@ -76,22 +72,10 @@ header p {font-size:12px; color:#aaa;}
   <div class="phones">
     <div class="phone" data-company="apple"><img src="https://store.storeimages.cdn-apple.com/iphone15pro.jpg"><h4>iPhone 15 Pro Max</h4><div class="price">1,850,000 د.ع</div></div>
     <div class="phone" data-company="apple"><img src="https://store.storeimages.cdn-apple.com/iphone14.jpg"><h4>iPhone 14</h4><div class="price">1,200,000 د.ع</div></div>
-    <div class="phone" data-company="apple"><img src="https://store.storeimages.cdn-apple.com/iphone13.jpg"><h4>iPhone 13</h4><div class="price">950,000 د.ع</div></div>
-    
     <div class="phone" data-company="samsung"><img src="https://images.samsung.com/s24ultra.jpg"><h4>S24 Ultra</h4><div class="price">1,750,000 د.ع</div></div>
-    <div class="phone" data-company="samsung"><img src="https://images.samsung.com/s23.jpg"><h4>S23</h4><div class="price">1,100,000 د.ع</div></div>
-    <div class="phone" data-company="samsung"><img src="https://images.samsung.com/a54.jpg"><h4>Galaxy A54</h4><div class="price">450,000 د.ع</div></div>
-       <div class="phone" data-company="xiaomi"><img src="https://mi.com/xiaomi13pro.png"><h4>Xiaomi 13 Pro</h4><div class="price">950,000 د.ع</div></div>
-    <div class="phone" data-company="xiaomi"><img src="https://mi.com/redminote13.png"><h4>Redmi Note 13</h4><div class="price">350,000 د.ع</div></div>
-    <div class="phone" data-company="xiaomi"><img src="https://mi.com/poco.jpg"><h4>Poco X6</h4><div class="price">400,000 د.ع</div></div>
-    
-    <div class="phone" data-company="huawei"><img src="https://huawei.com/p60pro.png"><h4>Huawei P60 Pro</h4><div class="price">1,200,000 د.ع</div></div>
-    <div class="phone" data-company="huawei"><img src="https://huawei.com/nova11.jpg"><h4>Huawei Nova 11</h4><div class="price">550,000 د.ع</div></div>
-    
-    <div class="phone" data-company="oppo"><img src="https://oppo.com/findx6pro.png"><h4>Oppo Find X6 Pro</h4><div class="price">1,100,000 د.ع</div></div>
-    <div class="phone" data-company="oppo"><img src="https://oppo.com/reno10.jpg"><h4>Oppo Reno 10</h4><div class="price">600,000 د.ع</div></div>
+    <div class="phone" data-company="xiaomi"><img src="https://mi.com/xiaomi13pro.png"><h4>Xiaomi 13 Pro</h4><div class="price">950,000 د.ع</div></div>
   </div>
- </div>
+</div>
  <div id="accessories" class="tab-content hidden">
   <h3 style="text-align:center; margin-bottom:15px;">اكسسوارات حسب نوع الجهاز</h3>
   <div class="acc-tabs">
@@ -101,21 +85,20 @@ header p {font-size:12px; color:#aaa;}
   </div>
   
   <div class="accessories" id="cases">
-    <div class="acc-item"><img src="https://cdn-icons-png.flaticon.com/512/892/892459.png"><h4>حافظة ايفون 15</h4><div class="price">15,000 د.ع</div></div>
-    <div class="acc-item"><img src="https://cdn-icons-png.flaticon.com/512/892/892459.png"><h4>حافظة سامسونك S24</h4><div class="price">15,000 د.ع</div></div>
-    <div class="acc-item"><img src="https://cdn-icons-png.flaticon.com/512/892/892459.png"><h4>حافظة شاومي 13</h4><div class="price">12,000 د.ع</div></div>
-    <div class="acc-item"><img src="https://cdn-icons-png.flaticon.com/512/892/892459.png"><h4>حافظة هواوي P60</h4><div class="price">12,000 د.ع</div></div>
-  </div>
-    <div class="accessories hidden" id="protectors">
-    <div class="acc-item"><img src="https://cdn-icons-png.flaticon.com/512/892/892460.png"><h4>لاصق ايفون 15 زجاج</h4><div class="price">10,000 د.ع</div></div>
-    <div class="acc-item"><img src="https://cdn-icons-png.flaticon.com/512/892/892460.png"><h4>لاصق سامسونك S24</h4><div class="price">10,000 د.ع</div></div>
-    <div class="acc-item"><img src="https://cdn-icons-png.flaticon.com/512/892/892460.png"><h4>لاصق شاومي نوت 13</h4><div class="price">8,000 د.ع</div></div>
+    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/71-case-iphone.jpg"><h4>حافظة ايفون 15 سليكون</h4><div class="price">15,000 د.ع</div></div>
+    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/71-case-samsung.jpg"><h4>حافظة سامسونك S24</h4><div class="price">15,000 د.ع</div></div>
+    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/71-case-xiaomi.jpg"><h4>حافظة شاومي 13</h4><div class="price">12,000 د.ع</div></div>
   </div>
   
-  <div class="accessories hidden" id="chargers">
-    <div class="acc-item"><img src="https://cdn-icons-png.flaticon.com/512/892/892458.png"><h4>شاحن ايفون 20W</h4><div class="price">25,000 د.ع</div></div>
-    <div class="acc-item"><img src="https://cdn-icons-png.flaticon.com/512/892/892458.png"><h4>شاحن سامسونك 45W</h4><div class="price">30,000 د.ع</div></div>
-    <div class="acc-item"><img src="https://cdn-icons-png.flaticon.com/512/892/892461.png"><h4>سماعة بلوتوث</h4><div class="price">45,000 د.ع</div></div>
+  <div class="accessories hidden" id="protectors">
+    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/61-screen-glass.jpg"><h4>لاصق ايفون 15 زجاج</h4><div class="price">10,000 د.ع</div></div>
+    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/61-screen-glass2.jpg"><h4>لاصق سامسونك S24</h4><div class="price">10,000 د.ع</div></div>
+    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/61-screen-glass3.jpg"><h4>لاصق شاومي نوت 13</h4><div class="price">8,000 د.ع</div></div>
+  </div>
+    <div class="accessories hidden" id="chargers">
+    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/51-charger-iphone.jpg"><h4>شاحن ايفون 20W اصلي</h4><div class="price">25,000 د.ع</div></div>
+    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/51-charger-samsung.jpg"><h4>شاحن سامسونك 45W</h4><div class="price">30,000 د.ع</div></div>
+    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/51-earbuds.jpg"><h4>سماعة بلوتوث AirPods</h4><div class="price">45,000 د.ع</div></div>
   </div>
 </div>
 
@@ -127,18 +110,17 @@ header p {font-size:12px; color:#aaa;}
     <div id="codeMethod" class="hidden"><div class="code-box" style="text-align:center;"><input type="text" id="activationCode" placeholder="الكود"><button onclick="activateCode()">تفعيل</button></div><div id="codeVideos" class="hidden"><div class="video-icons"><div class="video-icon"><img src="https://img.youtube.com/vi/xxx/0.jpg"><p>درس 1</p></div></div></div><div style="background:#222; padding:12px; border-radius:8px; margin-top:15px; text-align:center;"><p>السيد عباس: 07701234567</p><a href="https://wa.me/9647701234567" style="display:inline-block; margin-top:8px; padding:8px 15px; background:#25D366; color:#fff; border-radius:6px; text-decoration:none;">واتساب</a></div></div>
   </div>
 </div>
-
-<div id="location" class="tab-content hidden"><h3 style="text-align:center; margin-bottom:15px;">موقعنا</h3><div style="background:#1a1a1a; padding:15px; border-radius:10px; text-align:center;"><p>📍 البصرة - العشار - قرب شركة الجبال</p><iframe src="https://www.google.com/maps/embed?pb=!1m0!3m2!1sar!2siq!4v1720000!6m8!1m7!1sCAoSLEFGMVFpcE1fZWhZVnZ2bEhZVnZ2bEhZVnZ2bEhZVnZ2bEhZVnZ2b!2m2!1d30.5185!2d47.8205" width="100%" height="300" style="border:0; border-radius:10px; margin-top:15px;" allowfullscreen loading="lazy"></iframe><a href="https://maps.app.goo.gl/ehZVgb1Z2PNdsc7g8?g_st=ac" target="_blank" style="display:inline-block; margin-top:10px; padding:10px 20px; background:#00aaff; color:#000; border-radius:8px; text-decoration:none;">افتح في كوكل ماب</a></div></div>
+ <div id="location" class="tab-content hidden"><h3 style="text-align:center; margin-bottom:15px;">موقعنا</h3><div style="background:#1a1a1a; padding:15px; border-radius:10px; text-align:center;"><p>📍 البصرة - العشار - قرب شركة الجبال</p><iframe src="https://www.google.com/maps/embed?pb=!1m0!3m2!1sar!2siq!4v1720000!6m8!1m7!1sCAoSLEFGMVFpcE1fZWhZVnZ2bEhZVnZ2bEhZVnZ2bEhZVnZ2bEhZVnZ2b!2m2!1d30.5185!2d47.8205" width="100%" height="300" style="border:0; border-radius:10px; margin-top:15px;" allowfullscreen loading="lazy"></iframe><a href="https://maps.app.goo.gl/ehZVgb1Z2PNdsc7g8?g_st=ac" target="_blank" style="display:inline-block; margin-top:10px; padding:10px 20px; background:#00aaff; color:#000; border-radius:8px; text-decoration:none;">افتح في كوكل ماب</a></div></div>
 </div>
- <div class="bottom-nav">
+
+<div class="bottom-nav">
   <button class="nav-btn active" onclick="showTab('phones')"><span>📱</span>الهواتف</button>
   <button class="nav-btn" onclick="showTab('accessories')"><span>🎧</span>الاكسسوارات</button>
   <button class="nav-btn" onclick="showTab('lessons')"><span>🎓</span>دروس اونلاين</button>
   <button class="nav-btn" onclick="showTab('location')"><span>📍</span>العنوان</button>
 </div>
 </div>
-
-<script>
+ <script>
 window.onload = function() {
   setTimeout(() => {document.getElementById('welcomeScreen').style.display = 'none';}, 3000);
   document.querySelectorAll('.phone').forEach(p => {p.style.display = 'block';});
@@ -173,3 +155,4 @@ function activateCode() {if(document.getElementById('activationCode').value === 
 </script>
 </body>
 </html>
+
