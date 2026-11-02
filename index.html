@@ -3,156 +3,242 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>فون فلكس Phone Flex</title>
+<title>فون فلكس Phone Flex V2 - كل الهواتف</title>
 <style>
-* {margin:0; padding:0; box-sizing:border-box; font-family:Tahoma;}
-body {background:#0a0a0a; color:#fff; padding-bottom:70px;}
-.hidden {display:none;}
-.welcome {position:fixed; top:0; left:0; right:0; bottom:0; background:#0a0a0a; z-index:9999; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:20px; animation:fadeOut 1s ease 2s forwards;}
-@keyframes fadeOut {to {opacity:0; visibility:hidden;}}
-.welcome h1 {color:#00aaff; font-size:28px; margin-bottom:15px;}
-.welcome p {font-size:16px; margin:8px 0; color:#ddd;}
-.welcome .phone {font-size:20px; color:#4ade80; margin:15px 0;}
-header {background:#111; padding:15px; text-align:center; border-bottom:2px solid #00aaff;}
-header h1 {color:#00aaff; font-size:20px;}
-header p {font-size:12px; color:#aaa;}
-.container {padding:15px;}
- .companies {display:flex; flex-wrap:wrap; gap:10px; padding:10px 0; margin-bottom:15px; justify-content:center;}
-.company {width:100%; padding:12px; border-radius:10px; text-align:center; cursor:pointer; font-weight:bold; font-size:16px; margin-bottom:8px;}
-.company.apple {background:#555;} .company.samsung {background:#1428a0;} .company.xiaomi {background:#ff6900;}
-.company.huawei {background:#c00;} .company.oppo {background:#2ecc71;} .company.active {border:3px solid #00aaff;}
-.phones {display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:12px;}
-.phone {background:#1a1a1a; padding:10px; border-radius:10px; text-align:center;}
-.phone img {width:100%; height:120px; object-fit:contain; background:#000; border-radius:8px;}
-.phone h4 {font-size:12px; margin:6px 0;} .phone .price {color:#4ade80; font-size:14px;}
-.acc-tabs {display:flex; gap:8px; margin-bottom:15px;}
-.acc-tab {flex:1; padding:10px; background:#222; border:1px solid #333; border-radius:8px; text-align:center; cursor:pointer; font-size:13px;}
-.acc-tab.active {background:#00aaff; color:#000; border-color:#00aaff;}
-.accessories {display:grid; grid-template-columns: repeat(2, 1fr); gap:12px;}
-.acc-item {background:#1a1a1a; padding:12px; border-radius:10px; text-align:center;}
-.acc-item img {width:80px; height:80px; object-fit:contain; background:#000; border-radius:8px; margin-bottom:8px;} 
- .lesson-box {background:#1a1a1a; padding:15px; border-radius:10px;}
-.choice-btn {width:100%; padding:12px; margin:8px 0; background:#222; color:#fff; border:1px solid #00aaff; border-radius:8px; cursor:pointer;}
-.video-icons {display:grid; grid-template-columns: repeat(2, 1fr); gap:10px; margin-top:15px;}
-.video-icon {background:#222; padding:8px; border-radius:8px; text-align:center;}
-.video-icon img {width:100%; height:70px; object-fit:cover; border-radius:5px;}
-.code-box input {padding:10px; width:70%; border-radius:5px; border:1px solid #00aaff; background:#000; color:#fff;}
-.code-box button {padding:10px; background:#00aaff; border:none; border-radius:5px; cursor:pointer;}
-.bottom-nav {position:fixed; bottom:0; left:0; right:0; background:#111; display:flex; border-top:2px solid #00aaff; z-index:1000;}
-.bottom-nav button {flex:1; padding:12px 5px; background:none; border:none; color:#aaa; font-size:12px; cursor:pointer;}
-.bottom-nav button.active {color:#00aaff; border-top:2px solid #00aaff;}
-.bottom-nav button span {display:block; font-size:20px; margin-bottom:3px;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,sans-serif}
+body{background:#0f0f0f;color:#fff;min-height:100vh}
+header{background:linear-gradient(90deg,#667eea,#764ba2);padding:15px;text-align:center;position:sticky;top:0;z-index:1000}
+header h1{font-size:26px} header p{font-size:12px;opacity:0.8}
+nav{display:flex;overflow-x:auto;background:#111;padding:0;position:sticky;top:62px;z-index:999;border-bottom:2px solid #667eea}
+nav button{background:none;border:none;color:#aaa;padding:15px 20px;cursor:pointer;white-space:nowrap;font-size:14px}
+nav button.active{color:#667eea;border-bottom:3px solid #667eea;background:rgba(102,126,234,0.1)}
+.container{padding:15px;max-width:1300px;margin:auto}
+.hidden{display:none!important}
+.search-box{width:100%;padding:12px;border-radius:10px;border:1px solid #333;background:#222;color:#fff;margin:15px 0;font-size:16px}
+ .brands-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:15px}
+.brand-card{background:rgba(255,255,255,0.05);border-radius:15px;padding:15px;text-align:center;cursor:pointer;border:1px solid #333;transition:0.3s}
+.brand-card:hover{transform:translateY(-5px);border-color:#667eea;background:rgba(102,126,234,0.15)}
+.brand-card img{width:60px;height:60px;object-fit:contain;background:#fff;border-radius:50%;padding:5px}
+.brand-card h3{margin-top:10px;font-size:14px}
+.phones-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px;margin-top:15px}
+.phone-card{background:rgba(255,255,255,0.06);border-radius:12px;padding:10px;text-align:center;border:1px solid #222;transition:0.3s;cursor:pointer}
+.phone-card:hover{border-color:#667eea;transform:scale(1.03)}
+.phone-card img{width:100%;height:180px;object-fit:contain;background:#1a1a1a;border-radius:8px;padding:5px}
+.phone-card h4{font-size:13px;margin:8px 0;min-height:32px}
+.phone-card .price{color:#4ade80;font-weight:bold;font-size:14px}
+.compat-card{background:#1a1a1a;border-radius:10px;padding:12px;margin:10px 0;border-right:4px solid #667eea}
+.compat-card b{color:#ffa500}
+.back-btn{background:#333;color:#fff;border:none;padding:8px 15px;border-radius:8px;cursor:pointer;margin-bottom:10px}
 </style>
 </head>
 <body> 
- <div id="welcomeScreen" class="welcome">
-  <h1>مرحبا بكم في</h1>
-  <h1>تطبيق فون فلكس</h1>
-  <p>العنوان: البصره - العشار - قرب شركة الجبال</p>
-  <p class="phone">📞 السيد عباس: 07701234567</p>
-</div>
-
-<div id="mainApp">
-<header>
-  <h1>فون فلكس Phone Flex</h1>
-  <p>السيد عباس - البصرة العشار قرب شركة الجبال</p>
+ <header>
+<h1>فون فلكس Phone Flex</h1>
+<p>البصرة - العشار - كل انواع الهواتف وقطع الغيار</p>
 </header>
+<nav>
+<button class="tab-btn active" onclick="showTab('brands')">الشركات</button>
+<button class="tab-btn" onclick="showTab('allphones')">كل الهواتف</button>
+<button class="tab-btn" onclick="showTab('compat')">توافقات الصيانة 🔧</button>
+<button class="tab-btn" onclick="showTab('lessons')">دروس</button>
+<button class="tab-btn" onclick="showTab('contact')">اتصل بنا</button>
+</nav>
 <div class="container">
+<input type="text" id="search" class="search-box" placeholder="ابحث: مثلا A23 , iPhone 15 , بطارية..." oninput="doSearch()">
 
-<div id="phones" class="tab-content">
-  <h3 style="text-align:center; margin-bottom:10px;">جميع الشركات والاصناف</h3>
-  <div class="companies">
-    <div class="company apple" onclick="toggleCompany('apple')">Apple</div>
-    <div class="company samsung" onclick="toggleCompany('samsung')">Samsung</div>
-    <div class="company xiaomi" onclick="toggleCompany('xiaomi')">Xiaomi</div>
-    <div class="company huawei" onclick="toggleCompany('huawei')">Huawei</div>
-    <div class="company oppo" onclick="toggleCompany('oppo')">Oppo</div>
-  </div>
-  
-  <div class="phones">
-    <div class="phone" data-company="apple"><img src="https://store.storeimages.cdn-apple.com/iphone15pro.jpg"><h4>iPhone 15 Pro Max</h4><div class="price">1,850,000 د.ع</div></div>
-    <div class="phone" data-company="apple"><img src="https://store.storeimages.cdn-apple.com/iphone14.jpg"><h4>iPhone 14</h4><div class="price">1,200,000 د.ع</div></div>
-    <div class="phone" data-company="samsung"><img src="https://images.samsung.com/s24ultra.jpg"><h4>S24 Ultra</h4><div class="price">1,750,000 د.ع</div></div>
-    <div class="phone" data-company="xiaomi"><img src="https://mi.com/xiaomi13pro.png"><h4>Xiaomi 13 Pro</h4><div class="price">950,000 د.ع</div></div>
-  </div>
+<div id="brands" class="tab-content">
+<h2 style="color:#667eea;text-align:center">اختار الشركة</h2>
+<div class="brands-grid" id="brandsGrid"></div>
+<div id="brandPhones" class="hidden">
+<button class="back-btn" onclick="showBrands()">← رجوع للشركات</button>
+<h2 id="brandTitle"></h2>
+<div class="phones-grid" id="brandPhonesGrid"></div>
 </div>
- <div id="accessories" class="tab-content hidden">
-  <h3 style="text-align:center; margin-bottom:15px;">اكسسوارات حسب نوع الجهاز</h3>
-  <div class="acc-tabs">
-    <div class="acc-tab active" onclick="showAcc('cases')">حافظات</div>
-    <div class="acc-tab" onclick="showAcc('protectors')">لاصق شاشة</div>
-    <div class="acc-tab" onclick="showAcc('chargers')">شاحنات وسماعات</div>
-  </div>
-  
-  <div class="accessories" id="cases">
-    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/71-case-iphone.jpg"><h4>حافظة ايفون 15 سليكون</h4><div class="price">15,000 د.ع</div></div>
-    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/71-case-samsung.jpg"><h4>حافظة سامسونك S24</h4><div class="price">15,000 د.ع</div></div>
-    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/71-case-xiaomi.jpg"><h4>حافظة شاومي 13</h4><div class="price">12,000 د.ع</div></div>
-  </div>
-  
-  <div class="accessories hidden" id="protectors">
-    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/61-screen-glass.jpg"><h4>لاصق ايفون 15 زجاج</h4><div class="price">10,000 د.ع</div></div>
-    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/61-screen-glass2.jpg"><h4>لاصق سامسونك S24</h4><div class="price">10,000 د.ع</div></div>
-    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/61-screen-glass3.jpg"><h4>لاصق شاومي نوت 13</h4><div class="price">8,000 د.ع</div></div>
-  </div>
-    <div class="accessories hidden" id="chargers">
-    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/51-charger-iphone.jpg"><h4>شاحن ايفون 20W اصلي</h4><div class="price">25,000 د.ع</div></div>
-    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/51-charger-samsung.jpg"><h4>شاحن سامسونك 45W</h4><div class="price">30,000 د.ع</div></div>
-    <div class="acc-item"><img src="https://m.media-amazon.com/images/I/51-earbuds.jpg"><h4>سماعة بلوتوث AirPods</h4><div class="price">45,000 د.ع</div></div>
-  </div>
+</div>
+<div id="allphones" class="tab-content hidden">
+<h2 style="color:#667eea;text-align:center">جميع الهواتف</h2>
+<div class="phones-grid" id="allPhonesGrid"></div>
 </div>
 
+<script>
+const phonesDB = {
+samsung: [
+{name:"Galaxy S24 Ultra 512GB",price:"1,750,000",img:"https://fdn.gsmarena.com/imgroot/reviews/24/samsung-galaxy-s24-ultra/-1024x768w2/gsmarena_001.jpg"},
+{name:"Galaxy S23 Ultra 256GB",price:"1,450,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/samsung-galaxy-s23-ultra/-1024x768w2/gsmarena_001.jpg"},
+{name:"Galaxy A54 256GB",price:"550,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/samsung-galaxy-a54/-1024x768w2/gsmarena_001.jpg"},
+{name:"Galaxy A34 128GB",price:"420,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/samsung-galaxy-a34/-1024x768w2/gsmarena_001.jpg"},
+{name:"Galaxy A24 128GB",price:"320,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/samsung-galaxy-a24/-1024x768w2/gsmarena_001.jpg"},
+{name:"Galaxy A12 128GB",price:"210,000",img:"https://fdn.gsmarena.com/imgroot/reviews/20/samsung-galaxy-a12/-1024x768w2/gsmarena_001.jpg"},
+{name:"Galaxy M13 64GB",price:"230,000",img:"https://fdn.gsmarena.com/imgroot/reviews/22/samsung-galaxy-m13/-1024x768w2/gsmarena_001.jpg"},
+],
+apple: [
+{name:"iPhone 15 Pro Max 256GB",price:"1,850,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/apple-iphone-15-pro-max/-1024x768w2/gsmarena_001.jpg"},
+{name:"iPhone 14 Pro Max 256GB",price:"1,600,000",img:"https://fdn.gsmarena.com/imgroot/reviews/22/apple-iphone-14-pro-max/-1024x768w2/gsmarena_001.jpg"},
+{name:"iPhone 13 128GB",price:"950,000",img:"https://fdn.gsmarena.com/imgroot/reviews/21/apple-iphone-13/-1024x768w2/gsmarena_001.jpg"},
+{name:"iPhone 11 128GB",price:"620,000",img:"https://fdn.gsmarena.com/imgroot/reviews/19/apple-iphone-11/-1024x768w2/gsmarena_001.jpg"},
+{name:"iPhone 15 128GB",price:"1,250,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/apple-iphone-15/-1024x768w2/gsmarena_001.jpg"},
+],
+xiaomi: [
+{name:"Redmi Note 13 Pro 256GB",price:"410,000",img:"https://fdn.gsmarena.com/imgroot/reviews/24/xiaomi-redmi-note-13-pro-4g/-1024x768w2/gsmarena_001.jpg"},
+{name:"Redmi Note 12 Pro 256GB",price:"350,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/xiaomi-redmi-note-12-pro/-1024x768w2/gsmarena_001.jpg"},
+{name:"Poco X6 Pro 512GB",price:"480,000",img:"https://fdn.gsmarena.com/imgroot/reviews/24/xiaomi-poco-x6-pro/-1024x768w2/gsmarena_001.jpg"},
+{name:"Redmi 12 256GB",price:"250,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/xiaomi-redmi-12/-1024x768w2/gsmarena_001.jpg"},
+],
+infinix: [
+{name:"Infinix Hot 40 Pro 256GB",price:"280,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/infinix-hot-40-pro/-1024x768w2/gsmarena_001.jpg"},
+{name:"Infinix Note 30 Pro 256GB",price:"340,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/infinix-note-30-pro/-1024x768w2/gsmarena_001.jpg"},
+{name:"Infinix Smart 8 64GB",price:"150,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/infinix-smart-8/-1024x768w2/gsmarena_001.jpg"},
+],
+tecno: [
+{name:"Tecno Spark 20 Pro 256GB",price:"270,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/tecno-spark-20-pro/-1024x768w2/gsmarena_001.jpg"},
+{name:"Tecno Camon 20 Pro 256GB",price:"360,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/tecno-camon-20-pro/-1024x768w2/gsmarena_001.jpg"},
+],
+realme: [
+{name:"Realme 11 Pro 256GB",price:"420,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/realme-11-pro/-1024x768w2/gsmarena_001.jpg"},
+{name:"Realme C55 256GB",price:"260,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/realme-c55/-1024x768w2/gsmarena_001.jpg"},
+],
+oppo: [
+{name:"Oppo Reno 10 Pro 256GB",price:"550,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/oppo-reno10-pro/-1024x768w2/gsmarena_001.jpg"},
+{name:"Oppo A78 256GB",price:"320,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/oppo-a78/-1024x768w2/gsmarena_001.jpg"},
+],
+huawei: [
+{name:"Huawei Nova 11 Pro 256GB",price:"480,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/huawei-nova-11-pro/-1024x768w2/gsmarena_001.jpg"},
+{name:"Huawei Y9a 128GB",price:"280,000",img:"https://fdn.gsmarena.com/imgroot/reviews/20/huawei-y9a/-1024x768w2/gsmarena_001.jpg"},
+],
+honor: [
+{name:"Honor 90 512GB",price:"520,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/honor-90/-1024x768w2/gsmarena_001.jpg"},
+{name:"Honor X9a 256GB",price:"380,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/honor-x9a/-1024x768w2/gsmarena_001.jpg"},
+]
+};
+
+const brandsInfo = {
+samsung:{name:"سامسونج",logo:"https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg"},
+apple:{name:"ابل",logo:"https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"},
+xiaomi:{name:"شاومي",logo:"https://upload.wikimedia.org/wikipedia/commons/a/ae/Xiaomi_logo_%282021-%29.svg"},
+infinix:{name:"انفينكس",logo:"https://1000logos.net/wp-content/uploads/2022/08/Infinix-logo.png"},
+tecno:{name:"تكنو",logo:"https://upload.wikimedia.org/wikipedia/commons/9/92/TECNO_Mobile_logo.svg"},
+realme:{name:"ريلمي",logo:"https://upload.wikimedia.org/wikipedia/commons/a/a2/Realme_logo.svg"},
+oppo:{name:"اوبو",logo:"https://upload.wikimedia.org/wikipedia/commons/a/a2/OPPO_LOGO_2019.svg"},
+huawei:{name:"هواوي",logo:"https://upload.wikimedia.org/wikipedia/commons/0/05/Huawei_logo.svg"},
+honor:{name:"هونر",logo:"https://upload.wikimedia.org/wikipedia/commons/8/8a/Honor_logo.svg"},
+};
+ const compatDB = [
+{part:"شاشة سامسونج A12",compat:"تشتغل على: A02s , A12 , M12 , A02 - نفس الشاشة 6.5 بوصة IPS",type:"شاشة"},
+{part:"شاشة سامسونج A23 / A23 5G",compat:"تشتغل على: A23 , A23 5G , M23 , F23 - كوبي واحد",type:"شاشة"},
+{part:"شاشة انفينكس Hot 40 Pro",compat:"تشتغل على: Hot 40 Pro , Note 30 , Hot 40 - نفس الفلاتة",type:"شاشة"},
+{part:"بطارية سامسونج A12",compat:"تشتغل على: A12 , A02s , M12 , A02 - موديل EB-BA207ABY 5000mAh",type:"بطارية"},
+{part:"بطارية شاومي Redmi Note 12 Pro",compat:"تشتغل على: Note 12 Pro , Note 12 Pro+ , Poco X5 Pro - BM5M",type:"بطارية"},
+{part:"بطارية ايفون 11",compat:"تشتغل على: iPhone 11 فقط - لا تتوافق مع 11 Pro",type:"بطارية"},
+{part:"فلاتة شحن سامسونج A32",compat:"تشتغل على: A32 4G فقط - الـ 5G تختلف",type:"فلاتة"},
+{part:"كاميرا خلفية Tecno Spark 20",compat:"تشتغل على: Spark 20 , Spark 20C , Spark Go 2024",type:"كاميرا"},
+{part:"شاشة ريلمي C55",compat:"تشتغل على: C55 , Realme Narzo N55 , C51 - نفس المقاس",type:"شاشة"},
+{part:"شاشة اوبو A78",compat:"تشتغل على: A78 4G , A58 , Reno 8T - اموليد 6.43",type:"شاشة"},
+];
+
+function renderBrands(){
+let grid=document.getElementById('brandsGrid'); grid.innerHTML='';
+for(let key in brandsInfo){
+let b=brandsInfo[key];
+let count=phonesDB[key]?phonesDB[key].length:0;
+grid.innerHTML+=`<div class="brand-card" onclick="openBrand('${key}')">
+<img src="${b.logo}" onerror="this.src='https://via.placeholder.com/60'">
+<h3>${b.name}</h3><small>${count} جهاز</small></div>`;
+}
+}
+function openBrand(key){
+document.getElementById('brandsGrid').classList.add('hidden');
+document.getElementById('brandPhones').classList.remove('hidden');
+document.getElementById('brandTitle').innerText=brandsInfo[key].name;
+let grid=document.getElementById('brandPhonesGrid'); grid.innerHTML='';
+phonesDB[key].forEach(p=>{
+grid.innerHTML+=`<div class="phone-card"><img src="${p.img}"><h4>${p.name}</h4><div class="price">${p.price} دينار</div><button onclick="window.open('https://wa.me/9647701234567?text=اريد ${p.name}')" style="background:#25D366;border:none;color:#fff;padding:5px 10px;border-radius:5px;margin-top:5px;width:100%">اطلب واتساب</button></div>`;
+});
+}
+function showBrands(){
+document.getElementById('brandsGrid').classList.remove('hidden');
+document.getElementById('brandPhones').classList.add('hidden');
+}
+function renderAll(){
+let grid=document.getElementById('allPhonesGrid'); grid.innerHTML='';
+for(let key in phonesDB){phonesDB[key].forEach(p=>{
+grid.innerHTML+=`<div class="phone-card" data-name="${p.name.toLowerCase()}"><img src="${p.img}"><h4>${p.name}</h4><div class="price">${p.price}</div></div>`;
+});}
+}
+ function renderCompat(filter=""){
+let div=document.getElementById('compatList'); div.innerHTML='';
+compatDB.filter(c=>c.part.toLowerCase().includes(filter.toLowerCase())||c.compat.toLowerCase().includes(filter.toLowerCase())).forEach(c=>{
+div.innerHTML+=`<div class="compat-card"><b>${c.type}: ${c.part}</b><br><small>${c.compat}</small></div>`;
+});
+}
+function doSearch(){
+let q=document.getElementById('search').value.toLowerCase();
+if(q.length>0){showTab('allphones');}
+document.querySelectorAll('#allPhonesGrid .phone-card').forEach(card=>{
+let name=card.getAttribute('data-name');
+card.style.display=name.includes(q)?'block':'none';
+});
+renderCompat(q);
+}
+</script>
+
+<div id="compat" class="tab-content hidden">
+<h2 style="color:#ffa500;text-align:center">🔧 توافقات فني الصيانة</h2>
+<p style="text-align:center;font-size:13px;color:#aaa">اكتب اسم الجهاز وشوف الشاشة او البطارية وين تشتغل</p>
+<div id="compatList" style="margin-top:15px"></div>
+<div style="margin-top:20px;background:#222;padding:15px;border-radius:10px">
+<h4>➕ اضافة توافق جديد (للفنيين)</h4>
+<p style="font-size:12px;color:#888">هاي الخاصية تخليك تضيف توافقات انت مجربها</p>
+<input id="newPart" placeholder="مثلا: شاشة A24" style="width:100%;padding:8px;margin:5px 0;background:#111;border:1px solid #333;color:#fff;border-radius:5px">
+<input id="newCompat" placeholder="تشتغل على: ..." style="width:100%;padding:8px;margin:5px 0;background:#111;border:1px solid #333;color:#fff;border-radius:5px">
+<button onclick="addCompat()" style="background:#667eea;border:none;padding:8px 15px;border-radius:5px;color:#fff;width:100%">اضافة</button>
+</div>
+</div>
 <div id="lessons" class="tab-content hidden">
-  <div class="lesson-box">
-    <h3 style="text-align:center; margin-bottom:15px;">دروس اونلاين</h3>
-    <div id="lessonChoice"><button class="choice-btn" onclick="showFreeMethod()">📺 مجاني بالاعلان</button><button class="choice-btn" onclick="showCodeMethod()">🔑 بكود التفعيل</button></div>
-    <div id="freeMethod" class="hidden"><video id="adVideo" controls style="width:100%; height:200px; background:#000; border-radius:8px; margin:10px 0;"><source src="ad.mp4"></video><div id="freeVideos" class="hidden"><div class="video-icons"><div class="video-icon"><img src="https://img.youtube.com/vi/xxx/0.jpg"><p>درس 1</p></div></div></div></div>
-    <div id="codeMethod" class="hidden"><div class="code-box" style="text-align:center;"><input type="text" id="activationCode" placeholder="الكود"><button onclick="activateCode()">تفعيل</button></div><div id="codeVideos" class="hidden"><div class="video-icons"><div class="video-icon"><img src="https://img.youtube.com/vi/xxx/0.jpg"><p>درس 1</p></div></div></div><div style="background:#222; padding:12px; border-radius:8px; margin-top:15px; text-align:center;"><p>السيد عباس: 07701234567</p><a href="https://wa.me/9647701234567" style="display:inline-block; margin-top:8px; padding:8px 15px; background:#25D366; color:#fff; border-radius:6px; text-decoration:none;">واتساب</a></div></div>
-  </div>
-</div>
- <div id="location" class="tab-content hidden"><h3 style="text-align:center; margin-bottom:15px;">موقعنا</h3><div style="background:#1a1a1a; padding:15px; border-radius:10px; text-align:center;"><p>📍 البصرة - العشار - قرب شركة الجبال</p><iframe src="https://www.google.com/maps/embed?pb=!1m0!3m2!1sar!2siq!4v1720000!6m8!1m7!1sCAoSLEFGMVFpcE1fZWhZVnZ2bEhZVnZ2bEhZVnZ2bEhZVnZ2bEhZVnZ2b!2m2!1d30.5185!2d47.8205" width="100%" height="300" style="border:0; border-radius:10px; margin-top:15px;" allowfullscreen loading="lazy"></iframe><a href="https://maps.app.goo.gl/ehZVgb1Z2PNdsc7g8?g_st=ac" target="_blank" style="display:inline-block; margin-top:10px; padding:10px 20px; background:#00aaff; color:#000; border-radius:8px; text-decoration:none;">افتح في كوكل ماب</a></div></div>
-</div>
-
-<div class="bottom-nav">
-  <button class="nav-btn active" onclick="showTab('phones')"><span>📱</span>الهواتف</button>
-  <button class="nav-btn" onclick="showTab('accessories')"><span>🎧</span>الاكسسوارات</button>
-  <button class="nav-btn" onclick="showTab('lessons')"><span>🎓</span>دروس اونلاين</button>
-  <button class="nav-btn" onclick="showTab('location')"><span>📍</span>العنوان</button>
+<h2 style="color:#667eea;text-align:center">دروس اونلاين</h2>
+<video controls style="width:100%;border-radius:10px;background:#000;margin-top:10px"><source src="ad.mp4" type="video/mp4"></video>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:15px">
+<div class="phone-card"><img src="https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg"><p style="font-size:12px">اساسيات الصيانة</p></div>
+<div class="phone-card"><img src="https://img.youtube.com/vi/9bZkp7q19f0/0.jpg"><p style="font-size:12px">تغيير الشاشات</p></div>
+<div class="phone-card"><img src="https://img.youtube.com/vi/JGwWLGScXU8/0.jpg"><p style="font-size:12px">فحص الايمي</p></div>
 </div>
 </div>
- <script>
-window.onload = function() {
-  setTimeout(() => {document.getElementById('welcomeScreen').style.display = 'none';}, 3000);
-  document.querySelectorAll('.phone').forEach(p => {p.style.display = 'block';});
-}
 
-function showTab(tab) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-  document.getElementById(tab).classList.remove('hidden');
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  event.target.closest('button').classList.add('active');
-}
+<div id="contact" class="tab-content hidden">
+<div style="text-align:center;padding:20px">
+<h2>اتصل بنا</h2>
+<p>📍 البصرة - العشار - قرب شركة الجبال</p>
+<p>📞 07701234567</p>
+<button onclick="window.open('https://wa.me/9647701234567')" style="background:#25D366;border:none;padding:12px 25px;border-radius:10px;color:#fff;margin-top:10px;font-size:16px">راسلنا واتساب</button>
+<div style="margin-top:20px">
+<iframe src="https://maps.google.com/maps?q=Basra%20Al%20Ashar&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="250" style="border:0;border-radius:10px"></iframe>
+</div>
+</div>
+</div>
+</div>
+<footer style="text-align:center;padding:20px;background:#000;margin-top:30px;border-top:1px solid #222">
+<p>© 2026 فون فلكس Phone Flex - جميع الهواتف وقطع الغيار</p>
+</footer>
 
-function toggleCompany(comp) {
-  document.querySelectorAll('.phone').forEach(p => {
-    p.style.display = p.dataset.company === comp ? 'block' : 'none';
-  });
-  document.querySelectorAll('.company').forEach(c => c.classList.remove('active'));
-  event.target.classList.add('active');
+<script>
+function showTab(name){
+document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden'));
+document.getElementById(name).classList.remove('hidden');
+document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+event.target.classList.add('active');
+if(name==='brands') renderBrands();
+if(name==='allphones') renderAll();
+if(name==='compat') renderCompat();
 }
-
-function showAcc(type) {
-  document.querySelectorAll('.accessories').forEach(a => a.classList.add('hidden'));
-  document.getElementById(type).classList.remove('hidden');
-  document.querySelectorAll('.acc-tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
+function addCompat(){
+let p=document.getElementById('newPart').value;
+let c=document.getElementById('newCompat').value;
+if(!p||!c) return alert('اكتب البيانات');
+compatDB.unshift({part:p,compat:c,type:"اضافة فني"});
+renderCompat();
+document.getElementById('newPart').value='';document.getElementById('newCompat').value='';
+alert('تمت الاضافة ✅');
 }
-
-function showFreeMethod() {document.getElementById('lessonChoice').classList.add('hidden'); document.getElementById('freeMethod').classList.remove('hidden');}
-function showCodeMethod() {document.getElementById('lessonChoice').classList.add('hidden'); document.getElementById('codeMethod').classList.remove('hidden');}
-document.getElementById('adVideo').addEventListener('ended', () => {document.getElementById('freeVideos').classList.remove('hidden');});
-function activateCode() {if(document.getElementById('activationCode').value === 'FLEX2026') {document.getElementById('codeVideos').classList.remove('hidden');} else {alert('الكود خطأ! 07701234567');}}
+renderBrands(); renderAll(); renderCompat();
 </script>
 </body>
 </html>
-
