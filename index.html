@@ -3,242 +3,205 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>فون فلكس Phone Flex V2 - كل الهواتف</title>
+<title>فون فلكس Phone Flex V3</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,sans-serif}
 body{background:#0f0f0f;color:#fff;min-height:100vh}
-header{background:linear-gradient(90deg,#667eea,#764ba2);padding:15px;text-align:center;position:sticky;top:0;z-index:1000}
-header h1{font-size:26px} header p{font-size:12px;opacity:0.8}
-nav{display:flex;overflow-x:auto;background:#111;padding:0;position:sticky;top:62px;z-index:999;border-bottom:2px solid #667eea}
-nav button{background:none;border:none;color:#aaa;padding:15px 20px;cursor:pointer;white-space:nowrap;font-size:14px}
-nav button.active{color:#667eea;border-bottom:3px solid #667eea;background:rgba(102,126,234,0.1)}
+header{background:linear-gradient(90deg,#667eea,#764ba2);padding:20px;text-align:center}
+header h1{font-size:28px} header p{font-size:13px;opacity:0.8;margin-top:5px}
 .container{padding:15px;max-width:1300px;margin:auto}
 .hidden{display:none!important}
-.search-box{width:100%;padding:12px;border-radius:10px;border:1px solid #333;background:#222;color:#fff;margin:15px 0;font-size:16px}
- .brands-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:15px}
-.brand-card{background:rgba(255,255,255,0.05);border-radius:15px;padding:15px;text-align:center;cursor:pointer;border:1px solid #333;transition:0.3s}
-.brand-card:hover{transform:translateY(-5px);border-color:#667eea;background:rgba(102,126,234,0.15)}
-.brand-card img{width:60px;height:60px;object-fit:contain;background:#fff;border-radius:50%;padding:5px}
-.brand-card h3{margin-top:10px;font-size:14px}
-.phones-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px;margin-top:15px}
-.phone-card{background:rgba(255,255,255,0.06);border-radius:12px;padding:10px;text-align:center;border:1px solid #222;transition:0.3s;cursor:pointer}
-.phone-card:hover{border-color:#667eea;transform:scale(1.03)}
-.phone-card img{width:100%;height:180px;object-fit:contain;background:#1a1a1a;border-radius:8px;padding:5px}
-.phone-card h4{font-size:13px;margin:8px 0;min-height:32px}
-.phone-card .price{color:#4ade80;font-weight:bold;font-size:14px}
-.compat-card{background:#1a1a1a;border-radius:10px;padding:12px;margin:10px 0;border-right:4px solid #667eea}
-.compat-card b{color:#ffa500}
-.back-btn{background:#333;color:#fff;border:none;padding:8px 15px;border-radius:8px;cursor:pointer;margin-bottom:10px}
+.search-box{width:100%;padding:14px;border-radius:12px;border:1px solid #333;background:#1e1e1e;color:#fff;margin:15px 0;font-size:16px}
+.section-title{color:#667eea;font-size:20px;margin:25px 0 15px;text-align:right;border-right:4px solid #667eea;padding-right:10px}
+.back-btn{background:#222;color:#fff;border:1px solid #333;padding:10px 18px;border-radius:10px;cursor:pointer;margin-bottom:15px}
 </style>
 </head>
-<body> 
- <header>
+<body>
+<header>
 <h1>فون فلكس Phone Flex</h1>
-<p>البصرة - العشار - كل انواع الهواتف وقطع الغيار</p>
+<p>البصرة - العشار - كل الهواتف وقطع الغيار</p>
 </header>
-<nav>
-<button class="tab-btn active" onclick="showTab('brands')">الشركات</button>
-<button class="tab-btn" onclick="showTab('allphones')">كل الهواتف</button>
-<button class="tab-btn" onclick="showTab('compat')">توافقات الصيانة 🔧</button>
-<button class="tab-btn" onclick="showTab('lessons')">دروس</button>
-<button class="tab-btn" onclick="showTab('contact')">اتصل بنا</button>
-</nav>
+<style>
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px}
+.card{background:rgba(255,255,255,0.06);border-radius:18px;padding:18px;text-align:center;cursor:pointer;border:1px solid #2a2a2a;transition:0.3s}
+.card:hover{transform:translateY(-6px);border-color:#667eea;background:rgba(102,126,234,0.12)}
+.card img{width:70px;height:70px;object-fit:contain;background:#fff;border-radius:50%;padding:8px;margin-bottom:10px}
+.card h3{font-size:15px;margin-top:5px} .card small{color:#aaa;font-size:12px}
+.card.cat{background:linear-gradient(135deg,#1a1a2e,#16213e);border-color:#667eea33}
+.card.cat h3{color:#ffd700}
+.phones-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:15px}
+.phone-card{background:#1a1a1a;border-radius:12px;padding:10px;text-align:center;border:1px solid #222}
+.phone-card img{width:100%;height:170px;object-fit:contain;background:#111;border-radius:8px;padding:5px}
+.phone-card h4{font-size:12px;margin:8px 0;min-height:30px} .price{color:#4ade80;font-weight:bold;font-size:13px}
+.compat-card{background:#1e1e1e;border-radius:10px;padding:12px;margin:10px 0;border-right:4px solid #ffa500}
+</style>
 <div class="container">
-<input type="text" id="search" class="search-box" placeholder="ابحث: مثلا A23 , iPhone 15 , بطارية..." oninput="doSearch()">
+<input type="text" id="search" class="search-box" placeholder="ابحث عن اي جهاز او شاشة او بطارية..." oninput="doSearch()">
 
-<div id="brands" class="tab-content">
-<h2 style="color:#667eea;text-align:center">اختار الشركة</h2>
-<div class="brands-grid" id="brandsGrid"></div>
-<div id="brandPhones" class="hidden">
-<button class="back-btn" onclick="showBrands()">← رجوع للشركات</button>
-<h2 id="brandTitle"></h2>
-<div class="phones-grid" id="brandPhonesGrid"></div>
-</div>
-</div>
-<div id="allphones" class="tab-content hidden">
-<h2 style="color:#667eea;text-align:center">جميع الهواتف</h2>
-<div class="phones-grid" id="allPhonesGrid"></div>
+<div id="homeView">
+<h2 class="section-title">📱 اقسام فون فلكس</h2>
+<div class="grid" id="catsGrid"></div>
+<h2 class="section-title">🏢 شركات الهواتف</h2>
+<div class="grid" id="brandsGrid"></div>
 </div>
 
+<div id="phonesView" class="hidden">
+<button class="back-btn" onclick="goHome()">← رجوع</button>
+<h2 id="viewTitle" class="section-title"></h2>
+<div class="phones-grid" id="viewGrid"></div>
+</div>
+<div id="compatView" class="hidden">
+<button class="back-btn" onclick="goHome()">← رجوع</button>
+<h2 class="section-title">🔧 توافقات الصيانة</h2>
+<div id="compatList"></div>
+<div style="background:#222;padding:15px;border-radius:12px;margin-top:15px">
+<h4>➕ اضافة توافق مجرب</h4>
+<input id="newPart" placeholder="مثلا: شاشة A24" style="width:100%;padding:10px;margin:6px 0;background:#111;border:1px solid #333;color:#fff;border-radius:8px">
+<input id="newCompat" placeholder="تشتغل على: ..." style="width:100%;padding:10px;margin:6px 0;background:#111;border:1px solid #333;color:#fff;border-radius:8px">
+<button onclick="addCompat()" style="background:#667eea;border:none;padding:10px;border-radius:8px;color:#fff;width:100%">اضافة</button>
+</div>
+</div>
+
+<div id="contactView" class="hidden">
+<button class="back-btn" onclick="goHome()">← رجوع</button>
+<div style="text-align:center;padding:20px;background:#1a1a1a;border-radius:15px">
+<h2>فون فلكس Phone Flex</h2>
+<p style="margin-top:10px">📍 البصرة - العشار - قرب شركة الجبال</p>
+<p>📞 07701234567</p>
+<button onclick="window.open('https://wa.me/9647701234567')" style="background:#25D366;border:none;padding:14px 28px;border-radius:12px;color:#fff;margin-top:15px;font-size:16px;width:100%">راسلنا واتساب</button>
+<iframe src="https://maps.google.com/maps?q=Basra%20Al%20Ashar&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="260" style="border:0;border-radius:12px;margin-top:15px"></iframe>
+</div>
+</div>
+
+<div id="lessonsView" class="hidden">
+<button class="back-btn" onclick="goHome()">← رجوع</button>
+<h2 class="section-title">🎓 دروس اونلاين</h2>
+<video controls style="width:100%;border-radius:12px;background:#000"><source src="ad.mp4" type="video/mp4"></video>
+<div class="phones-grid" style="margin-top:15px">
+<div class="phone-card"><img src="https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg"><p style="font-size:12px">اساسيات الصيانة</p></div>
+<div class="phone-card"><img src="https://img.youtube.com/vi/9bZkp7q19f0/0.jpg"><p style="font-size:12px">تغيير الشاشات</p></div>
+</div>
+</div>
+</div>
 <script>
 const phonesDB = {
 samsung: [
 {name:"Galaxy S24 Ultra 512GB",price:"1,750,000",img:"https://fdn.gsmarena.com/imgroot/reviews/24/samsung-galaxy-s24-ultra/-1024x768w2/gsmarena_001.jpg"},
 {name:"Galaxy S23 Ultra 256GB",price:"1,450,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/samsung-galaxy-s23-ultra/-1024x768w2/gsmarena_001.jpg"},
 {name:"Galaxy A54 256GB",price:"550,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/samsung-galaxy-a54/-1024x768w2/gsmarena_001.jpg"},
-{name:"Galaxy A34 128GB",price:"420,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/samsung-galaxy-a34/-1024x768w2/gsmarena_001.jpg"},
 {name:"Galaxy A24 128GB",price:"320,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/samsung-galaxy-a24/-1024x768w2/gsmarena_001.jpg"},
 {name:"Galaxy A12 128GB",price:"210,000",img:"https://fdn.gsmarena.com/imgroot/reviews/20/samsung-galaxy-a12/-1024x768w2/gsmarena_001.jpg"},
-{name:"Galaxy M13 64GB",price:"230,000",img:"https://fdn.gsmarena.com/imgroot/reviews/22/samsung-galaxy-m13/-1024x768w2/gsmarena_001.jpg"},
 ],
 apple: [
 {name:"iPhone 15 Pro Max 256GB",price:"1,850,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/apple-iphone-15-pro-max/-1024x768w2/gsmarena_001.jpg"},
 {name:"iPhone 14 Pro Max 256GB",price:"1,600,000",img:"https://fdn.gsmarena.com/imgroot/reviews/22/apple-iphone-14-pro-max/-1024x768w2/gsmarena_001.jpg"},
 {name:"iPhone 13 128GB",price:"950,000",img:"https://fdn.gsmarena.com/imgroot/reviews/21/apple-iphone-13/-1024x768w2/gsmarena_001.jpg"},
-{name:"iPhone 11 128GB",price:"620,000",img:"https://fdn.gsmarena.com/imgroot/reviews/19/apple-iphone-11/-1024x768w2/gsmarena_001.jpg"},
-{name:"iPhone 15 128GB",price:"1,250,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/apple-iphone-15/-1024x768w2/gsmarena_001.jpg"},
 ],
 xiaomi: [
 {name:"Redmi Note 13 Pro 256GB",price:"410,000",img:"https://fdn.gsmarena.com/imgroot/reviews/24/xiaomi-redmi-note-13-pro-4g/-1024x768w2/gsmarena_001.jpg"},
-{name:"Redmi Note 12 Pro 256GB",price:"350,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/xiaomi-redmi-note-12-pro/-1024x768w2/gsmarena_001.jpg"},
 {name:"Poco X6 Pro 512GB",price:"480,000",img:"https://fdn.gsmarena.com/imgroot/reviews/24/xiaomi-poco-x6-pro/-1024x768w2/gsmarena_001.jpg"},
 {name:"Redmi 12 256GB",price:"250,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/xiaomi-redmi-12/-1024x768w2/gsmarena_001.jpg"},
 ],
 infinix: [
-{name:"Infinix Hot 40 Pro 256GB",price:"280,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/infinix-hot-40-pro/-1024x768w2/gsmarena_001.jpg"},
-{name:"Infinix Note 30 Pro 256GB",price:"340,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/infinix-note-30-pro/-1024x768w2/gsmarena_001.jpg"},
-{name:"Infinix Smart 8 64GB",price:"150,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/infinix-smart-8/-1024x768w2/gsmarena_001.jpg"},
+{name:"Hot 40 Pro 256GB",price:"280,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/infinix-hot-40-pro/-1024x768w2/gsmarena_001.jpg"},
+{name:"Note 30 Pro 256GB",price:"340,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/infinix-note-30-pro/-1024x768w2/gsmarena_001.jpg"},
 ],
 tecno: [
-{name:"Tecno Spark 20 Pro 256GB",price:"270,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/tecno-spark-20-pro/-1024x768w2/gsmarena_001.jpg"},
-{name:"Tecno Camon 20 Pro 256GB",price:"360,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/tecno-camon-20-pro/-1024x768w2/gsmarena_001.jpg"},
+{name:"Spark 20 Pro 256GB",price:"270,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/tecno-spark-20-pro/-1024x768w2/gsmarena_001.jpg"},
+{name:"Camon 20 Pro 256GB",price:"360,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/tecno-camon-20-pro/-1024x768w2/gsmarena_001.jpg"},
 ],
 realme: [
 {name:"Realme 11 Pro 256GB",price:"420,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/realme-11-pro/-1024x768w2/gsmarena_001.jpg"},
-{name:"Realme C55 256GB",price:"260,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/realme-c55/-1024x768w2/gsmarena_001.jpg"},
-],
-oppo: [
-{name:"Oppo Reno 10 Pro 256GB",price:"550,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/oppo-reno10-pro/-1024x768w2/gsmarena_001.jpg"},
-{name:"Oppo A78 256GB",price:"320,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/oppo-a78/-1024x768w2/gsmarena_001.jpg"},
+{name:"C55 256GB",price:"260,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/realme-c55/-1024x768w2/gsmarena_001.jpg"},
 ],
 huawei: [
-{name:"Huawei Nova 11 Pro 256GB",price:"480,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/huawei-nova-11-pro/-1024x768w2/gsmarena_001.jpg"},
-{name:"Huawei Y9a 128GB",price:"280,000",img:"https://fdn.gsmarena.com/imgroot/reviews/20/huawei-y9a/-1024x768w2/gsmarena_001.jpg"},
+{name:"Nova 11 Pro 256GB",price:"480,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/huawei-nova-11-pro/-1024x768w2/gsmarena_001.jpg"},
 ],
 honor: [
 {name:"Honor 90 512GB",price:"520,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/honor-90/-1024x768w2/gsmarena_001.jpg"},
 {name:"Honor X9a 256GB",price:"380,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/honor-x9a/-1024x768w2/gsmarena_001.jpg"},
 ]
 };
-
-const brandsInfo = {
+ const brandsInfo = {
 samsung:{name:"سامسونج",logo:"https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg"},
 apple:{name:"ابل",logo:"https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"},
 xiaomi:{name:"شاومي",logo:"https://upload.wikimedia.org/wikipedia/commons/a/ae/Xiaomi_logo_%282021-%29.svg"},
 infinix:{name:"انفينكس",logo:"https://1000logos.net/wp-content/uploads/2022/08/Infinix-logo.png"},
 tecno:{name:"تكنو",logo:"https://upload.wikimedia.org/wikipedia/commons/9/92/TECNO_Mobile_logo.svg"},
 realme:{name:"ريلمي",logo:"https://upload.wikimedia.org/wikipedia/commons/a/a2/Realme_logo.svg"},
-oppo:{name:"اوبو",logo:"https://upload.wikimedia.org/wikipedia/commons/a/a2/OPPO_LOGO_2019.svg"},
 huawei:{name:"هواوي",logo:"https://upload.wikimedia.org/wikipedia/commons/0/05/Huawei_logo.svg"},
 honor:{name:"هونر",logo:"https://upload.wikimedia.org/wikipedia/commons/8/8a/Honor_logo.svg"},
 };
- const compatDB = [
-{part:"شاشة سامسونج A12",compat:"تشتغل على: A02s , A12 , M12 , A02 - نفس الشاشة 6.5 بوصة IPS",type:"شاشة"},
-{part:"شاشة سامسونج A23 / A23 5G",compat:"تشتغل على: A23 , A23 5G , M23 , F23 - كوبي واحد",type:"شاشة"},
-{part:"شاشة انفينكس Hot 40 Pro",compat:"تشتغل على: Hot 40 Pro , Note 30 , Hot 40 - نفس الفلاتة",type:"شاشة"},
-{part:"بطارية سامسونج A12",compat:"تشتغل على: A12 , A02s , M12 , A02 - موديل EB-BA207ABY 5000mAh",type:"بطارية"},
-{part:"بطارية شاومي Redmi Note 12 Pro",compat:"تشتغل على: Note 12 Pro , Note 12 Pro+ , Poco X5 Pro - BM5M",type:"بطارية"},
-{part:"بطارية ايفون 11",compat:"تشتغل على: iPhone 11 فقط - لا تتوافق مع 11 Pro",type:"بطارية"},
-{part:"فلاتة شحن سامسونج A32",compat:"تشتغل على: A32 4G فقط - الـ 5G تختلف",type:"فلاتة"},
-{part:"كاميرا خلفية Tecno Spark 20",compat:"تشتغل على: Spark 20 , Spark 20C , Spark Go 2024",type:"كاميرا"},
-{part:"شاشة ريلمي C55",compat:"تشتغل على: C55 , Realme Narzo N55 , C51 - نفس المقاس",type:"شاشة"},
-{part:"شاشة اوبو A78",compat:"تشتغل على: A78 4G , A58 , Reno 8T - اموليد 6.43",type:"شاشة"},
+const catsInfo = [
+{id:"all",name:"كل الهواتف",icon:"📱",desc:"عرض كل الموديلات"},
+{id:"compat",name:"توافقات الصيانة",icon:"🔧",desc:"شاشات وبطاريات"},
+{id:"lessons",name:"دروس اونلاين",icon:"🎓",desc:"فيديوهات تعليمية"},
+{id:"contact",name:"اتصل بنا",icon:"📍",desc:"العنوان والواتساب"},
 ];
-
-function renderBrands(){
-let grid=document.getElementById('brandsGrid'); grid.innerHTML='';
-for(let key in brandsInfo){
-let b=brandsInfo[key];
-let count=phonesDB[key]?phonesDB[key].length:0;
-grid.innerHTML+=`<div class="brand-card" onclick="openBrand('${key}')">
-<img src="${b.logo}" onerror="this.src='https://via.placeholder.com/60'">
-<h3>${b.name}</h3><small>${count} جهاز</small></div>`;
+const compatDB = [
+{part:"شاشة سامسونج A12",compat:"A02s , A12 , M12 , A02 - نفس 6.5 IPS",type:"شاشة"},
+{part:"شاشة سامسونج A23",compat:"A23 , A23 5G , M23 , F23",type:"شاشة"},
+{part:"بطارية A12",compat:"A12 , A02s , M12 - EB-BA207ABY 5000mAh",type:"بطارية"},
+{part:"بطارية شاومي Note 12 Pro",compat:"Note 12 Pro , Poco X5 Pro - BM5M",type:"بطارية"},
+{part:"شاشة انفينكس Hot 40 Pro",compat:"Hot 40 Pro , Note 30 , Hot 40",type:"شاشة"},
+{part:"شاشة ريلمي C55",compat:"C55 , Narzo N55 , C51",type:"شاشة"},
+{part:"شاشة اوبو A78",compat:"A78 , A58 , Reno 8T - اموليد",type:"شاشة"},
+];
+ function renderHome(){
+let catsGrid=document.getElementById('catsGrid'); catsGrid.innerHTML='';
+catsInfo.forEach(c=>{
+catsGrid.innerHTML+=`<div class="card cat" onclick="openCat('${c.id}')"><div style="font-size:40px">${c.icon}</div><h3>${c.name}</h3><small>${c.desc}</small></div>`;
+});
+let bGrid=document.getElementById('brandsGrid'); bGrid.innerHTML='';
+for(let k in brandsInfo){
+let b=brandsInfo[k]; let count=phonesDB[k]?phonesDB[k].length:0;
+bGrid.innerHTML+=`<div class="card" onclick="openBrand('${k}')"><img src="${b.logo}" onerror="this.src='https://via.placeholder.com/70'"><h3>${b.name}</h3><small>${count} جهاز</small></div>`;
 }
 }
 function openBrand(key){
-document.getElementById('brandsGrid').classList.add('hidden');
-document.getElementById('brandPhones').classList.remove('hidden');
-document.getElementById('brandTitle').innerText=brandsInfo[key].name;
-let grid=document.getElementById('brandPhonesGrid'); grid.innerHTML='';
+document.getElementById('homeView').classList.add('hidden');
+document.getElementById('phonesView').classList.remove('hidden');
+document.getElementById('viewTitle').innerText=brandsInfo[key].name;
+let grid=document.getElementById('viewGrid'); grid.innerHTML='';
 phonesDB[key].forEach(p=>{
-grid.innerHTML+=`<div class="phone-card"><img src="${p.img}"><h4>${p.name}</h4><div class="price">${p.price} دينار</div><button onclick="window.open('https://wa.me/9647701234567?text=اريد ${p.name}')" style="background:#25D366;border:none;color:#fff;padding:5px 10px;border-radius:5px;margin-top:5px;width:100%">اطلب واتساب</button></div>`;
+grid.innerHTML+=`<div class="phone-card"><img src="${p.img}"><h4>${p.name}</h4><div class="price">${p.price} دينار</div><button onclick="window.open('https://wa.me/9647701234567?text=اريد ${p.name}')" style="background:#25D366;border:none;color:#fff;padding:6px;border-radius:6px;width:100%;margin-top:5px">اطلب واتساب</button></div>`;
 });
 }
-function showBrands(){
-document.getElementById('brandsGrid').classList.remove('hidden');
-document.getElementById('brandPhones').classList.add('hidden');
+function openCat(id){
+if(id==='all'){ document.getElementById('homeView').classList.add('hidden'); document.getElementById('phonesView').classList.remove('hidden'); document.getElementById('viewTitle').innerText='كل الهواتف'; let grid=document.getElementById('viewGrid'); grid.innerHTML=''; for(let k in phonesDB){phonesDB[k].forEach(p=>{ grid.innerHTML+=`<div class="phone-card" data-name="${p.name.toLowerCase()}"><img src="${p.img}"><h4>${p.name}</h4><div class="price">${p.price}</div></div>`;});} }
+else if(id==='compat'){ document.getElementById('homeView').classList.add('hidden'); document.getElementById('compatView').classList.remove('hidden'); renderCompat(); }
+else if(id==='lessons'){ document.getElementById('homeView').classList.add('hidden'); document.getElementById('lessonsView').classList.remove('hidden'); }
+else if(id==='contact'){ document.getElementById('homeView').classList.add('hidden'); document.getElementById('contactView').classList.remove('hidden'); }
 }
-function renderAll(){
-let grid=document.getElementById('allPhonesGrid'); grid.innerHTML='';
-for(let key in phonesDB){phonesDB[key].forEach(p=>{
-grid.innerHTML+=`<div class="phone-card" data-name="${p.name.toLowerCase()}"><img src="${p.img}"><h4>${p.name}</h4><div class="price">${p.price}</div></div>`;
-});}
+function goHome(){
+document.getElementById('homeView').classList.remove('hidden');
+['phonesView','compatView','contactView','lessonsView'].forEach(i=>document.getElementById(i).classList.add('hidden'));
 }
  function renderCompat(filter=""){
 let div=document.getElementById('compatList'); div.innerHTML='';
-compatDB.filter(c=>c.part.toLowerCase().includes(filter.toLowerCase())||c.compat.toLowerCase().includes(filter.toLowerCase())).forEach(c=>{
-div.innerHTML+=`<div class="compat-card"><b>${c.type}: ${c.part}</b><br><small>${c.compat}</small></div>`;
+compatDB.filter(c=>c.part.toLowerCase().includes(filter)||c.compat.toLowerCase().includes(filter)).forEach(c=>{
+div.innerHTML+=`<div class="compat-card"><b>${c.type}: ${c.part}</b><br><small style="color:#ccc">${c.compat}</small></div>`;
 });
 }
 function doSearch(){
 let q=document.getElementById('search').value.toLowerCase();
-if(q.length>0){showTab('allphones');}
-document.querySelectorAll('#allPhonesGrid .phone-card').forEach(card=>{
-let name=card.getAttribute('data-name');
-card.style.display=name.includes(q)?'block':'none';
+if(q.length>0 && document.getElementById('homeView').classList.contains('hidden')==false){
+openCat('all');
+}
+document.querySelectorAll('#viewGrid .phone-card').forEach(card=>{
+let n=card.innerText.toLowerCase(); card.style.display=n.includes(q)?'block':'none';
 });
 renderCompat(q);
 }
-</script>
-
-<div id="compat" class="tab-content hidden">
-<h2 style="color:#ffa500;text-align:center">🔧 توافقات فني الصيانة</h2>
-<p style="text-align:center;font-size:13px;color:#aaa">اكتب اسم الجهاز وشوف الشاشة او البطارية وين تشتغل</p>
-<div id="compatList" style="margin-top:15px"></div>
-<div style="margin-top:20px;background:#222;padding:15px;border-radius:10px">
-<h4>➕ اضافة توافق جديد (للفنيين)</h4>
-<p style="font-size:12px;color:#888">هاي الخاصية تخليك تضيف توافقات انت مجربها</p>
-<input id="newPart" placeholder="مثلا: شاشة A24" style="width:100%;padding:8px;margin:5px 0;background:#111;border:1px solid #333;color:#fff;border-radius:5px">
-<input id="newCompat" placeholder="تشتغل على: ..." style="width:100%;padding:8px;margin:5px 0;background:#111;border:1px solid #333;color:#fff;border-radius:5px">
-<button onclick="addCompat()" style="background:#667eea;border:none;padding:8px 15px;border-radius:5px;color:#fff;width:100%">اضافة</button>
-</div>
-</div>
-<div id="lessons" class="tab-content hidden">
-<h2 style="color:#667eea;text-align:center">دروس اونلاين</h2>
-<video controls style="width:100%;border-radius:10px;background:#000;margin-top:10px"><source src="ad.mp4" type="video/mp4"></video>
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:15px">
-<div class="phone-card"><img src="https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg"><p style="font-size:12px">اساسيات الصيانة</p></div>
-<div class="phone-card"><img src="https://img.youtube.com/vi/9bZkp7q19f0/0.jpg"><p style="font-size:12px">تغيير الشاشات</p></div>
-<div class="phone-card"><img src="https://img.youtube.com/vi/JGwWLGScXU8/0.jpg"><p style="font-size:12px">فحص الايمي</p></div>
-</div>
-</div>
-
-<div id="contact" class="tab-content hidden">
-<div style="text-align:center;padding:20px">
-<h2>اتصل بنا</h2>
-<p>📍 البصرة - العشار - قرب شركة الجبال</p>
-<p>📞 07701234567</p>
-<button onclick="window.open('https://wa.me/9647701234567')" style="background:#25D366;border:none;padding:12px 25px;border-radius:10px;color:#fff;margin-top:10px;font-size:16px">راسلنا واتساب</button>
-<div style="margin-top:20px">
-<iframe src="https://maps.google.com/maps?q=Basra%20Al%20Ashar&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="250" style="border:0;border-radius:10px"></iframe>
-</div>
-</div>
-</div>
-</div>
-<footer style="text-align:center;padding:20px;background:#000;margin-top:30px;border-top:1px solid #222">
-<p>© 2026 فون فلكس Phone Flex - جميع الهواتف وقطع الغيار</p>
-</footer>
-
-<script>
-function showTab(name){
-document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden'));
-document.getElementById(name).classList.remove('hidden');
-document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-event.target.classList.add('active');
-if(name==='brands') renderBrands();
-if(name==='allphones') renderAll();
-if(name==='compat') renderCompat();
-}
 function addCompat(){
-let p=document.getElementById('newPart').value;
-let c=document.getElementById('newCompat').value;
-if(!p||!c) return alert('اكتب البيانات');
-compatDB.unshift({part:p,compat:c,type:"اضافة فني"});
-renderCompat();
-document.getElementById('newPart').value='';document.getElementById('newCompat').value='';
-alert('تمت الاضافة ✅');
+let p=document.getElementById('newPart').value; let c=document.getElementById('newCompat').value;
+if(!p||!c) return alert('اكتب الحقلين'); compatDB.unshift({part:p,compat:c,type:"اضافة"}); renderCompat(); document.getElementById('newPart').value='';document.getElementById('newCompat').value=''; alert('تمت الاضافة ✅');
 }
-renderBrands(); renderAll(); renderCompat();
+renderHome();
 </script>
+<footer style="text-align:center;padding:25px;background:#000;margin-top:30px;border-top:1px solid #222">
+<p>© 2026 فون فلكس Phone Flex - البصرة العشار</p>
+<p style="font-size:12px;color:#666;margin-top:5px">جميع الهواتف وقطع الغيار مع الضمان</p>
+</footer>
 </body>
 </html>
