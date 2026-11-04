@@ -3,307 +3,272 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>فون فلكس - 200 توافق + مخططات</title>
+<title>فون فلكس - 200 توافق</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,sans-serif}
-body{background:#0a0a0a;color:#fff}
-header{background:linear-gradient(90deg,#667eea,#764ba2);padding:18px;text-align:center;position:sticky;top:0;z-index:999}
-.container{padding:10px;max-width:1300px;margin:auto}
+body{background:#0f0f0f;color:#fff;min-height:100vh}
+header{background:linear-gradient(90deg,#667eea,#764ba2);padding:20px;text-align:center;position:sticky;top:0;z-index:999}
+.container{padding:12px;max-width:1200px;margin:auto}
 .hidden{display:none!important}
-.search-box{width:100%;padding:14px;border-radius:12px;border:1px solid #444;background:#1e1e1e;color:#fff;margin:12px 0;font-size:15px}
-.section-title{color:#667eea;font-size:16px;margin:16px 0 10px;border-right:4px solid #667eea;padding-right:8px}
-.back-btn{background:#222;border:1px solid #444;color:#fff;padding:8px 16px;border-radius:8px;cursor:pointer;margin-bottom:10px}
+.search-box{width:100%;padding:14px;border-radius:12px;border:1px solid #333;background:#1e1e1e;color:#fff;margin:15px 0;font-size:15px}
+.section-title{color:#667eea;font-size:17px;margin:18px 0 10px;border-right:4px solid #667eea;padding-right:10px}
+.back-btn{background:#222;border:1px solid #333;color:#fff;padding:10px 18px;border-radius:10px;cursor:pointer;margin-bottom:12px}
+.cats-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.cat-card{background:linear-gradient(135deg,#1e1e2e,#2a2a4a);border-radius:16px;padding:20px;text-align:center;cursor:pointer;border:1px solid #333;min-height:110px;display:flex;flex-direction:column;justify-content:center}
+.cat-card:hover{border-color:#667eea;transform:translateY(-3px)}
+.cat-card .icon{font-size:34px} .cat-card h3{font-size:14px;margin-top:6px} .cat-card small{font-size:11px;color:#aaa}
+.brands-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px}
+.brand-card{background:#1a1a1a;border-radius:14px;padding:12px;text-align:center;cursor:pointer;border:1px solid #222}
+.brand-card img{width:55px;height:55px;object-fit:contain;background:#fff;border-radius:50%;padding:5px}
 </style>
 </head>
 <body>
-<header><h1>فون فلكس Phone Flex</h1><p>موسوعة 200 توافق + مخططات البورد</p></header>
+<header><h1>فون فلكس Phone Flex</h1><p>موسوعة 200 توافق + مخططات البورد - البصرة العشار</p></header>
 <div class="container">
-<input type="text" id="search" class="search-box" placeholder="ابحث: A12 , بورد , مخطط , شاشة , بطارية..." oninput="doSearch()">
+<input type="text" id="search" class="search-box" placeholder="ابحث: A12 , بورد , مخطط , شاشة..." oninput="doSearch()">
 <div id="homeView"></div>
-<div id="listView" class="hidden"><button class="back-btn" onclick="goHome()">← رجوع</button><h2 id="viewTitle" class="section-title"></h2><div id="viewGrid"></div></div>
+<div id="listView" class="hidden"><button class="back-btn" onclick="goHome()">← رجوع</button><h2 id="viewTitle" class="section-title"></h2><div class="phones-grid" id="viewGrid"></div></div>
 <style>
-.cats-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px}
-.cat-card{background:linear-gradient(135deg,#1e1e2e,#2a2a4a);border-radius:14px;padding:16px;text-align:center;cursor:pointer;border:1px solid #333;min-height:100px;display:flex;flex-direction:column;justify-content:center;transition:0.2s}
-.cat-card:hover{transform:translateY(-3px);border-color:#667eea}
-.cat-card .icon{font-size:32px} .cat-card h3{font-size:13px;margin-top:4px} .cat-card small{font-size:10px;color:#aaa}
-.brands-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:8px}
-.brand-card{background:#1a1a1a;border-radius:12px;padding:10px;text-align:center;cursor:pointer;border:1px solid #222}
-.brand-card img{width:50px;height:50px;object-fit:contain;background:#fff;border-radius:50%;padding:4px}
-.phones-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.phones-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
 .phone-card{background:#1a1a1a;border-radius:10px;padding:8px;text-align:center;border:1px solid #222}
-.phone-card img{width:100%;height:130px;object-fit:contain;background:#111;border-radius:6px}
-.compat-tabs{display:flex;gap:5px;overflow-x:auto;margin:8px 0;padding-bottom:4px}
-.compat-tabs button{background:#222;border:1px solid #333;color:#999;padding:7px 11px;border-radius:18px;cursor:pointer;font-size:12px;white-space:nowrap}
+.phone-card img{width:100%;height:140px;object-fit:contain;background:#111;border-radius:6px}
+.compat-tabs{display:flex;gap:6px;overflow-x:auto;margin:10px 0}
+.compat-tabs button{background:#222;border:1px solid #333;color:#aaa;padding:8px 12px;border-radius:20px;cursor:pointer;white-space:nowrap;font-size:12px}
 .compat-tabs button.active{background:#667eea;color:#fff}
-.compat-card{background:#1e1e1e;border-radius:8px;padding:9px;margin:6px 0;border-right:4px solid #ffa500;font-size:12px;line-height:1.4}
+.compat-card{background:#1e1e1e;border-radius:10px;padding:10px;margin:8px 0;border-right:4px solid #ffa500;font-size:12px;line-height:1.5}
 .compat-card.screen{border-color:#4ade80} .compat-card.battery{border-color:#f87171} .compat-card.charge{border-color:#60a5fa} .compat-card.schematic{border-color:#a78bfa;background:#1e1a2e}
-.schematic-card{background:#1e1a2e;border-radius:10px;padding:10px;margin:8px 0;border-right:4px solid #a78bfa}
-.schematic-card b{color:#c4b5fd} .schematic-card small{color:#aaa}
 </style>
 <div id="compatView" class="hidden">
 <button class="back-btn" onclick="goHome()">← رجوع</button>
-<h2 class="section-title">🔧 موسوعة التوافقات 200+</h2>
+<h2 class="section-title">🔧 موسوعة التوافقات والمخططات - 200+</h2>
 <div class="compat-tabs">
-<button class="active" onclick="filterCompat('all',this)">الكل</button>
-<button onclick="filterCompat('screen',this)">📱 شاشات</button>
-<button onclick="filterCompat('battery',this)">🔋 بطاريات</button>
-<button onclick="filterCompat('charge',this)">🔌 قواعد</button>
-<button onclick="filterCompat('schematic',this)">📜 مخططات</button>
+<button class="active" onclick="filterCompat('all',this)">الكل 200</button>
+<button onclick="filterCompat('screen',this)">📱 شاشات 80</button>
+<button onclick="filterCompat('battery',this)">🔋 بطاريات 60</button>
+<button onclick="filterCompat('charge',this)">🔌 قواعد 20</button>
+<button onclick="filterCompat('schematic',this)">📜 مخططات 40</button>
 </div>
 <div id="compatList"></div>
 </div>
-<div id="schematicView" class="hidden"><button class="back-btn" onclick="goHome()">← رجوع</button><h2 class="section-title">📜 قسم المخططات - Board Schematics</h2><div id="schematicList"></div></div>
 <div id="lessonsView" class="hidden"><button class="back-btn" onclick="goHome()">← رجوع</button><h2 class="section-title">🎓 دورات اون لاين</h2><video controls style="width:100%;border-radius:12px;background:#000"><source src="ad.mp4" type="video/mp4"></video></div>
 </div>
 <script>
-const phonesDB = {
-samsung: [{name:"S24 Ultra",price:"1,750,000",img:"https://fdn.gsmarena.com/imgroot/reviews/24/samsung-galaxy-s24-ultra/-1024x768w2/gsmarena_001.jpg"}],
-apple: [{name:"iPhone 15 Pro Max",price:"1,850,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/apple-iphone-15-pro-max/-1024x768w2/gsmarena_001.jpg"}],
-xiaomi: [{name:"Redmi Note 13 Pro",price:"410,000",img:"https://fdn.gsmarena.com/imgroot/reviews/24/xiaomi-redmi-note-13-pro-4g/-1024x768w2/gsmarena_001.jpg"}],
-};
-const accessoriesDB = [{name:"AirPods Pro 2",price:"85,000",img:"https://fdn.gsmarena.com/imgroot/reviews/22/apple-airpods-pro-2/-1024x768w2/gsmarena_001.jpg"}];
-const brandsInfo = {
-samsung:{name:"سامسونج",logo:"https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg"},
-apple:{name:"ابل",logo:"https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"},
-xiaomi:{name:"شاومي",logo:"https://upload.wikimedia.org/wikipedia/commons/a/ae/Xiaomi_logo_%282021-%29.svg"},
-infinix:{name:"انفينكس",logo:"https://1000logos.net/wp-content/uploads/2022/08/Infinix-logo.png"},
-tecno:{name:"تكنو",logo:"https://upload.wikimedia.org/wikipedia/commons/9/92/TECNO_Mobile_logo.svg"},
-realme:{name:"ريلمي",logo:"https://upload.wikimedia.org/wikipedia/commons/a/a2/Realme_logo.svg"},
-oppo:{name:"اوبو",logo:"https://upload.wikimedia.org/wikipedia/commons/0/0a/OPPO_LOGO_2019.svg"},
-huawei:{name:"هواوي",logo:"https://upload.wikimedia.org/wikipedia/commons/0/05/Huawei_logo.svg"},
-};
- const screensA = [
-{part:"شاشة A02s / A02 / M02s / A03s / A03",compat:"6.5 IPS - تتوافق: A02s , A02 , A03s , M02s , F02s , A03 , A03 Core",type:"screen"},
-{part:"شاشة A10s / A10 / M10s / A10e",compat:"A10s , A10 , M10s , A10e - 6.2 بوصة",type:"screen"},
-{part:"شاشة A11 / M11 / F11 / A12",compat:"A11 , M11 , F11 , A12 - 6.4-6.5 PLS",type:"screen"},
-{part:"شاشة A12 / M12 / F12 / A12 Nacho",compat:"A12 , M12 , F12 , A12 Nacho - 6.5 IPS 90Hz",type:"screen"},
-{part:"شاشة A13 / M13 / F13 / A13 5G",compat:"A13 4G/5G , M13 , F13 , A04s - 6.6",type:"screen"},
-{part:"شاشة A14 / A14 5G / M14 / F14",compat:"A14 , A14 5G , M14 , F14 - 6.6 90Hz",type:"screen"},
-{part:"شاشة A20 / A20s / A20e / M20",compat:"A20 , A20s , A20e , M20 - 6.4 AMOLED",type:"screen"},
-{part:"شاشة A21s / A21 / M21 / F21",compat:"A21s , A21 , M21 , F21s - 6.5 PLS",type:"screen"},
-{part:"شاشة A22 4G / A22 5G / M22 / F22",compat:"انتبه: A22 4G اموليد - A22 5G TFT ما يتوافقن",type:"screen"},
+const phonesDB={samsung:[{name:"Galaxy A12",price:"210,000",img:"https://fdn.gsmarena.com/imgroot/reviews/20/samsung-galaxy-a12/-1024x768w2/gsmarena_001.jpg"}],apple:[{name:"iPhone 15 Pro Max",price:"1,850,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/apple-iphone-15-pro-max/-1024x768w2/gsmarena_001.jpg"}],xiaomi:[{name:"Redmi Note 13 Pro",price:"410,000",img:"https://fdn.gsmarena.com/imgroot/reviews/24/xiaomi-redmi-note-13-pro-4g/-1024x768w2/gsmarena_001.jpg"}]};
+const accessoriesDB=[{name:"AirPods Pro 2",price:"85,000",img:"https://fdn.gsmarena.com/imgroot/reviews/22/apple-airpods-pro-2/-1024x768w2/gsmarena_001.jpg"}];
+const brandsInfo={samsung:{name:"سامسونج",logo:"https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg"},apple:{name:"ابل",logo:"https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"},xiaomi:{name:"شاومي",logo:"https://upload.wikimedia.org/wikipedia/commons/a/ae/Xiaomi_logo_%282021-%29.svg"},infinix:{name:"انفينكس",logo:"https://1000logos.net/wp-content/uploads/2022/08/Infinix-logo.png"},tecno:{name:"تكنو",logo:"https://upload.wikimedia.org/wikipedia/commons/9/92/TECNO_Mobile_logo.svg"}};
+ const screens1=[
+{part:"شاشة A02s / A02 / M02s / A03s / A03 / A03 Core",compat:"6.5 IPS - تتوافق: A02s , A02 , A03s , M02s , F02s , A03",type:"screen"},
+{part:"شاشة A10s / A10 / M10s / A10e",compat:"A10s , A10 , M10s - 6.2",type:"screen"},
+{part:"شاشة A11 / M11 / F11",compat:"A11 , M11 , F11 - 6.4 PLS",type:"screen"},
+{part:"شاشة A12 / M12 / F12 / A12 Nacho",compat:"A12 , M12 , F12 , A12 Nacho - 6.5 IPS",type:"screen"},
+{part:"شاشة A13 / M13 / F13 / A04s",compat:"A13 4G/5G , M13 , F13 - 6.6",type:"screen"},
+{part:"شاشة A14 / M14 / F14 / A14 5G",compat:"A14 , A14 5G , M14 , F14 - 6.6 90Hz",type:"screen"},
+{part:"شاشة A20 / A20s / A20e / M20",compat:"A20 , A20s , A20e - 6.4 AMOLED",type:"screen"},
+{part:"شاشة A21s / A21 / M21",compat:"A21s , A21 , M21 - 6.5 PLS",type:"screen"},
+{part:"شاشة A22 4G / A22 5G / M22 / F22",compat:"انتبه: A22 4G اموليد / A22 5G TFT ما يتوافقن",type:"screen"},
 {part:"شاشة A23 / M23 / F23 / A23 5G",compat:"A23 , A23 5G , M23 , F23 - 6.6 120Hz",type:"screen"},
-{part:"شاشة A24 / M34 / F34 / A25",compat:"A24 , M34 , F34 , A25 , A15 - 6.5 AMOLED 90Hz",type:"screen"},
+{part:"شاشة A24 / M34 / F34 / A25 / A15",compat:"A24 , M34 , F34 , A25 , A15 - 6.5 AMOLED 90Hz",type:"screen"},
 {part:"شاشة A30 / A30s / M30 / M30s",compat:"A30 , A30s , M30 , M30s - 6.4 AMOLED",type:"screen"},
 {part:"شاشة A31 / M31 / M31s / F41 / F62",compat:"A31 , M31 , M31s , F41 , F62 - 6.4",type:"screen"},
-{part:"شاشة A32 4G / A32 5G / M32 / F32",compat:"A32 4G اموليد - A32 5G TFT",type:"screen"},
-{part:"شاشة A33 / A33 5G / M33",compat:"A33 , A33 5G , M33 - 6.4 90Hz",type:"screen"},
-{part:"شاشة A34 / A54 / M34 / M54",compat:"A34 , A54 , M34 , M54 - 6.4-6.6 120Hz",type:"screen"},
-{part:"شاشة A50 / A50s / M30s / A30s",compat:"A50 , A50s , M30s , A30s - 6.4 AMOLED",type:"screen"},
-{part:"شاشة A51 / A51 5G / M31s",compat:"A51 , A51 5G , M31s , M51 - 6.5",type:"screen"},
+{part:"شاشة A32 4G / A32 5G / M32 / F32",compat:"A32 4G اموليد / A32 5G TFT",type:"screen"},
+{part:"شاشة A33 / M33 / A33 5G",compat:"A33 , A33 5G , M33 - 6.4 90Hz",type:"screen"},
+{part:"شاشة A34 / A54 / M34 / M54",compat:"A34 , A54 , M34 , M54 - 6.6 120Hz",type:"screen"},
+{part:"شاشة A50 / A50s / M30s",compat:"A50 , A50s , M30s - 6.4 AMOLED",type:"screen"},
+{part:"شاشة A51 / A51 5G / M31s / M51",compat:"A51 , M31s , M51 - 6.5",type:"screen"},
 {part:"شاشة A52 / A52s / A53 / A73 / A72",compat:"A52 , A52s , A53 , A73 , A72 - 6.5 120Hz",type:"screen"},
-{part:"شاشة S10 / S10+ / S10e / Note 10",compat:"S10 , S10+ , S10e , Note 10 - Dynamic AMOLED",type:"screen"},
+{part:"شاشة S10 / S10+ / S10e / Note 10",compat:"S10 series - Dynamic AMOLED",type:"screen"},
 {part:"شاشة S20 / S20+ / S20 FE / S21 FE",compat:"S20 , S20+ , S20 FE , S21 FE - 6.5",type:"screen"},
-{part:"شاشة S21 / S21+ / S22 / S23",compat:"S21 , S21+ , S22 , S23 - 6.2-6.8",type:"screen"},
-{part:"شاشة J4+ / J6+ / J4 Core / J6",compat:"J4+ , J6+ , J4 Core , J6 - 6.0",type:"screen"},
-{part:"شاشة M10 / M20 / M30 / A10",compat:"M10 , M20 , M30 , A10 - 6.2-6.4",type:"screen"},
+{part:"شاشة S21 / S21+ / S22 / S23",compat:"S21 , S22 , S23 - 6.2-6.8",type:"screen"},
+{part:"شاشة J4+ / J6+ / J4 Core / J6",compat:"J4+ , J6+ , J4 Core - 6.0",type:"screen"},
+{part:"شاشة M10 / M20 / M30 / A10",compat:"M10 , M20 , M30 - 6.2-6.4",type:"screen"},
 {part:"شاشة A03s / A04 / A04s / A04e",compat:"A03s , A04 , A04s , A04e , F04 - 6.5",type:"screen"},
 {part:"شاشة A05 / A05s / M05 / F05",compat:"A05 , A05s , M05 , F05 - 6.7",type:"screen"},
 {part:"شاشة A15 / A25 / M15 / F15",compat:"A15 , A25 , M15 , F15 - 6.5 90Hz",type:"screen"},
 {part:"شاشة A35 / A55 / M35 / M55",compat:"A35 , A55 , M35 , M55 - 6.6 120Hz",type:"screen"},
-{part:"شاشة S23 Ultra / S24 Ultra",compat:"S23 Ultra , S24 Ultra - 6.8 Dynamic AMOLED 2X",type:"screen"},
-{part:"شاشة Z Flip 3 / Z Flip 4 / Z Flip 5",compat:"Z Flip 3 , 4 , 5 - داخلية 6.7 قابلة للطي",type:"screen"},
+{part:"شاشة S23 Ultra / S24 Ultra / S22 Ultra",compat:"S23U , S24U , S22U - 6.8 Dynamic AMOLED",type:"screen"},
+{part:"شاشة Z Flip 3 / Flip 4 / Flip 5",compat:"Flip 3 , 4 , 5 - 6.7 قابلة للطي",type:"screen"},
+{part:"شاشة انفينكس Hot 8 / Hot 9 / Hot 9 Play",compat:"Hot 8 , Hot 9 , Play - 6.52",type:"screen"},
+{part:"شاشة انفينكس Hot 10 / Hot 10 Play / Hot 10T",compat:"Hot 10 , Play , T - 6.78",type:"screen"},
+{part:"شاشة انفينكس Hot 11 / Hot 11S / Hot 11 Play",compat:"Hot 11 , 11S , Play - 6.78",type:"screen"},
+{part:"شاشة انفينكس Hot 12 / Hot 12 Play / Hot 12 Pro / Hot 12i",compat:"Hot 12 series - 6.82",type:"screen"},
+{part:"شاشة انفينكس Hot 20 / Hot 20 Play / Hot 20i / Hot 20S",compat:"Hot 20 series - 6.82",type:"screen"},
+{part:"شاشة انفينكس Hot 30 / Hot 30i / Hot 30 Play",compat:"Hot 30 , 30i , Play - 6.78 90Hz",type:"screen"},
+{part:"شاشة انفينكس Hot 40 / Hot 40 Pro / Hot 40i / Note 30",compat:"Hot 40 , 40 Pro , 40i , Note 30 - 6.78 120Hz",type:"screen"},
+{part:"شاشة انفينكس Note 8 / Note 8i / Note 8 Pro",compat:"Note 8 , 8i , 8 Pro - 6.95",type:"screen"},
+{part:"شاشة انفينكس Note 10 / Note 10 Pro / Max",compat:"Note 10 , 10 Pro , Max - 6.95",type:"screen"},
+{part:"شاشة انفينكس Note 11 / Note 11S / Note 11 Pro",compat:"Note 11 , 11S , 11 Pro - 6.95",type:"screen"},
 ];
- const screensB = [
-{part:"شاشة انفينكس Hot 8 / Hot 9 / Hot 9 Play",compat:"Hot 8 , Hot 9 , Hot 9 Play , Hot 8 Lite - 6.52",type:"screen"},
-{part:"شاشة انفينكس Hot 10 / Hot 10 Play / Hot 10T",compat:"Hot 10 , Hot 10 Play , Hot 10T , Hot 10 Lite - 6.78",type:"screen"},
-{part:"شاشة انفينكس Hot 11 / Hot 11 Play / Hot 11S",compat:"Hot 11 , Hot 11 Play , Hot 11S - 6.78",type:"screen"},
-{part:"شاشة انفينكس Hot 12 / Hot 12 Play / Hot 12 Pro / Hot 12i",compat:"Hot 12 , Hot 12 Play , Hot 12 Pro , Hot 12i - 6.82",type:"screen"},
-{part:"شاشة انفينكس Hot 20 / Hot 20 Play / Hot 20i / Hot 20S",compat:"Hot 20 , Hot 20 Play , Hot 20i , Hot 20S - 6.82",type:"screen"},
-{part:"شاشة انفينكس Hot 30 / Hot 30i / Hot 30 Play / Hot 30",compat:"Hot 30 , Hot 30i , Hot 30 Play - 6.78 90Hz",type:"screen"},
-{part:"شاشة انفينكس Hot 40 / Hot 40 Pro / Hot 40i / Note 30",compat:"Hot 40 , Hot 40 Pro , Hot 40i , Note 30 - 6.78 120Hz",type:"screen"},
-{part:"شاشة انفينكس Note 8 / Note 8i / Note 8 Pro",compat:"Note 8 , Note 8i , Note 8 Pro - 6.95",type:"screen"},
-{part:"شاشة انفينكس Note 10 / Note 10 Pro / Note 10 Pro Max",compat:"Note 10 , Note 10 Pro , Note 10 Pro Max - 6.95",type:"screen"},
-{part:"شاشة انفينكس Note 11 / Note 11S / Note 11 Pro / Note 11i",compat:"Note 11 , Note 11S , Note 11 Pro , Note 11i - 6.95",type:"screen"},
-{part:"شاشة انفينكس Note 12 / Note 12 Pro / Note 12 G96 / Note 12 VIP",compat:"Note 12 , Note 12 Pro , G96 , VIP - 6.7 AMOLED",type:"screen"},
-{part:"شاشة انفينكس Note 30 / Note 30 Pro / Note 30 VIP / Zero 30",compat:"Note 30 , Note 30 Pro , VIP , Zero 30 - 6.78 120Hz",type:"screen"},
-{part:"شاشة انفينكس Smart 5 / Smart 6 / Smart 6 HD / Smart 5A",compat:"Smart 5 , Smart 6 , Smart 6 HD , 5A - 6.52",type:"screen"},
-{part:"شاشة انفينكس Smart 7 / Smart 8 / Smart 8 HD",compat:"Smart 7 , Smart 8 , Smart 8 HD - 6.6",type:"screen"},
-{part:"شاشة تكنو Spark 6 / Spark 6 Go / Spark 6 Air",compat:"Spark 6 , Spark 6 Go , Spark 6 Air - 6.52-6.8",type:"screen"},
-{part:"شاشة تكنو Spark 7 / Spark 7T / Spark 7 Pro / Pop 5 Pro",compat:"Spark 7 , 7T , 7 Pro , Pop 5 Pro - 6.52-6.8",type:"screen"},
-{part:"شاشة تكنو Spark 8 / Spark 8C / Spark 8T / Spark Go 2022",compat:"Spark 8 , 8C , 8T , Go 2022 - 6.52",type:"screen"},
-{part:"شاشة تكنو Spark 9 / Spark 9 Pro / Spark 9T / Spark 9",compat:"Spark 9 , 9 Pro , 9T - 6.6",type:"screen"},
-{part:"شاشة تكنو Spark 10 / Spark 10 Pro / Spark 10C / Spark Go 2023",compat:"Spark 10 , 10 Pro , 10C , Go 2023 - 6.6",type:"screen"},
-{part:"شاشة تكنو Spark 20 / Spark 20 Pro / Spark 20C / Spark Go 2024",compat:"Spark 20 , 20 Pro , 20C , Go 2024 - 6.6 90Hz",type:"screen"},
+ const screens2=[
+{part:"شاشة انفينكس Note 12 / Note 12 Pro / G96 / VIP",compat:"Note 12 , Pro , G96 , VIP - 6.7 AMOLED",type:"screen"},
+{part:"شاشة انفينكس Note 30 / Note 30 Pro / VIP / Zero 30",compat:"Note 30 , Pro , VIP , Zero 30 - 6.78 120Hz",type:"screen"},
+{part:"شاشة انفينكس Smart 5 / Smart 6 / Smart 6 HD / Smart 5A",compat:"Smart 5 , 6 , 6 HD , 5A - 6.52",type:"screen"},
+{part:"شاشة انفينكس Smart 7 / Smart 8 / Smart 8 HD",compat:"Smart 7 , 8 , 8 HD - 6.6",type:"screen"},
+{part:"شاشة تكنو Spark 6 / Spark 6 Go / Spark 6 Air",compat:"Spark 6 , Go , Air - 6.52-6.8",type:"screen"},
+{part:"شاشة تكنو Spark 7 / Spark 7T / Spark 7 Pro / Pop 5 Pro",compat:"Spark 7 , 7T , 7 Pro - 6.52-6.8",type:"screen"},
+{part:"شاشة تكنو Spark 8 / Spark 8C / Spark 8T / Go 2022",compat:"Spark 8 , 8C , 8T , Go 2022 - 6.52",type:"screen"},
+{part:"شاشة تكنو Spark 9 / Spark 9 Pro / Spark 9T",compat:"Spark 9 , 9 Pro , 9T - 6.6",type:"screen"},
+{part:"شاشة تكنو Spark 10 / Spark 10 Pro / Spark 10C / Go 2023",compat:"Spark 10 , 10 Pro , 10C , Go 2023 - 6.6",type:"screen"},
+{part:"شاشة تكنو Spark 20 / Spark 20 Pro / Spark 20C / Go 2024",compat:"Spark 20 , 20 Pro , 20C , Go 2024 - 6.6 90Hz",type:"screen"},
 {part:"شاشة تكنو Camon 16 / Camon 17 / Camon 18 / Camon 18P",compat:"Camon 16 , 17 , 18 , 18P - 6.8",type:"screen"},
 {part:"شاشة تكنو Camon 19 / Camon 19 Pro / Camon 20 / Camon 20 Pro",compat:"Camon 19 , 19 Pro , 20 , 20 Pro - 6.67",type:"screen"},
-{part:"شاشة تكنو Pova 2 / Pova 3 / Pova 4 / Pova 5",compat:"Pova 2 , Pova 3 , Pova 4 , Pova 5 - 6.9",type:"screen"},
-{part:"شاشة تكنو Phantom X / X2 / X2 Pro / V Fold",compat:"Phantom X , X2 , X2 Pro - 6.8 AMOLED",type:"screen"},
-{part:"شاشة تكنو Pop 5 / Pop 6 / Pop 7 / Pop 7 Pro",compat:"Pop 5 , Pop 6 , Pop 7 , Pop 7 Pro - 6.52",type:"screen"},
-];
- const screensC = [
-{part:"شاشة شاومي Redmi 8 / 8A / 8A Dual / 8",compat:"Redmi 8 , 8A , 8A Dual , 8 - 6.22",type:"screen"},
+{part:"شاشة تكنو Pova 2 / Pova 3 / Pova 4 / Pova 5",compat:"Pova 2 , 3 , 4 , 5 - 6.9",type:"screen"},
+{part:"شاشة شاومي Redmi 8 / 8A / 8A Dual",compat:"Redmi 8 , 8A , 8A Dual - 6.22",type:"screen"},
 {part:"شاشة شاومي Redmi 9A / 9AT / 9C / 9 / 9T / Poco M3",compat:"9A , 9AT , 9C , 9 , 9T , Poco M3 - 6.53",type:"screen"},
 {part:"شاشة شاومي Redmi 10A / 10C / 10 / 10 Power / Poco C40",compat:"10A , 10C , 10 , Power , C40 - 6.71",type:"screen"},
 {part:"شاشة شاومي Redmi 12 / 12C / 13C / Poco C65",compat:"Redmi 12 , 12C , 13C , C65 - 6.74 90Hz",type:"screen"},
-{part:"شاشة شاومي Redmi Note 7 / Note 7 Pro / Note 7S",compat:"Note 7 , Note 7 Pro , Note 7S - 6.3",type:"screen"},
-{part:"شاشة شاومي Redmi Note 8 / Note 8T / Note 8 Pro",compat:"Note 8 , Note 8T , Note 8 Pro - 6.3-6.53",type:"screen"},
-{part:"شاشة شاومي Redmi Note 9 / Note 9S / Note 9 Pro / Max",compat:"Note 9 , Note 9S , Note 9 Pro , Max - 6.67",type:"screen"},
-{part:"شاشة شاومي Redmi Note 10 / Note 10S / Note 10 Pro / Max",compat:"Note 10 , Note 10S , Note 10 Pro , Max - 6.43 AMOLED",type:"screen"},
-{part:"شاشة شاومي Redmi Note 11 / Note 11S / Note 11 Pro 4G/5G",compat:"Note 11 , 11S , 11 Pro 4G/5G - 6.67 90Hz",type:"screen"},
-{part:"شاشة شاومي Redmi Note 12 / Note 12S / Note 12 Pro 4G",compat:"Note 12 , 12S , 12 Pro 4G - 6.67 AMOLED",type:"screen"},
-{part:"شاشة شاومي Redmi Note 12 Pro 5G / Poco X5 / X5 Pro",compat:"Note 12 Pro 5G , Poco X5 , X5 Pro - 6.67 120Hz",type:"screen"},
+{part:"شاشة شاومي Note 7 / Note 7 Pro / Note 7S",compat:"Note 7 , 7 Pro , 7S - 6.3",type:"screen"},
+{part:"شاشة شاومي Note 8 / Note 8T / Note 8 Pro",compat:"Note 8 , 8T , 8 Pro - 6.3-6.53",type:"screen"},
+{part:"شاشة شاومي Note 9 / Note 9S / Note 9 Pro / Max",compat:"Note 9 , 9S , 9 Pro , Max - 6.67",type:"screen"},
+{part:"شاشة شاومي Note 10 / Note 10S / Note 10 Pro / Max",compat:"Note 10 , 10S , 10 Pro , Max - 6.43 AMOLED",type:"screen"},
+{part:"شاشة شاومي Note 11 / Note 11S / Note 11 Pro 4G/5G",compat:"Note 11 , 11S , 11 Pro - 6.67 90Hz",type:"screen"},
+{part:"شاشة شاومي Note 12 / Note 12S / Note 12 Pro 4G / Pro 5G / Poco X5",compat:"Note 12 , 12S , 12 Pro 4G/5G , Poco X5 - 6.67 AMOLED",type:"screen"},
 {part:"شاشة شاومي Poco X3 / X3 Pro / X3 GT / X3 NFC",compat:"Poco X3 , X3 Pro , X3 GT , NFC - 6.67 120Hz",type:"screen"},
-{part:"شاشة شاومي Poco X4 Pro / X5 Pro / X6 Pro",compat:"Poco X4 Pro , X5 Pro , X6 Pro - 6.67 AMOLED",type:"screen"},
-{part:"شاشة شاومي Poco F3 / F4 / F5 / F5 Pro",compat:"Poco F3 , F4 , F5 , F5 Pro - 6.67 AMOLED",type:"screen"},
-{part:"شاشة شاومي Poco M4 Pro / M5 / M5s / M6 Pro",compat:"Poco M4 Pro , M5 , M5s , M6 Pro - 6.43-6.67",type:"screen"},
+{part:"شاشة شاومي Poco X4 Pro / X5 Pro / X6 Pro / F3 / F4 / F5",compat:"Poco X4 Pro , X5 Pro , X6 Pro , F3 , F4 , F5 - 6.67 AMOLED",type:"screen"},
 {part:"شاشة ريلمي C11 / C12 / C15 / C25 / C25s / C25Y",compat:"C11 , C12 , C15 , C25 , C25s , C25Y - 6.5",type:"screen"},
 {part:"شاشة ريلمي C21 / C21Y / C25Y / C20 / C20A",compat:"C21 , C21Y , C25Y , C20 , C20A - 6.5",type:"screen"},
 {part:"شاشة ريلمي C30 / C33 / C35 / C30s / Narzo 50A Prime",compat:"C30 , C33 , C35 , C30s , Narzo 50A Prime - 6.5",type:"screen"},
 {part:"شاشة ريلمي C51 / C53 / C55 / Narzo N53 / N55",compat:"C51 , C53 , C55 , N53 , N55 - 6.74 90Hz",type:"screen"},
 {part:"شاشة ريلمي 8 / 8 Pro / 8 5G / 7 Pro / 7",compat:"Realme 8 , 8 Pro , 8 5G , 7 Pro , 7 - 6.4 AMOLED",type:"screen"},
-{part:"شاشة ريلمي 9 / 9 Pro / 9 Pro+ / 10 / 10 Pro",compat:"Realme 9 , 9 Pro , 9 Pro+ , 10 , 10 Pro - 6.4-6.7",type:"screen"},
+{part:"شاشة ريلمي 9 / 9 Pro / 9 Pro+ / 10 / 10 Pro / 11",compat:"Realme 9 , 9 Pro , 10 , 10 Pro , 11 - 6.4-6.7",type:"screen"},
 {part:"شاشة اوبو A15 / A15s / A16 / A16s / A16k",compat:"A15 , A15s , A16 , A16s , A16k - 6.52",type:"screen"},
 {part:"شاشة اوبو A54 / A55 / A57 / A76 / A77 / A77s",compat:"A54 , A55 , A57 , A76 , A77 , A77s - 6.56",type:"screen"},
-{part:"شاشة اوبو A17 / A17k / A38 / A58 / A78",compat:"A17 , A17k , A38 , A58 , A78 - 6.56 90Hz",type:"screen"},
-{part:"شاشة اوبو Reno 5 / Reno 6 / Reno 7 / Reno 8",compat:"Reno 5 , Reno 6 , Reno 7 , Reno 8 - 6.4 AMOLED",type:"screen"},
+{part:"شاشة اوبو A17 / A17k / A38 / A58 / A78 / A98",compat:"A17 , A17k , A38 , A58 , A78 , A98 - 6.56 90Hz",type:"screen"},
+{part:"شاشة اوبو Reno 5 / Reno 6 / Reno 7 / Reno 8 / Reno 10",compat:"Reno 5 , 6 , 7 , 8 , 10 - 6.4-6.7 AMOLED",type:"screen"},
 {part:"شاشة ايفون 7 / 8 / SE 2020 / SE 2022",compat:"iPhone 7 , 8 , SE 2020 , SE 2022 - 4.7",type:"screen"},
-{part:"شاشة ايفون X / XS / 11 Pro / 11 Pro Max",compat:"X , XS , 11 Pro , 11 Pro Max - 5.8-6.5 OLED",type:"screen"},
-{part:"شاشة ايفون XR / 11 / 11 Pro Max",compat:"XR , 11 , 11 Pro Max - 6.1 LCD",type:"screen"},
-{part:"شاشة ايفون 12 / 12 Pro / 12 Pro Max / 12 Mini",compat:"12 , 12 Pro , 12 Pro Max , Mini - 5.4-6.7 OLED",type:"screen"},
-{part:"شاشة ايفون 13 / 13 Pro / 13 Mini / 14",compat:"13 , 13 Pro , Mini , 14 - 6.1",type:"screen"},
+{part:"شاشة ايفون X / XS / 11 Pro / 11 Pro Max",compat:"X , XS , 11 Pro , Max - 5.8-6.5 OLED",type:"screen"},
+{part:"شاشة ايفون XR / 11 / 12 / 12 Pro",compat:"XR , 11 , 12 , 12 Pro - 6.1 OLED/LCD",type:"screen"},
+{part:"شاشة ايفون 13 / 13 Pro / 14 / 14 Pro / 15 / 15 Pro",compat:"13 , 13 Pro , 14 , 14 Pro , 15 , 15 Pro - 6.1-6.7",type:"screen"},
+{part:"شاشة هواوي Y9a / Y9 Prime / Nova 7i / P30 Lite",compat:"Y9a , Y9 Prime , Nova 7i , P30 Lite - 6.6",type:"screen"},
+{part:"شاشة فيفو Y15 / Y12 / Y20 / Y33s / Y21",compat:"Y15 , Y12 , Y20 , Y33s , Y21 - 6.51-6.58",type:"screen"},
 ];
- const batteriesA = [
+ const batteriesDB=[
 {part:"بطارية A02s / A02 / A03 / A03s / M02s / F02s",compat:"EB-BA207ABY 5000mAh - A02s , A02 , A03 , A03s , M02s , F02s",type:"battery"},
 {part:"بطارية A10s / A10 / M10s / A10e",compat:"EB-BA107ABY 4000mAh - A10s , A10 , M10s",type:"battery"},
 {part:"بطارية A11 / M11 / F11",compat:"EB-BA115ABY 4000mAh - A11 , M11",type:"battery"},
 {part:"بطارية A12 / M12 / F12 / A12 Nacho",compat:"EB-BA125ABY 5000mAh - A12 , M12 , F12",type:"battery"},
 {part:"بطارية A13 / M13 / F13 / A04s",compat:"EB-BA135ABY 5000mAh - A13 , M13 , F13",type:"battery"},
 {part:"بطارية A14 / M14 / F14 / A14 5G",compat:"EB-BA146ABY 5000mAh - A14 , M14 , F14",type:"battery"},
-{part:"بطارية A20 / A20s / A20e / M20 / A30",compat:"EB-BA205ABY 4000mAh - A20 , A20s , A20e",type:"battery"},
+{part:"بطارية A20 / A20s / A20e / M20",compat:"EB-BA205ABY 4000mAh - A20 , A20s , A20e",type:"battery"},
 {part:"بطارية A21s / A21 / M21 / F21",compat:"EB-BA217ABY 5000mAh - A21s , A21 , M21",type:"battery"},
 {part:"بطارية A22 / M22 / F22 / A22 5G",compat:"EB-BA225ABY 5000mAh - A22 4G/5G , M22 , F22",type:"battery"},
 {part:"بطارية A23 / M23 / F23 / A23 5G",compat:"EB-BA235ABY 5000mAh - A23 , M23 , F23",type:"battery"},
 {part:"بطارية A24 / M34 / F34 / A25 / A15",compat:"EB-BA245ABY 5000mAh - A24 , M34 , A25 , A15",type:"battery"},
-{part:"بطارية A30 / A30s / M30 / M30s / A50",compat:"EB-BA307ABY 4000mAh - A30 , A30s , M30 , M30s",type:"battery"},
+{part:"بطارية A30 / A30s / M30 / M30s",compat:"EB-BA307ABY 4000mAh - A30 , A30s , M30 , M30s",type:"battery"},
 {part:"بطارية A31 / M31 / M31s / F41 / F62",compat:"EB-BA315ABY 5000mAh - A31 , M31 , M31s , F41",type:"battery"},
 {part:"بطارية A32 / M32 / F32 / A32 5G",compat:"EB-BA325ABY 5000mAh - A32 , M32 , F32",type:"battery"},
 {part:"بطارية A33 / M33 / A33 5G",compat:"EB-BA336ABY 5000mAh - A33 , M33",type:"battery"},
 {part:"بطارية A34 / A54 / M34 / M54 / A35",compat:"EB-BA345ABY 5000mAh - A34 , A54 , M34 , M54",type:"battery"},
-{part:"بطارية A50 / A50s / M30s / A30s",compat:"EB-BA505ABY 4000mAh - A50 , A50s , M30s",type:"battery"},
+{part:"بطارية A50 / A50s / M30s",compat:"EB-BA505ABY 4000mAh - A50 , A50s , M30s",type:"battery"},
 {part:"بطارية A51 / A51 5G / M31s / M51",compat:"EB-BA515ABY 4000mAh - A51 , M31s",type:"battery"},
 {part:"بطارية A52 / A52s / A53 / A73 / A72",compat:"EB-BA525ABY 4500mAh - A52 , A52s , A53 , A73",type:"battery"},
 {part:"بطارية S10 / S10e / S10+ / Note 10",compat:"EB-BG970ABU 3400-4300mAh - S10 series",type:"battery"},
 {part:"بطارية S20 / S20+ / S20 FE / S21 FE",compat:"EB-BG980ABY 4000-4500mAh - S20 series",type:"battery"},
-{part:"بطارية S21 / S21+ / S22 / S23",compat:"EB-BG991ABY 4000mAh - S21 , S22 , S23",type:"battery"},
-{part:"بطارية J4+ / J6+ / J4 Core / J6",compat:"EB-BJ610ABY 3300mAh - J4+ , J6+",type:"battery"},
-{part:"بطارية M10 / M20 / M30 / A10",compat:"EB-BM101ABY 3400mAh - M10 , M20",type:"battery"},
+{part:"بطارية S21 / S21+ / S22 / S23 / S23 Ultra",compat:"EB-BG991ABY 4000-5000mAh - S21 , S22 , S23 , S23U",type:"battery"},
 {part:"بطارية A03s / A04 / A04s / A04e",compat:"EB-BA042ABY 5000mAh - A03s , A04 , A04s",type:"battery"},
 {part:"بطارية A05 / A05s / M05 / F05",compat:"EB-BA055ABY 5000mAh - A05 , A05s , M05",type:"battery"},
-{part:"بطارية A15 / A25 / M15 / F15",compat:"EB-BA156ABY 5000mAh - A15 , A25 , M15",type:"battery"},
-{part:"بطارية A35 / A55 / M35 / M55",compat:"EB-BA356ABY 5000mAh - A35 , A55",type:"battery"},
-{part:"بطارية S23 Ultra / S24 Ultra / S22 Ultra",compat:"EB-BS928ABY 5000mAh - S23U , S24U , S22U",type:"battery"},
-{part:"بطارية Z Flip 3 / Flip 4 / Flip 5",compat:"EB-BF711ABY 3300mAh - Flip 3/4/5",type:"battery"},
-];
- const batteriesB = [
-{part:"بطارية انفينكس Hot 8 / Hot 9 / Hot 9 Play",compat:"BL-49FX 5000mAh - Hot 8 , 9 , 9 Play",type:"battery"},
+{part:"بطارية A15 / A25 / M15 / F15 / A35 / A55",compat:"EB-BA156ABY 5000mAh - A15 , A25 , M15 , A35 , A55",type:"battery"},
+{part:"بطارية انفينكس Hot 8 / Hot 9 / Hot 9 Play",compat:"BL-49FX 5000mAh - Hot 8 , 9 , Play",type:"battery"},
 {part:"بطارية انفينكس Hot 10 / Hot 10 Play / Hot 10T",compat:"BL-49FX 5200mAh - Hot 10 , Play , T",type:"battery"},
 {part:"بطارية انفينكس Hot 11 / Hot 11S / Hot 11 Play",compat:"BL-49FX 5200mAh - Hot 11 , 11S , Play",type:"battery"},
 {part:"بطارية انفينكس Hot 12 / Hot 12 Play / Hot 12 Pro",compat:"BL-49FX 5000mAh - Hot 12 series",type:"battery"},
 {part:"بطارية انفينكس Hot 20 / Hot 20 Play / Hot 20S",compat:"BL-58FT 5000mAh - Hot 20 series",type:"battery"},
 {part:"بطارية انفينكس Hot 30 / Hot 30i / Hot 30 Play",compat:"BL-58FT 5000mAh - Hot 30 series",type:"battery"},
-{part:"بطارية انفينكس Hot 40 / Hot 40 Pro / Note 30",compat:"BL-58FT 5000mAh - Hot 40 , 40 Pro , Note 30",type:"battery"},
+{part:"بطارية انفينكس Hot 40 / Hot 40 Pro / Note 30 / Note 30 Pro",compat:"BL-58FT 5000mAh - Hot 40 , 40 Pro , Note 30",type:"battery"},
 {part:"بطارية انفينكس Note 8 / Note 8i / Note 8 Pro",compat:"BL-49FX 5200mAh - Note 8 series",type:"battery"},
-{part:"بطارية انفينكس Note 10 / Note 10 Pro / Pro Max",compat:"BL-49FX 5000mAh - Note 10 series",type:"battery"},
+{part:"بطارية انفينكس Note 10 / Note 10 Pro / Max",compat:"BL-49FX 5000mAh - Note 10 series",type:"battery"},
 {part:"بطارية انفينكس Note 11 / Note 11S / Note 11 Pro",compat:"BL-49FX 5000mAh - Note 11 series",type:"battery"},
-{part:"بطارية انفينكس Note 12 / Note 12 Pro / G96",compat:"BL-54ST 5000mAh - Note 12 series",type:"battery"},
-{part:"بطارية انفينكس Note 30 / Note 30 Pro / VIP",compat:"BL-58FT 5000mAh - Note 30 series",type:"battery"},
+{part:"بطارية انفينكس Note 12 / Note 12 Pro / G96 / VIP",compat:"BL-54ST 5000mAh - Note 12 series",type:"battery"},
 {part:"بطارية شاومي Redmi 8 / 8A / 8A Dual",compat:"BN21 5000mAh - Redmi 8 , 8A",type:"battery"},
-{part:"بطارية شاومي Redmi 9A / 9C / 9 / Poco M3",compat:"BN62 5000mAh - 9A , 9C , 9 , Poco M3",type:"battery"},
-{part:"بطارية شاومي Redmi 10A / 10C / 10 / C40",compat:"BN62 5000mAh - 10A , 10C , 10 , C40",type:"battery"},
+{part:"بطارية شاومي Redmi 9A / 9C / 9 / 9T / Poco M3",compat:"BN62 5000mAh - 9A , 9C , 9 , 9T , Poco M3",type:"battery"},
+{part:"بطارية شاومي Redmi 10A / 10C / 10 / 10 Power / Poco C40",compat:"BN62 5000mAh - 10A , 10C , 10 , C40",type:"battery"},
 {part:"بطارية شاومي Redmi 12 / 13C / C65",compat:"BN5R 5000mAh - Redmi 12 , 13C , C65",type:"battery"},
-{part:"بطارية شاومي Note 8 / Note 8 Pro / Note 8T",compat:"BN46 4000mAh - Note 8 , 8 Pro , 8T",type:"battery"},
+{part:"بطارية شاومي Note 7 / Note 7 Pro",compat:"BN4A 4000mAh - Note 7 , 7 Pro",type:"battery"},
+{part:"بطارية شاومي Note 8 / Note 8T / Note 8 Pro",compat:"BN46 4000mAh - Note 8 , 8T , 8 Pro",type:"battery"},
 {part:"بطارية شاومي Note 9 / Note 9S / Note 9 Pro",compat:"BN54 5020mAh - Note 9 series",type:"battery"},
 {part:"بطارية شاومي Note 10 / Note 10S / Note 10 Pro",compat:"BN55 5000mAh - Note 10 series",type:"battery"},
 {part:"بطارية شاومي Note 11 / Note 11S / Note 11 Pro",compat:"BN5A 5000mAh - Note 11 series",type:"battery"},
 {part:"بطارية شاومي Note 12 / Poco X5 / X5 Pro",compat:"BN5G 5000mAh - Note 12 , Poco X5",type:"battery"},
 {part:"بطارية شاومي Poco X3 / X3 Pro / X3 GT",compat:"BN59 5160mAh - Poco X3 series",type:"battery"},
 {part:"بطارية تكنو Spark 6 / Spark 7 / Spark 8 / Pop 5",compat:"BL-49FT 5000-6000mAh - Spark 6/7/8",type:"battery"},
-{part:"بطارية تكنو Spark 9 / Spark 10 / Spark 20",compat:"BL-54ST 5000mAh - Spark 9/10/20",type:"battery"},
-{part:"بطارية تكنو Camon 16 / 17 / 18 / 19 / 20",compat:"BL-49FT 5000mAh - Camon series",type:"battery"},
+{part:"بطارية تكنو Spark 9 / Spark 10 / Spark 20 / Camon 19 / 20",compat:"BL-54ST 5000mAh - Spark 9/10/20 , Camon 19/20",type:"battery"},
 {part:"بطارية ريلمي C11 / C12 / C15 / C25 / C25s",compat:"BLP793 5000mAh - C11 , C12 , C15 , C25",type:"battery"},
-{part:"بطارية ريلمي C35 / C33 / C51 / C53 / C55",compat:"BLP875 5000mAh - C35 , C51 , C53 , C55",type:"battery"},
-{part:"بطارية ايفون 7 / 8 / SE 2020 / SE 2022",compat:"616-00259 1960mAh - 7 , 8 , SE",type:"battery"},
-{part:"بطارية ايفون X / XS / 11 Pro / 11 Pro Max",compat:"616-00346 2716-3969mAh - X series",type:"battery"},
-{part:"بطارية ايفون 12 / 12 Pro / 12 Pro Max / 13",compat:"A2479 2815-3687mAh - 12 series",type:"battery"},
+{part:"بطارية ريلمي C35 / C33 / C51 / C53 / C55 / N53",compat:"BLP875 5000mAh - C35 , C51 , C53 , C55",type:"battery"},
+{part:"بطارية ايفون 7 / 8 / SE 2020 / SE 2022",compat:"1960mAh - 7 , 8 , SE",type:"battery"},
+{part:"بطارية ايفون X / XS / 11 / 11 Pro / 12 / 13 / 14",compat:"2716-3687mAh - X , XS , 11 , 12 , 13 , 14",type:"battery"},
+{part:"بطارية هواوي Y9a / Nova 7i / Y9 Prime",compat:"HB5065A0 4000mAh - Y9a , Nova 7i",type:"battery"},
+{part:"بطارية فيفو Y15 / Y12 / Y20 / Y33s",compat:"B-G7 5000mAh - Vivo Y15 , Y12 , Y20 , Y33s",type:"battery"},
+{part:"بطارية اوبو A15 / A16 / A54 / A55 / A57",compat:"BLP817 5000mAh - A15 , A16 , A54 , A55 , A57",type:"battery"},
+{part:"بطارية اوبو A17 / A38 / A58 / A78 / Reno 8",compat:"BLP927 5000mAh - A17 , A38 , A58 , A78 , Reno",type:"battery"},
+{part:"بطارية هونر X9a / 90 / 90 Lite",compat:"HB5066 5100mAh - Honor X9a , 90",type:"battery"},
+{part:"بطارية نوكيا C20 / C30 / G10 / G20",compat:"SCUD 3000-5050mAh - Nokia C20 , C30 , G10 , G20",type:"battery"},
 ];
- const chargeDB = [
-{part:"قاعدة شحن A02s / A02 / M02s / A03s / A03",compat:"A02s , A02 , M02s , A03s , A03 - Type-C",type:"charge"},
+ const chargeDB=[
+{part:"قاعدة شحن A02s / A02 / M02s / A03s / A03",compat:"A02s , A02 , M02s , A03s - Type-C",type:"charge"},
 {part:"قاعدة شحن A10s / A10 / M10s",compat:"A10s , A10 , M10s - Micro/Type-C",type:"charge"},
-{part:"قاعدة شحن A11 / M11 / F11",compat:"A11 , M11 , F11 - Type-C",type:"charge"},
-{part:"قاعدة شحن A12 / M12 / F12 / A12 Nacho",compat:"A12 , M12 , F12 - Type-C مع مايك",type:"charge"},
-{part:"قاعدة شحن A13 / M13 / F13 / A04s",compat:"A13 , M13 , F13 - Type-C",type:"charge"},
-{part:"قاعدة شحن A14 / M14 / F14 / A14 5G",compat:"A14 , M14 , F14 - Type-C",type:"charge"},
-{part:"قاعدة شحن A20 / A20s / A20e / M20",compat:"A20 , A20s , A20e - Type-C",type:"charge"},
-{part:"قاعدة شحن A21s / A21 / M21",compat:"A21s , A21 , M21 - Type-C",type:"charge"},
-{part:"قاعدة شحن A22 / M22 / F22 / A22 5G",compat:"A22 4G/5G , M22 , F22 - Type-C",type:"charge"},
-{part:"قاعدة شحن A23 / M23 / F23 / A23 5G",compat:"A23 , M23 , F23 - Type-C 25W",type:"charge"},
-{part:"قاعدة شحن A24 / M34 / F34 / A25 / A15",compat:"A24 , M34 , A25 , A15 - Type-C",type:"charge"},
-{part:"قاعدة شحن A30 / A30s / M30 / M30s",compat:"A30 , A30s , M30 , M30s - Type-C",type:"charge"},
-{part:"قاعدة شحن A31 / M31 / M31s / F41",compat:"A31 , M31 , M31s , F41 - Type-C",type:"charge"},
-{part:"قاعدة شحن A32 / M32 / F32 / A32 5G",compat:"A32 , M32 , F32 - Type-C",type:"charge"},
-{part:"قاعدة شحن A52 / A52s / A53 / A73 / A72",compat:"A52 , A52s , A53 , A73 , A72 - Type-C",type:"charge"},
-{part:"قاعدة شحن انفينكس Hot 8 / Hot 9 / Hot 9 Play",compat:"Hot 8 , Hot 9 , Play - Micro",type:"charge"},
-{part:"قاعدة شحن انفينكس Hot 10 / Hot 10 Play / Hot 10T",compat:"Hot 10 , Play , T - Micro",type:"charge"},
-{part:"قاعدة شحن انفينكس Hot 11 / Hot 11S / Hot 11 Play",compat:"Hot 11 , 11S , Play - Type-C",type:"charge"},
-{part:"قاعدة شحن انفينكس Hot 12 / Hot 12 Play / Hot 12 Pro",compat:"Hot 12 series - Type-C",type:"charge"},
-{part:"قاعدة شحن انفينكس Hot 20 / Hot 20 Play / Hot 20S",compat:"Hot 20 series - Type-C",type:"charge"},
-{part:"قاعدة شحن انفينكس Hot 30 / Hot 40 / Note 30",compat:"Hot 30 , Hot 40 , Note 30 - Type-C 33W",type:"charge"},
-{part:"قاعدة شحن انفينكس Note 10 / Note 11 / Note 11S",compat:"Note 10 , Note 11 , 11S - Type-C",type:"charge"},
-{part:"قاعدة شحن انفينكس Note 12 / Note 12 Pro / G96",compat:"Note 12 series - Type-C",type:"charge"},
-{part:"قاعدة شحن شاومي Redmi 8 / 8A / 8A Dual",compat:"Redmi 8 , 8A - Micro USB",type:"charge"},
-{part:"قاعدة شحن شاومي Redmi 9A / 9C / 9 / Poco M3",compat:"9A , 9C , 9 , Poco M3 - Micro",type:"charge"},
-{part:"قاعدة شحن شاومي Redmi 10A / 10C / 10 / C40",compat:"10A , 10C , 10 - Type-C",type:"charge"},
-{part:"قاعدة شحن شاومي Note 8 / Note 8 Pro / Note 8T",compat:"Note 8 , 8 Pro , 8T - Type-C",type:"charge"},
-{part:"قاعدة شحن شاومي Note 9 / Note 9S / Note 9 Pro",compat:"Note 9 series - Type-C",type:"charge"},
-{part:"قاعدة شحن شاومي Note 10 / Note 10S / Note 10 Pro",compat:"Note 10 series - Type-C",type:"charge"},
-{part:"قاعدة شحن شاومي Note 11 / Note 11S / Note 11 Pro",compat:"Note 11 series - Type-C 33W",type:"charge"},
-{part:"قاعدة شحن شاومي Note 12 / Poco X5 / X5 Pro",compat:"Note 12 , Poco X5 - Type-C",type:"charge"},
-{part:"قاعدة شحن تكنو Spark 6 / Spark 7 / Spark 8 / Pop 5",compat:"Spark 6/7/8 - Micro",type:"charge"},
-{part:"قاعدة شحن تكنو Spark 9 / Spark 10 / Spark 20",compat:"Spark 9/10/20 - Type-C",type:"charge"},
-{part:"قاعدة شحن تكنو Camon 16 / 17 / 18 / 19 / 20",compat:"Camon series - Type-C",type:"charge"},
-{part:"قاعدة شحن ريلمي C11 / C12 / C15 / C25",compat:"C11 , C12 , C15 , C25 - Micro",type:"charge"},
-{part:"قاعدة شحن ريلمي C35 / C33 / C51 / C53 / C55",compat:"C35 , C51 , C53 , C55 - Type-C",type:"charge"},
-{part:"قاعدة شحن اوبو A15 / A16 / A54 / A55",compat:"A15 , A16 , A54 , A55 - Type-C/Micro",type:"charge"},
-{part:"قاعدة شحن ايفون 7 / 8 / SE 2020 / SE 2022 / X / 11 / 12",compat:"iPhone 7 , 8 , SE , X , 11 , 12 - Lightning",type:"charge"},
-{part:"قاعدة شحن ايفون 13 / 14 / 15 / 15 Pro",compat:"iPhone 13 , 14 - Lightning / 15 - Type-C",type:"charge"},
-{part:"قاعدة شحن هواوي Y9a / Y9 Prime / Nova 7i",compat:"Y9a , Y9 Prime , Nova 7i - Type-C",type:"charge"},
+{part:"قاعدة شحن A11 / M11 / F11 / A12 / M12 / F12",compat:"A11 , M11 , A12 , M12 , F12 - Type-C",type:"charge"},
+{part:"قاعدة شحن A13 / M13 / F13 / A14 / M14",compat:"A13 , M13 , F13 , A14 , M14 - Type-C",type:"charge"},
+{part:"قاعدة شحن A20 / A20s / A21s / A21",compat:"A20 , A20s , A21s , A21 - Type-C",type:"charge"},
+{part:"قاعدة شحن A23 / M23 / F23 / A24 / M34",compat:"A23 , M23 , F23 , A24 , M34 - Type-C 25W",type:"charge"},
+{part:"قاعدة شحن A30 / A30s / M30 / M30s / A31 / M31",compat:"A30 , A30s , M30 , M31 - Type-C",type:"charge"},
+{part:"قاعدة شحن A32 / M32 / A52 / A53 / A73",compat:"A32 , M32 , A52 , A53 , A73 - Type-C",type:"charge"},
+{part:"قاعدة شحن انفينكس Hot 8 / Hot 9 / Hot 10",compat:"Hot 8 , 9 , 10 - Micro",type:"charge"},
+{part:"قاعدة شحن انفينكس Hot 11 / Hot 12 / Hot 20 / Hot 30 / Hot 40 / Note 30",compat:"Hot 11 , 12 , 20 , 30 , 40 , Note 30 - Type-C",type:"charge"},
+{part:"قاعدة شحن انفينكس Note 10 / Note 11 / Note 12",compat:"Note 10 , 11 , 12 - Type-C",type:"charge"},
+{part:"قاعدة شحن شاومي Redmi 8 / 8A / 9A / 9C / 9 / Poco M3",compat:"Redmi 8 , 8A , 9A , 9C , 9 - Micro",type:"charge"},
+{part:"قاعدة شحن شاومي Redmi 10A / 10C / 10 / 12 / 13C",compat:"10A , 10C , 10 , 12 , 13C - Type-C",type:"charge"},
+{part:"قاعدة شحن شاومي Note 8 / Note 9 / Note 10 / Note 11 / Note 12",compat:"Note 8 , 9 , 10 , 11 , 12 - Type-C",type:"charge"},
+{part:"قاعدة شحن تكنو Spark 6 / 7 / 8 / 9 / 10 / 20 / Camon",compat:"Spark 6 , 7 , 8 , 9 , 10 , 20 , Camon - Type-C/Micro",type:"charge"},
+{part:"قاعدة شحن ريلمي C11 / C12 / C15 / C21 / C25 / C33 / C35 / C51 / C53",compat:"C11 , C15 , C21 , C33 , C35 , C51 , C53 - Micro/Type-C",type:"charge"},
+{part:"قاعدة شحن اوبو A15 / A16 / A54 / A55 / A57 / A78",compat:"A15 , A16 , A54 , A55 , A57 , A78 - Type-C",type:"charge"},
+{part:"قاعدة شحن ايفون 7 / 8 / SE / X / XS / XR / 11 / 12 / 13 / 14",compat:"iPhone 7 , 8 , SE , X , 11 , 12 , 13 , 14 - Lightning",type:"charge"},
+{part:"قاعدة شحن ايفون 15 / 15 Pro / 15 Pro Max - Type-C",compat:"iPhone 15 series - Type-C جديد",type:"charge"},
+{part:"قاعدة شحن هواوي Y9a / Nova 7i / Y9 Prime / P30 Lite",compat:"Y9a , Nova 7i , Y9 Prime - Type-C",type:"charge"},
 ];
- const schematicsDB = [
-{part:"مخطط سامسونج A10s / A10",compat:"مسار الشحن + مسار الشبكة + اضاءة - ملف PDF + صورة البورد - A107F",type:"schematic"},
-{part:"مخطط سامسونج A12 / M12 / F12",compat:"مخطط كامل A125F - IC الشحن MTK + مسارات المايك + الجرس - بور سبلاي 4.2V",type:"schematic"},
-{part:"مخطط سامسونج A21s / A21",compat:"A217F - مخطط Exynos 850 - مسار الشبكة + الواي فاي - نقاط Test Point",type:"schematic"},
-{part:"مخطط سامسونج A32 / M32 / F32",compat:"A325F - Mediatek G80 - مخطط الشاشة + التاتش + البصمة الجانبية",type:"schematic"},
-{part:"مخطط سامسونج A51 / A51 5G",compat:"A515F - Exynos 9611 - مسار الكاميرات + الشحن السريع 25W",type:"schematic"},
-{part:"مخطط انفينكس Hot 10 / Hot 11",compat:"X682 / X662 - Helio G70 - مخطط كامل - مسار الشحن + المايكات",type:"schematic"},
-{part:"مخطط انفينكس Hot 12 / Hot 12 Play",compat:"X6817 / X6816 - Unisoc - مخطط الباور + الشبكة",type:"schematic"},
-{part:"مخطط انفينكس Hot 30 / Hot 40 / Note 30",compat:"X6831 / X6837 / X6833B - Helio G99 - مخطط 33W - نقاط ISP",type:"schematic"},
-{part:"مخطط انفينكس Note 10 / Note 11",compat:"X695 / X662 - مخطط الشحن + الصوت + الكاميرا - G88",type:"schematic"},
-{part:"مخطط انفينكس Note 12 / Note 12 Pro",compat:"X663 / X668 - G96 - AMOLED - مخطط البصمة تحت الشاشة",type:"schematic"},
-{part:"مخطط شاومي Redmi 9A / 9C / 9",compat:"M2006C3MG / M2006C3MT - Helio G25/G35 - مخطط كامل PDF - مسار الشبكة",type:"schematic"},
-{part:"مخطط شاومي Redmi 10A / 10C / 10",compat:"220233L2C - Helio G25 - مخطط الشحن + الاضاءة",type:"schematic"},
-{part:"مخطط شاومي Note 8 / Note 8 Pro",compat:"Ginkgo / Begonia - Snapdragon 665 / Helio G90T - مخطط بور",type:"schematic"},
-{part:"مخطط شاومي Note 9 / Note 9S / Note 9 Pro",compat:"Merlin / Curtana - Helio G85 / Snapdragon 720G - مسار الشبكة",type:"schematic"},
-{part:"مخطط شاومي Note 10 / Note 10S / Note 10 Pro",compat:"Mojito / Rosemary - Snapdragon 678 / G95 - AMOLED",type:"schematic"},
-{part:"مخطط شاومي Note 11 / Note 11S / Note 11 Pro",compat:"Spes / Viva - Snapdragon 680 / G96 - مخطط 33W + 67W",type:"schematic"},
-{part:"مخطط شاومي Poco X3 / X3 Pro / X3 GT",compat:"Karna / Vayu - Snapdragon 732G / 860 - مخطط الشحن + الصوت",type:"schematic"},
-{part:"مخطط تكنو Spark 7 / Spark 8 / Spark 9",compat:"KF6 / KG5 / KH6 - Helio A25/G37 - مخطط كامل",type:"schematic"},
-{part:"مخطط تكنو Spark 10 / Spark 20 / Camon 19 / 20",compat:"KI5 / CK6 / CI6 - Helio G85/G99 - مخطط الشحن السريع",type:"schematic"},
-{part:"مخطط ريلمي C11 / C12 / C15 / C21 / C25Y",compat:"RMX2185 / RMX2189 / RMX3261 - Helio G35 - مخطط الباور",type:"schematic"},
-{part:"مخطط ريلمي C33 / C35 / C51 / C53 / C55",compat:"RMX3624 / RMX3605 - Unisoc T612 - مخطط الشاشة 90Hz",type:"schematic"},
-{part:"مخطط اوبو A15 / A16 / A54 / A55 / A57",compat:"CPH2185 / CPH2269 / CPH2363 - Helio P35/G35 - مخطط كامل",type:"schematic"},
-{part:"مخطط ايفون 7 / 8 / SE 2020",compat:"D10 / D20 - A10 Fusion - مخطط البورد طبقتين - مسار الشحن Tristar",type:"schematic"},
-{part:"مخطط ايفون X / XS / XR / 11",compat:"D22 / D32 / N104 - A11/A12/A13 - مخطط Face ID + الشحن اللاسلكي",type:"schematic"},
-{part:"مخطط ايفون 12 / 13 / 14 / 15",compat:"D53 / D16 / D27 - A14/A15/A16 - مخطط 5G + MagSafe + Type-C 15",type:"schematic"},
-{part:"مخطط هواوي Y9a / Nova 7i / Y9 Prime 2019",compat:"FRL / JNY - Kirin 810 - مخطط الشحن 40W + الكاميرا المنبثقة",type:"schematic"},
-{part:"مخطط فيفو Y15 / Y12 / Y20 / Y33s",compat:"1901 / 2006 / V2036 - Helio P22/G80 - مخطط كامل",type:"schematic"},
-{part:"مخطط نقاط ISP و EMMC لكل الاجهزة",compat:"ISP Pinout - A02s , A12 , Redmi 9A , Hot 10 , Spark 7 - ازالة FRP",type:"schematic"},
-{part:"مخطط مسارات الشحن السريع 33W / 67W / 120W",compat:"شاومي وانفينكس وتكنو - مسار الشحن السريع - IC الشحن BQ25970",type:"schematic"},
-{part:"مخطط اعطال الشبكة والواي فاي والبلوتوث",compat:"WTR + SDR + IC الشبكة - سامسونج وشاومي وانفينكس - حلول No Service",type:"schematic"},
+const schematicsDB=[
+{part:"مخطط سامسونج A10s / A10 / A11 / A12 / M12 / F12",compat:"A107F / A125F / A115F - مخطط كامل PDF - مسار الشحن + المايك + الجرس + الاضاءة",type:"schematic"},
+{part:"مخطط سامسونج A13 / A14 / A23 / M23 / F23",compat:"A135F / A145F / A235F - مخطط 25W - IC الشحن + الشبكة",type:"schematic"},
+{part:"مخطط سامسونج A21s / A21 / M21 / A31 / M31",compat:"A217F / A315F - Exynos 850/9611 - مخطط الباور + الشبكة",type:"schematic"},
+{part:"مخطط سامسونج A32 / A32 5G / M32 / F32 / A52 / A53",compat:"A325F / A526B / A536 - Mediatek / Snapdragon - مخطط 25W",type:"schematic"},
+{part:"مخطط سامسونج A51 / A71 / S20 / S21 / S23 Ultra",compat:"A515F / A715F / G980 / S918 - مخطط كامل طبقتين",type:"schematic"},
+{part:"مخطط انفينكس Hot 8 / Hot 9 / Hot 10 / Hot 10 Play",compat:"X650 / X682 / X688 - Helio A22/G70 - مخطط كامل + ISP",type:"schematic"},
+{part:"مخطط انفينكس Hot 11 / Hot 11S / Hot 11 Play / Hot 12 / Hot 12 Play",compat:"X662 / X6817 / X6816 - Unisoc / G85 - مخطط الباور",type:"schematic"},
+{part:"مخطط انفينكس Hot 20 / Hot 20 Play / Hot 20S / Hot 20 5G",compat:"X6827 / X6825 - Helio G85 - مخطط الشحن السريع",type:"schematic"},
+{part:"مخطط انفينكس Hot 30 / Hot 30i / Hot 40 / Hot 40 Pro / Note 30 / Note 30 Pro",compat:"X6831 / X6837 / X6833B / X678B - Helio G99 - مخطط 33W/68W - Test Point",type:"schematic"},
+{part:"مخطط انفينكس Note 8 / Note 8i / Note 10 / Note 10 Pro",compat:"X695D / X695 - Helio G80/G90 - مخطط كامل",type:"schematic"},
+{part:"مخطط انفينكس Note 11 / Note 11S / Note 11 Pro / Note 12 / Note 12 Pro",compat:"X662 / X663 / X668 - G88 / G96 - AMOLED - البصمة تحت الشاشة",type:"schematic"},
+{part:"مخطط شاومي Redmi 8 / 8A / 8A Dual / 9A / 9AT / 9C / 9",compat:"M1908C3KG / M2006C3MG - Snapdragon 439 / Helio G25/G35 - مخطط كامل",type:"schematic"},
+{part:"مخطط شاومي Redmi 10A / 10C / 10 / 12 / 12C / 13C",compat:"220233L2C / 2212ARNC - Helio G25 / Snapdragon 680 - مخطط الشحن",type:"schematic"},
+{part:"مخطط شاومي Note 7 / Note 7 Pro / Note 7S / Note 8 / Note 8 Pro",compat:"Lavender / Begonia / Ginkgo - Snapdragon 660/665 / G90T - مخطط بور",type:"schematic"},
+{part:"مخطط شاومي Note 9 / Note 9S / Note 9 Pro / Max / Note 9 4G",compat:"Merlin / Curtana / Joyeuse - Helio G85 / Snapdragon 720G - مخطط الشبكة",type:"schematic"},
+{part:"مخطط شاومي Note 10 / Note 10S / Note 10 Pro / Max / Pro 5G",compat:"Mojito / Rosemary / Sweet - Snapdragon 678 / G95 / 732G - AMOLED",type:"schematic"},
+{part:"مخطط شاومي Note 11 / Note 11S / Note 11 Pro 4G/5G / Pro+ 5G",compat:"Spes / Viva / Veux - Snapdragon 680 / G96 / 695 / 920 - مخطط 33W/67W/120W",type:"schematic"},
+{part:"مخطط شاومي Note 12 / Note 12S / Note 12 Pro 4G/5G / Pro+ 5G / Poco X5",compat:"Ruby / Tapas / Redwood - Snapdragon 685/732G/1080 - مخطط",type:"schematic"},
+{part:"مخطط شاومي Poco X3 / X3 Pro / X3 GT / X3 NFC / X4 Pro / X5 Pro",compat:"Karna / Vayu / Chopin - Snapdragon 732G/860/Dimensity 1100 - مخطط",type:"schematic"},
+{part:"مخطط شاومي Poco F3 / F4 / F5 / F5 Pro / M4 Pro / M5",compat:"Alioth / Munch / Marble - Snapdragon 870/8+ Gen1 - مخطط",type:"schematic"},
+{part:"مخطط تكنو Spark 6 / 6 Go / 7 / 7T / 7 Pro / 8 / 8C / 8T",compat:"KE5 / KF6 / KG5 / KG5k - Helio A22/A25/G25 - مخطط كامل",type:"schematic"},
+{part:"مخطط تكنو Spark 9 / 9 Pro / 10 / 10 Pro / 10C / 20 / 20 Pro / Go 2024",compat:"KH6 / KI5 / CK6 / BG6 - Helio G37/G85/G99 - مخطط الشحن السريع",type:"schematic"},
+{part:"مخطط تكنو Camon 16 / 17 / 18 / 19 / 20 / 20 Pro / Premier",compat:"CE7 / CG6 / CI6 / CK6 - Helio G70/G85/G99 - مخطط الكاميرا",type:"schematic"},
+{part:"مخطط تكنو Pova 2 / Pova 3 / Pova 4 / Pova 5 / Pro / Neo / Phantom X2",compat:"LE7 / LF7 / LG7 - Helio G85/G99/Dimensity 900 - مخطط",type:"schematic"},
+{part:"مخطط ريلمي C11 / C12 / C15 / C20 / C21 / C21Y / C25Y / C25s",compat:"RMX2185 / RMX2189 / RMX3261 / RMX3265 - Helio G35 - مخطط الباور",type:"schematic"},
+{part:"مخطط ريلمي C30 / C33 / C35 / C30s / C51 / C53 / C55 / Narzo N53",compat:"RMX3624 / RMX3605 / RMX3760 - Unisoc T612/T612 - مخطط 90Hz",type:"schematic"},
+{part:"مخطط ريلمي 8 / 8 Pro / 8 5G / 9 / 9 Pro / 9 Pro+ / 10 / 10 Pro / 11",compat:"RMX3085 / RMX3363 / RMX3686 - Snapdragon 720G/695/1080 - مخطط",type:"schematic"},
+{part:"مخطط اوبو A15 / A15s / A16 / A16s / A16k / A54 / A55 / A57",compat:"CPH2185 / CPH2269 / CPH2363 - Helio P35/G35/G80 - مخطط كامل",type:"schematic"},
+{part:"مخطط اوبو A17 / A17k / A38 / A58 / A78 / A98 / Reno 8 / Reno 10",compat:"CPH2477 / CPH2527 / CPH2483 - Helio G85/G99/Dimensity - مخطط",type:"schematic"},
+{part:"مخطط ايفون 7 / 8 / SE 2020 / SE 2022 / X / XS / XS Max / XR",compat:"D10 / D20 / D22 / D32 / N104 - A10/A11/A12 - مخطط طبقتين + Tristar + Hydra",type:"schematic"},
+{part:"مخطط ايفون 11 / 11 Pro / 11 Pro Max / 12 / 12 Mini / 12 Pro / Max",compat:"D42 / D52 / D53 - A13/A14 - مخطط Face ID + الشحن اللاسلكي + 5G",type:"schematic"},
+{part:"مخطط ايفون 13 / 13 Mini / 13 Pro / Max / 14 / 14 Plus / Pro / Max / 15",compat:"D16 / D27 / D73 - A15/A16/A17 Pro - مخطط MagSafe + 5G + Type-C",type:"schematic"},
+{part:"مخطط هواوي Y9a / Y9 Prime 2019 / Nova 7i / P40 Lite / P30 Lite",compat:"FRL / JNY / Marie - Kirin 810/710 - مخطط 40W + الكاميرا المنبثقة",type:"schematic"},
+{part:"مخطط فيفو Y15 / Y12 / Y20 / Y33s / Y21 / Y53s / Y35",compat:"1901 / 2006 / V2036 / V2110 - Helio P22/G80 - مخطط كامل",type:"schematic"},
+{part:"مخطط هونر X6 / X7 / X8 / X9 / X9a / 90 / 90 Lite / 70",compat:"VNE / RKY / CRT - Snapdragon 680/6 Gen1 - مخطط",type:"schematic"},
+{part:"مخطط نقاط ISP و EMMC و UFS - ازالة FRP لكل الاجهزة",compat:"ISP Pinout - A02s , A12 , Redmi 9A , Hot 10 , Spark 7 , C11 - نقاط مباشرة - EMMC",type:"schematic"},
+{part:"مخطط اعطال الشبكة والواي فاي والبلوتوث - No Service",compat:"WTR2965 / WTR1605L / SDR660 / MT6169 / MT6789 - حلول No Service - سامسونج وشاومي وانفينكس",type:"schematic"},
+{part:"مخطط مسارات الشحن السريع 18W / 33W / 67W / 120W / 210W",compat:"BQ25970 / BQ24196 / LN8000 / SC8547 - IC الشحن السريع - شاومي وانفينكس وتكنو",type:"schematic"},
+{part:"مخطط مسارات الشاشة والاضاءة والتاتش",compat:"Light / Touch / Display - حلول شاشة سوداء + تاتش لا يعمل + اضاءة - كل الاجهزة",type:"schematic"},
+{part:"مخطط مسارات المايك والجرس والسماعة",compat:"Mic / Speaker / Receiver - حلول صوت - A12 , Redmi 9A , Hot 10 - مسارات كاملة",type:"schematic"},
 ];
  <script>
-const allCompat = [...screensA, ...screensB, ...screensC, ...batteriesA, ...batteriesB, ...chargeDB, ...schematicsDB];
-console.log("عدد التوافقات:", allCompat.length);
+const allCompat=[...screens1,...screens2,...batteriesDB,...chargeDB,...schematicsDB];
+console.log("العدد الكلي:",allCompat.length);
 </script>
 <script>
 function renderHome(){
@@ -312,56 +277,44 @@ home.innerHTML=`
 <h2 class="section-title">📚 الاقسام الرئيسية</h2>
 <div class="cats-wrapper">
 <div class="cat-card" onclick="openCat('lessons')"><div class="icon">🎓</div><h3>دورات اون لاين</h3><small>تعلم الصيانة</small></div>
-<div class="cat-card" style="background:linear-gradient(135deg,#2e2a1a,#3d3311)" onclick="openCat('compat')"><div class="icon">🔧</div><h3>توافقات الاجهزة</h3><small>${allCompat.length} توافق</small></div>
+<div class="cat-card" style="background:linear-gradient(135deg,#2e2a1a,#3d3311)" onclick="openCat('compat')"><div class="icon">🔧</div><h3>توافقات الاجهزة</h3><small>${allCompat.length} توافق + مخطط</small></div>
 <div class="cat-card" style="background:linear-gradient(135deg,#1a2e1a,#162e1a)" onclick="openCat('accessories')"><div class="icon">🎧</div><h3>اكسسوارات</h3><small>كفرات وشواحن</small></div>
 <div class="cat-card" style="background:linear-gradient(135deg,#2e1a2e,#3e1a2e)" onclick="openCat('devices')"><div class="icon">📱</div><h3>اجهزة</h3><small>كل الهواتف</small></div>
-<div class="cat-card" style="background:linear-gradient(135deg,#1a1a2e,#2a1a3e)" onclick="openCat('schematics')"><div class="icon">📜</div><h3>المخططات</h3><small>مخططات البورد</small></div>
-<div class="cat-card" style="background:linear-gradient(135deg,#2e1a1a,#3e2a1a)" onclick="openCat('contact')"><div class="icon">📍</div><h3>اتصل بنا</h3><small>العنوان</small></div>
 </div>
 <h2 class="section-title">🏢 شركات الهواتف</h2>
 <div class="brands-grid" id="brandsGrid"></div>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-top:15px">
-<div style="background:#1a2e1a;padding:10px;border-radius:8px;text-align:center"><b style="color:#4ade80;font-size:16px" id="countScreen"></b><br><small style="font-size:10px">شاشة</small></div>
-<div style="background:#2e1a1a;padding:10px;border-radius:8px;text-align:center"><b style="color:#f87171;font-size:16px" id="countBattery"></b><br><small style="font-size:10px">بطارية</small></div>
-<div style="background:#1a1e2e;padding:10px;border-radius:8px;text-align:center"><b style="color:#60a5fa;font-size:16px" id="countCharge"></b><br><small style="font-size:10px">قاعدة</small></div>
-<div style="background:#1e1a2e;padding:10px;border-radius:8px;text-align:center"><b style="color:#a78bfa;font-size:16px" id="countSchem"></b><br><small style="font-size:10px">مخطط</small></div>
+<div style="background:#1a2e1a;padding:10px;border-radius:8px;text-align:center"><b style="color:#4ade80;font-size:14px">${screens1.length+screens2.length}</b><br><small style="font-size:9px">شاشة</small></div>
+<div style="background:#2e1a1a;padding:10px;border-radius:8px;text-align:center"><b style="color:#f87171;font-size:14px">${batteriesDB.length}</b><br><small style="font-size:9px">بطارية</small></div>
+<div style="background:#1a1e2e;padding:10px;border-radius:8px;text-align:center"><b style="color:#60a5fa;font-size:14px">${chargeDB.length}</b><br><small style="font-size:9px">قاعدة</small></div>
+<div style="background:#1e1a2e;padding:10px;border-radius:8px;text-align:center"><b style="color:#a78bfa;font-size:14px">${schematicsDB.length}</b><br><small style="font-size:9px">مخطط</small></div>
 </div>
 `;
 let bGrid=document.getElementById('brandsGrid');
 for(let k in brandsInfo){bGrid.innerHTML+=`<div class="brand-card" onclick="openBrand('${k}')"><img src="${brandsInfo[k].logo}"><h3>${brandsInfo[k].name}</h3></div>`;}
-document.getElementById('countScreen').innerText = screensA.length+screensB.length+screensC.length;
-document.getElementById('countBattery').innerText = batteriesA.length+batteriesB.length;
-document.getElementById('countCharge').innerText = chargeDB.length;
-document.getElementById('countSchem').innerText = schematicsDB.length;
 renderCompatList(allCompat);
 }
 </script>
 <script>
 function renderCompatList(list){
 let div=document.getElementById('compatList'); div.innerHTML='';
-if(list.length===0){div.innerHTML='<p style="text-align:center;color:#777;padding:15px">ماكو نتيجة</p>';return;}
+if(list.length===0){div.innerHTML='<p style="text-align:center;color:#777;padding:15px">ماكو نتيجة - جرب كلمة ثانية</p>';return;}
 list.forEach(c=>{
 let icon=c.type==='screen'?'📱':c.type==='battery'?'🔋':c.type==='charge'?'🔌':'📜';
-let cls=c.type;
-div.innerHTML+=`<div class="compat-card ${cls}"><b>${icon} ${c.part}</b><br><small>✅ ${c.compat}</small></div>`;
-});
-}
-function renderSchematicList(list){
-let div=document.getElementById('schematicList'); if(!div) return; div.innerHTML='';
-list.forEach(c=>{
-div.innerHTML+=`<div class="schematic-card"><b>📜 ${c.part}</b><br><small>${c.compat}</small><br><button onclick="window.open('https://wa.me/9647738105665?text=اريد مخطط ${c.part}')" style="background:#a78bfa;border:none;color:#fff;padding:5px 10px;border-radius:6px;margin-top:6px;font-size:11px">طلب المخطط PDF</button></div>`;
+div.innerHTML+=`<div class="compat-card ${c.type}"><b>${icon} ${c.part}</b><br><small>✅ ${c.compat}</small></div>`;
 });
 }
 function filterCompat(type,btn){
-if(btn){document.querySelectorAll('.compat-tabs button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+document.querySelectorAll('.compat-tabs button').forEach(b=>b.classList.remove('active'));
+if(btn) btn.classList.add('active');
 let filtered=type==='all'?allCompat:allCompat.filter(c=>c.type===type);
 renderCompatList(filtered);
 }
-</script>
-<script>
 function openBrand(key){
 document.getElementById('homeView').classList.add('hidden');
 document.getElementById('listView').classList.remove('hidden');
+document.getElementById('compatView').classList.add('hidden');
+document.getElementById('lessonsView').classList.add('hidden');
 document.getElementById('viewTitle').innerText=brandsInfo[key].name;
 let grid=document.getElementById('viewGrid'); grid.innerHTML='';
 (phonesDB[key]||[]).forEach(p=>{grid.innerHTML+=`<div class="phone-card"><img src="${p.img}"><h4>${p.name}</h4><div class="price">${p.price}</div></div>`;});
@@ -370,37 +323,25 @@ function openCat(id){
 document.getElementById('homeView').classList.add('hidden');
 document.getElementById('listView').classList.add('hidden');
 document.getElementById('compatView').classList.add('hidden');
-document.getElementById('schematicView').classList.add('hidden');
 document.getElementById('lessonsView').classList.add('hidden');
 if(id==='devices'){document.getElementById('listView').classList.remove('hidden');document.getElementById('viewTitle').innerText='كل الاجهزة';let g=document.getElementById('viewGrid');g.innerHTML='';for(let k in phonesDB){phonesDB[k].forEach(p=>{g.innerHTML+=`<div class="phone-card"><img src="${p.img}"><h4>${p.name}</h4><div class="price">${p.price}</div></div>`;});}}
 else if(id==='accessories'){document.getElementById('listView').classList.remove('hidden');document.getElementById('viewTitle').innerText='الاكسسوارات';let g=document.getElementById('viewGrid');g.innerHTML='';accessoriesDB.forEach(p=>{g.innerHTML+=`<div class="phone-card"><img src="${p.img}"><h4>${p.name}</h4><div class="price">${p.price}</div></div>`;});}
 else if(id==='compat'){document.getElementById('compatView').classList.remove('hidden');renderCompatList(allCompat);}
-else if(id==='schematics'){document.getElementById('schematicView').classList.remove('hidden');renderSchematicList(schematicsDB);}
 else if(id==='lessons'){document.getElementById('lessonsView').classList.remove('hidden');}
-else if(id==='contact'){alert('البصرة - العشار - قرب شركة الجبال - 07738105665 - بادارة الاستاذ سيد عباس'); goHome();}
 }
 function goHome(){
-['listView','compatView','schematicView','lessonsView'].forEach(i=>{let e=document.getElementById(i); if(e) e.classList.add('hidden');});
+['listView','compatView','lessonsView'].forEach(i=>{document.getElementById(i).classList.add('hidden');});
 document.getElementById('homeView').classList.remove('hidden');
 }
 function doSearch(){
 let q=document.getElementById('search').value.toLowerCase().trim();
-if(q.length<1){renderCompatList(allCompat);return;}
+if(q.length<1){if(!document.getElementById('compatView').classList.contains('hidden')) renderCompatList(allCompat); return;}
 let filtered=allCompat.filter(c=>c.part.toLowerCase().includes(q)||c.compat.toLowerCase().includes(q));
 if(document.getElementById('homeView').classList.contains('hidden')==false){
 document.getElementById('homeView').classList.add('hidden');
 document.getElementById('compatView').classList.remove('hidden');
 }
 renderCompatList(filtered);
-if(q.includes('مخطط')||q.includes('بورد')||q.includes('schematic')){
-renderSchematicList(filtered.filter(c=>c.type==='schematic'));
-document.getElementById('compatView').classList.add('hidden');
-document.getElementById('schematicView').classList.remove('hidden');
-document.getElementById('schematicView').querySelector('#schematicList').innerHTML='';
-filtered.filter(c=>c.type==='schematic').forEach(c=>{
-document.getElementById('schematicList').innerHTML+=`<div class="schematic-card"><b>${c.part}</b><br><small>${c.compat}</small></div>`;
-});
-}
 }
 renderHome();
 </script>
@@ -409,7 +350,7 @@ renderHome();
 <p style="font-size:10px;color:#666;margin-top:4px">شاشات | بطاريات | قواعد شحن | مخططات البورد - موسوعة 200+ توافق</p>
 </footer>
 <script>
-document.getElementById('footerText').innerText = '© 2026 فون فلكس - ' + allCompat.length + ' توافق ومخطط - البصرة العشار';
+document.getElementById('footerText').innerText = '© 2026 فون فلكس - ' + allCompat.length + ' توافق ومخطط - البصرة العشار - قرب شركة الجبال';
 </script>
 </body>
 </html>
