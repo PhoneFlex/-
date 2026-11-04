@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Phone Flex - الشكل القديم + 200 توافق</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#6a5cff">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" href="./icon-192.png">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Tahoma,sans-serif}
 body{background:#0f0f0f;color:#fff}
@@ -68,6 +72,9 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 </div>
 <footer style="text-align:center;padding:15px;background:#000;margin-top:15px;font-size:11px;color:#777">© 2026 فون فلكس - البصرة العشار - 07738105665 - بادارة الاستاذ سيد عباس</footer>
 <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
 const compatData=[
 ["شاشة A02s / A02 / M02s / A03s / A03 / A03 Core","6.5 IPS - A02s , A02 , A03s , M02s , F02s , A03","screen"],
 ["شاشة A10s / A10 / M10s / A10e","A10s , A10 , M10s - 6.2","screen"],
