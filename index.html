@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phone Flex - الشكل القديم + 200 توافق</title>
+<title>Phone Flex - الشكل القديم + 200 توافق + بورنيو</title>
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#6a5cff">
 <link rel="apple-touch-icon" href="./icon-192.png">
@@ -26,9 +26,29 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 .compat-tabs{display:flex;gap:5px;overflow-x:auto;margin:10px 0}
 .compat-tabs button{background:#222;border:1px solid #333;color:#aaa;padding:7px 10px;border-radius:18px;cursor:pointer;font-size:11px;white-space:nowrap}
 .compat-tabs button.active{background:#667eea;color:#fff}
-.compat-card{background:#1e1e1e;border-radius:8px;padding:9px;margin:6px 0;border-right:4px solid #ffa500;font-size:12px;line-height:1.4}
+.compat-card{background:#1e1e1e;border-radius:8px;padding:9px;margin:6px 0;border-right:4px solid #ffa500;font-size:12px;line-height:1.4;cursor:pointer}
 .compat-card.screen{border-color:#4ade80} .compat-card.battery{border-color:#f87171} .compat-card.charge{border-color:#60a5fa} .compat-card.schematic{border-color:#a78bfa;background:#1e1a2e}
 .back-btn{background:#222;border:1px solid #333;color:#fff;padding:8px 14px;border-radius:8px;cursor:pointer;margin-bottom:10px}
+
+/* ===== تصميم بورنيو - جديد ===== */
+.borneo-top{background:#0d2b52;padding:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;border-bottom:3px solid #ffb400}
+.borneo-top b{font-size:16px}
+.borneo-top span{background:#ffb400;color:#000;font-size:11px;padding:3px 8px;border-radius:4px}
+.borneo-tools button{background:#132f5e;color:#fff;border:1px solid #2a4a7a;padding:7px 10px;cursor:pointer;font-weight:bold;font-size:12px}
+.borneo-tools button.active{background:#ffb400;color:#000}
+.borneo-wrap{display:flex;gap:10px;margin-top:10px}
+.borneo-board{flex:1;background:#0a1a0a;border:2px solid #ffb400;border-radius:6px;height:480px;overflow:hidden}
+#boardSvg{width:100%;height:100%}
+.borneo-side{width:300px;background:#222;padding:10px;border:1px solid #444;border-radius:6px}
+.borneo-side h4{background:#0d2b52;padding:8px;font-size:13px;border-bottom:2px solid #ffb400;margin-bottom:8px}
+#schematicBoxBorneo{background:#fff;color:#000;padding:10px;min-height:150px;font-size:13px;line-height:1.9;border-radius:4px}
+.comp-row{display:flex;justify-content:space-between;background:#333;padding:7px 8px;border-bottom:1px solid #444;cursor:pointer;font-size:12px}
+.comp-row:hover{background:#ffb400;color:#000}
+.borneo-ways{margin-top:10px}
+.way-borneo{background:#222;padding:10px;margin-top:8px;border-right:4px solid #00d26a}
+.way-borneo b{font-size:13px}.way-borneo p{color:#ccc;font-size:12px;margin-top:4px}
+#partInfoBorneo{background:#2b2b2b;padding:10px;border-right:4px solid #ffb400;font-size:13px;margin-top:10px}
+@media(max-width:800px){.borneo-wrap{flex-direction:column}.borneo-side{width:100%}}
 </style>
 </head>
 <body>
@@ -54,7 +74,17 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 <div class="brand-card">📱<br><small>اوبو</small></div>
 <div class="brand-card">📶<br><small>هواوي</small></div>
 </div>
+
+<!-- زر مخططات بورنيو الجديد -->
+<h2 class="section-title">📜 مخططات بورنيو - Borneo Schematic</h2>
+<div class="cats-wrapper">
+<div class="cat-card" onclick="openBorneo('Samsung A12')"><div style="font-size:32px">📜</div><h3>بورنيو - سامسونج A12</h3><small>SM-A125F - بورد + مخطط + مسارات</small></div>
+<div class="cat-card" onclick="openBorneo('iPhone 11')"><div style="font-size:32px">🍎</div><h3>بورنيو - ايفون 11</h3><small>A2111 - Tristar + Face ID</small></div>
+<div class="cat-card" onclick="openBorneo('Redmi Note 10')"><div style="font-size:32px">📜</div><h3>بورنيو - شاومي Note 10</h3><small>SD678 - شحن + اضاءة</small></div>
+<div class="cat-card" onclick="openBorneo('Infinix Hot 30')"><div style="font-size:32px">🔥</div><h3>بورنيو - انفينكس Hot 30</h3><small>Helio G99 - ISP + شحن سريع</small></div>
 </div>
+</div>
+
 <div id="compatView" class="hidden">
 <button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
 <h2 class="section-title">🔧 الموسوعة الكاملة - 200 توافق</h2>
@@ -67,14 +97,106 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 </div>
 <div id="compatList"></div>
 </div>
+
+<!-- ===== عارض بورنيو ===== -->
+<div id="borneoView" class="hidden">
+<button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
+<div class="borneo-top">
+  <div><b id="borneoTitle">Borneo - Samsung A12</b> <span>BORNEO STYLE</span></div>
+  <div class="borneo-tools">
+    <button class="active" onclick="setBorneoMode('bitmap',this)">BITMAP</button>
+    <button onclick="setBorneoMode('schematic',this)">SCHEMATIC</button>
+    <button onclick="setBorneoMode('ways',this)">HARDWARE / WAYS</button>
+    <button onclick="zoomBorneo(0.2)">+ تكبير</button>
+    <button onclick="zoomBorneo(-0.2)">- تصغير</button>
+    <button onclick="resetZoomBorneo()">ارجاع</button>
+  </div>
+</div>
+
+<div class="borneo-wrap">
+  <div style="flex:1">
+    <div class="borneo-board"><svg id="boardSvg" viewBox="0 0 900 560"></svg></div>
+    <div id="partInfoBorneo">اضغط على اي قطعة بالبورد...</div>
+  </div>
+  <div class="borneo-side">
+    <h4>SCHEMATIC DIAGRAM</h4>
+    <div id="schematicBoxBorneo"></div>
+    <h4 style="margin-top:10px">COMPONENT LIST</h4>
+    <div id="compListBorneo"></div>
+  </div>
+</div>
+
+<div class="borneo-ways" id="waysBorneo"></div>
+</div>
+
 <div id="lessonsView" class="hidden"><button class="back-btn" onclick="goHome()">← رجوع</button><h2 class="section-title">🎓 دورات اون لاين</h2><video controls style="width:100%"><source src="ad.mp4"></video></div>
 <div id="listView" class="hidden"><button class="back-btn" onclick="goHome()">← رجوع</button><h2 id="viewTitle" class="section-title"></h2><div id="viewGrid"></div></div>
 </div>
 <footer style="text-align:center;padding:15px;background:#000;margin-top:15px;font-size:11px;color:#777">© 2026 فون فلكس - البصرة العشار - 07738105665 - بادارة الاستاذ سيد عباس</footer>
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js');
+  try{ navigator.serviceWorker.register('./sw.js'); }catch(e){}
 }
+// ===== بيانات بورنيو - نفس تصميم المخططات =====
+const BORNEO_DATA = {
+"Samsung A12": { code:"SM-A125F", chip:"MTK MT6765", schematic:"VCC_MAIN (3.8V) -> PMIC MT6357 -> CPU<br>VBUS (5V) -> IC الشحن BQ25601 -> البطارية<br>MIPI -> كونكتر الشاشة -> الإضاءة<br>RF -> فلتر -> الانتينا",
+  board:[
+    {x:60,y:60,w:200,h:100,name:"U1001 CPU",value:"MT6765",net:"VDD_CPU",volt:"0.85V",color:"#ff5252"},
+    {x:320,y:60,w:160,h:100,name:"U2001 EMMC",value:"64GB",net:"VCCQ",volt:"1.8V",color:"#ffb400"},
+    {x:540,y:60,w:180,h:100,name:"U3001 PMIC",value:"MT6357",net:"VPH",volt:"3.8V",color:"#00b0ff"},
+    {x:60,y:210,w:180,h:80,name:"U4001 CHARGE",value:"BQ25601",net:"VBUS",volt:"5.0V",color:"#00d26a"},
+    {x:300,y:210,w:200,h:80,name:"J5001 LCD FPC",value:"LCD",net:"MIPI",volt:"1.2V",color:"#c792ff"},
+    {x:560,y:210,w:160,h:80,name:"J6001 CHARGE FPC",value:"Type-C",net:"VBUS",volt:"5V",color:"#ff7ab8"},
+    {x:60,y:340,w:220,h:80,name:"FL7001 FILTER",value:"RF",net:"ANT",volt:"0V",color:"#7afcff"},
+    {x:340,y:340,w:180,h:80,name:"U8001 AUDIO",value:"AW8737",net:"SPK",volt:"3.3V",color:"#a5ff7a"}
+  ],
+  ways:[
+    {title:"Charging Ways - لا يشحن",desc:"J6001 -> فيوز F2000 -> U4001 - افحص 5V عند الكونكتر"},
+    {title:"Light Ways - لا توجد إضاءة",desc:"ملف L2400 -> دايود D2401 -> J5001 - افحص 20V"},
+    {title:"Network Ways - لا توجد شبكة",desc:"ANT -> FL7001 -> PA - نظف الانتينا"},
+    {title:"Power Ways - لا يشتغل",desc:"VBAT -> PMIC -> CPU - افحص 3.8V على زر الباور"}
+  ]},
+"iPhone 11": { code:"A2111", chip:"A13 Bionic", schematic:"VDD_MAIN -> PMIC -> A13 CPU<br>TRISTAR U3300 -> كونكتر الشحن -> Lightning<br>PP1V8 -> Face ID FPC",
+  board:[
+    {x:60,y:60,w:220,h:110,name:"U1001 A13 CPU",value:"A13",net:"VDD_MAIN",volt:"3.8V",color:"#ff5252"},
+    {x:340,y:60,w:160,h:110,name:"U2001 NAND",value:"128GB",net:"VCC",volt:"1.8V",color:"#ffb400"},
+    {x:560,y:60,w:180,h:110,name:"U3300 TRISTAR",value:"1610A3",net:"VBUS",volt:"5V",color:"#00d26a"},
+    {x:60,y:230,w:200,h:80,name:"U3001 PMIC",value:"338S00482",net:"VDD",volt:"1.2V",color:"#00b0ff"},
+    {x:320,y:230,w:200,h:80,name:"J4300 FACE ID",value:"FPC",net:"PP1V8",volt:"1.8V",color:"#c792ff"},
+    {x:580,y:230,w:160,h:80,name:"J4000 LCD",value:"LCD",net:"MIPI",volt:"1.2V",color:"#ff7ab8"}
+  ],
+  ways:[
+    {title:"Not Charging - Tristar",desc:"افحص U3300 - اذا ما يقرا بالكمبيوتر بدل ترايستار"},
+    {title:"Face ID Problem",desc:"لا تفك الحساس - افحص J4300 ونظف الكونكتر"},
+    {title:"No Service",desc:"افحص Baseband PMU"}
+  ]},
+"Redmi Note 10": { code:"M2101K6G", chip:"Snapdragon 678", schematic:"VBUS -> IC الشحن SMB1396 -> البطارية<br>VPH_PWR -> PMIC PM6150 -> CPU<br>MIPI -> LCD FPC",
+  board:[
+    {x:60,y:70,w:200,h:100,name:"U1001 CPU",value:"SD678",net:"VDD",volt:"0.9V",color:"#ff5252"},
+    {x:320,y:70,w:160,h:100,name:"U2001 UFS",value:"128GB",net:"VCCQ",volt:"1.8V",color:"#ffb400"},
+    {x:540,y:70,w:180,h:100,name:"U3001 PMIC",value:"PM6150",net:"VPH",volt:"3.8V",color:"#00b0ff"},
+    {x:60,y:230,w:200,h:80,name:"U4001 CHARGE",value:"SMB1396",net:"VBUS",volt:"5V",color:"#00d26a"},
+    {x:320,y:230,w:200,h:80,name:"J5001 LCD",value:"AMOLED",net:"MIPI",volt:"1.2V",color:"#c792ff"}
+  ],
+  ways:[
+    {title:"Restart Problem",desc:"افحص البطارية + كونكتر البطارية + PMIC"},
+    {title:"Black Screen",desc:"افحص J5001 - افحص ملف الإضاءة"}
+  ]},
+"Infinix Hot 30": { code:"X6831", chip:"Helio G99", schematic:"VBUS -> IC الشحن LN8000 -> البطارية<br>VPH -> PMIC MT6360 -> CPU G99<br>MIPI -> LCD 120Hz",
+  board:[
+    {x:60,y:70,w:200,h:100,name:"U1001 CPU G99",value:"Helio G99",net:"VDD",volt:"0.9V",color:"#ff5252"},
+    {x:320,y:70,w:160,h:100,name:"U2001 UFS",value:"128GB",net:"VCCQ",volt:"1.8V",color:"#ffb400"},
+    {x:540,y:70,w:180,h:100,name:"U3001 PMIC",value:"MT6360",net:"VPH",volt:"3.8V",color:"#00b0ff"},
+    {x:60,y:230,w:200,h:80,name:"U4001 CHARGE",value:"LN8000",net:"VBUS",volt:"5V-11V",color:"#00d26a"},
+    {x:320,y:230,w:200,h:80,name:"J5001 LCD",value:"120Hz",net:"MIPI",volt:"1.2V",color:"#c792ff"},
+    {x:580,y:230,w:160,h:80,name:"ISP EMMC",value:"ISP",net:"CLK/CMD/D0",volt:"1.8V",color:"#ff7ab8"}
+  ],
+  ways:[
+    {title:"شحن سريع لا يعمل 33W",desc:"افحص LN8000 - افحص مقاومات VBUS"},
+    {title:"FRP - ISP",desc:"CLK - CMD - D0 - GND - DAT0 - استخدم EMMC ISP"}
+  ]}
+};
+
 const compatData=[
 ["شاشة A02s / A02 / M02s / A03s / A03 / A03 Core","6.5 IPS - A02s , A02 , A03s , M02s , F02s , A03","screen"],
 ["شاشة A10s / A10 / M10s / A10e","A10s , A10 , M10s - 6.2","screen"],
@@ -171,12 +293,63 @@ const compatData=[
 ["مخطط بورد ايفون - طبقتين - فك وتركيب","iPhone Board Layers - فك طبقات البورد - A12 , A13 , A14 - فك وتركيب بدون تلف","schematic"],
 ["مخطط حماية MDM و KG Locked و FRP - حلول 2024","KG Locked / MDM / FRP Bypass - حلول 2024 - سامسونج وانفينكس وتكنو وشاومي - بدون بوكس","schematic"]
 ];
+  // ===== منطق بورنيو =====
+let currentBorneo = "Samsung A12";
+let zoomBorneoVal = 1;
+
+function openBorneo(model){
+  currentBorneo = model;
+  document.getElementById('homeView').classList.add('hidden');
+  document.getElementById('compatView').classList.add('hidden');
+  document.getElementById('lessonsView').classList.add('hidden');
+  document.getElementById('listView').classList.add('hidden');
+  document.getElementById('borneoView').classList.remove('hidden');
+  renderBorneo();
+  window.scrollTo(0,0);
+}
+
+function renderBorneo(){
+  let d = BORNEO_DATA[currentBorneo];
+  if(!d) return;
+  document.getElementById('borneoTitle').innerText = "Borneo - "+currentBorneo+" - "+d.code;
+  let svg = document.getElementById('boardSvg');
+  svg.innerHTML = `<rect x="10" y="10" width="880" height="540" rx="15" fill="#0a2a1a" stroke="#ffb400" stroke-width="3"/><text x="450" y="35" text-anchor="middle" fill="#ffb400" font-size="15" font-weight="bold">BOARD - ${currentBorneo} (${d.code}) - ${d.chip}</text>`;
+  d.board.forEach((p,i)=>{
+    svg.innerHTML += `<g onclick="showBorneoPart(${i})" style="cursor:pointer"><rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" rx="8" fill="${p.color}"/><text x="${p.x+p.w/2}" y="${p.y+28}" text-anchor="middle" fill="#000" font-size="13" font-weight="bold">${p.name}</text><text x="${p.x+p.w/2}" y="${p.y+48}" text-anchor="middle" fill="#000" font-size="11">${p.value}</text><text x="${p.x+p.w/2}" y="${p.y+65}" text-anchor="middle" fill="#222" font-size="10">${p.net} - ${p.volt}</text></g>`;
+  });
+  document.getElementById('schematicBoxBorneo').innerHTML = `<b>${currentBorneo} - ${d.chip}</b><br><br>${d.schematic}`;
+  document.getElementById('compListBorneo').innerHTML = d.board.map((p,i)=>`<div class="comp-row" onclick="showBorneoPart(${i})"><span>${p.name}</span><span>${p.value}</span></div>`).join("");
+  document.getElementById('waysBorneo').innerHTML = `<h3 style="color:#ffb400">WAYS / HARDWARE SOLUTION - ${currentBorneo}</h3>` + d.ways.map(w=>`<div class="way-borneo"><b>${w.title}</b><p>${w.desc}</p></div>`).join("");
+  document.getElementById('partInfoBorneo').innerHTML = "اضغط على اي قطعة بالبورد...";
+}
+
+function showBorneoPart(i){
+  let p = BORNEO_DATA[currentBorneo].board[i];
+  document.getElementById('partInfoBorneo').innerHTML = `<b>${p.name}</b> | القيمة: ${p.value} | الشبكة NET: ${p.net} | الفولت: ${p.volt}`;
+}
+function zoomBorneo(v){ zoomBorneoVal = Math.max(0.5, zoomBorneoVal+v); document.getElementById('boardSvg').style.transform=`scale(${zoomBorneoVal})`; }
+function resetZoomBorneo(){ zoomBorneoVal=1; document.getElementById('boardSvg').style.transform=`scale(1)`; }
+function setBorneoMode(m,btn){
+  document.querySelectorAll('.borneo-tools button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(m==='ways'){ document.getElementById('waysBorneo').scrollIntoView({behavior:"smooth"}); }
+}
+
+// ===== منطق نسختك القديم - بدون تغيير =====
 function renderCompat(list){
 let div=document.getElementById('compatList'); div.innerHTML='';
 list.forEach(item=>{
 let icon=item[2]=='screen'?'📱':item[2]=='battery'?'🔋':item[2]=='charge'?'🔌':'📜';
-div.innerHTML+=`<div class="compat-card ${item[2]}"><b>${icon} ${item[0]}</b><br><small>✅ ${item[1]}</small></div>`;
+let click = item[2]=='schematic' ? `onclick="openBorneoFromCompat('${item[0]}')"` : ``;
+div.innerHTML+=`<div class="compat-card ${item[2]}" ${click}><b>${icon} ${item[0]}</b><br><small>✅ ${item[1]}</small>${item[2]=='schematic' ? '<br><small style="color:#ffb400">👉 اضغط لفتح مخطط بورنيو</small>' : ''}</div>`;
 });
+}
+function openBorneoFromCompat(title){
+  if(title.includes('A12') || title.includes('A10s')) openBorneo('Samsung A12');
+  else if(title.includes('ايفون 7') || title.includes('ايفون 12')) openBorneo('iPhone 11');
+  else if(title.includes('شاومي')) openBorneo('Redmi Note 10');
+  else if(title.includes('انفينكس')) openBorneo('Infinix Hot 30');
+  else openBorneo('Samsung A12');
 }
 function filterCompat(type,btn){
 document.querySelectorAll('.compat-tabs button').forEach(b=>b.classList.remove('active'));
@@ -189,6 +362,7 @@ document.getElementById('homeView').classList.add('hidden');
 document.getElementById('listView').classList.add('hidden');
 document.getElementById('compatView').classList.add('hidden');
 document.getElementById('lessonsView').classList.add('hidden');
+document.getElementById('borneoView').classList.add('hidden');
 if(id=='compat'){document.getElementById('compatView').classList.remove('hidden');renderCompat(compatData);}
 else if(id=='lessons'){document.getElementById('lessonsView').classList.remove('hidden');}
 else if(id=='devices'){document.getElementById('listView').classList.remove('hidden');document.getElementById('viewTitle').innerText='كل الاجهزة';document.getElementById('viewGrid').innerHTML='<div>Galaxy A12</div>';}
@@ -199,6 +373,7 @@ document.getElementById('homeView').classList.remove('hidden');
 document.getElementById('listView').classList.add('hidden');
 document.getElementById('compatView').classList.add('hidden');
 document.getElementById('lessonsView').classList.add('hidden');
+document.getElementById('borneoView').classList.add('hidden');
 }
 function doSearch(){
 let q=document.getElementById('search').value.toLowerCase().trim();
