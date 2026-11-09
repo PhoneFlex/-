@@ -29,14 +29,19 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 .compat-card{background:#1e1e1e;border-radius:8px;padding:9px;margin:6px 0;border-right:4px solid #ffa500;font-size:12px;line-height:1.4;cursor:pointer}
 .compat-card.screen{border-color:#4ade80} .compat-card.battery{border-color:#f87171} .compat-card.charge{border-color:#60a5fa} .compat-card.schematic{border-color:#a78bfa;background:#1e1a2e}
 .back-btn{background:#222;border:1px solid #333;color:#fff;padding:8px 14px;border-radius:8px;cursor:pointer;margin-bottom:10px}
-/* ===== مخطط بورنيو ===== */
+/* ===== مخطط بورنيو - بورد واقعي ===== */
 .borneo-top{background:#0d2b52;padding:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;border-bottom:3px solid #ffb400}
 .borneo-top span{background:#ffb400;color:#000;font-size:11px;padding:3px 8px;border-radius:4px}
 .borneo-tools button{background:#132f5e;color:#fff;border:1px solid #2a4a7a;padding:7px 10px;cursor:pointer;font-weight:bold;font-size:12px}
 .borneo-tools button.active{background:#ffb400;color:#000}
 .borneo-wrap{display:flex;gap:10px;margin-top:10px}
-.borneo-board{flex:1;background:#0a1f14;border:2px solid #ffb400;border-radius:6px;height:600px;overflow:hidden;position:relative;cursor:grab}
-#boardSvg{width:100%;height:100%}
+.borneo-board{flex:1;background:#000;border:2px solid #ffb400;border-radius:6px;height:600px;overflow:hidden;position:relative}
+.board-img-wrap{position:relative;width:100%;height:100%;overflow:hidden;transform-origin:center center}
+.board-img-wrap img{width:100%;height:100%;object-fit:fill;display:block}
+.hotspot{position:absolute;border:2px solid #ffb400;background:rgba(255,180,0,.15);border-radius:6px;cursor:pointer;z-index:5}
+.hotspot span{position:absolute;top:-22px;right:0;background:#ffb400;color:#000;font-size:10px;font-weight:bold;padding:2px 6px;border-radius:4px;white-space:nowrap}
+.hotspot:hover,.hotspot.active{background:rgba(255,180,0,.45);border-color:#fff;box-shadow:0 0 12px #ffb400}
+.trace-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:4}
 .borneo-side{width:300px;background:#222;padding:10px;border:1px solid #444;border-radius:6px}
 .borneo-side h4{background:#0d2b52;padding:8px;font-size:13px;border-bottom:2px solid #ffb400;margin-bottom:8px}
 #schematicBoxBorneo{background:#fff;color:#000;padding:10px;min-height:150px;font-size:13px;line-height:1.9;border-radius:4px}
@@ -45,9 +50,7 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 .way-borneo{background:#222;padding:10px;margin-top:8px;border-right:4px solid #00d26a}
 .way-borneo b{font-size:13px}.way-borneo p{color:#ccc;font-size:12px;margin-top:4px}
 #partInfoBorneo{background:#2b2b2b;padding:10px;border-right:4px solid #ffb400;font-size:13px;margin-top:10px}
-.trace-line{stroke-width:2.5;fill:none;stroke-linecap:round}
-.pad{fill:#d4af37;stroke:#000;stroke-width:.8}
-@media(max-width:800px){.borneo-wrap{flex-direction:column}.borneo-side{width:100%}}
+@media(max-width:800px){.borneo-wrap{flex-direction:column}.borneo-side{width:100%}.borneo-board{height:420px}}
 </style>
 </head>
 <body>
@@ -89,7 +92,7 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 <div id="borneoView" class="hidden">
 <button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
 <div class="borneo-top">
-<div><b id="borneoTitle">Borneo - Samsung A12</b> <span>HD BITMAP</span></div>
+<div><b id="borneoTitle">Borneo - Samsung A12</b> <span>REAL PCB</span></div>
 <div class="borneo-tools">
 <button class="active" onclick="setBorneoMode('bitmap',this)">BITMAP</button>
 <button onclick="setBorneoMode('schematic',this)">SCHEMATIC</button>
@@ -101,9 +104,15 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 </div>
 <div class="borneo-wrap">
 <div style="flex:1">
-<div class="borneo-board" id="boardWrap"><svg id="boardSvg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid meet"></svg></div>
-<div id="partInfoBorneo">اضغط على اي قطعة بالبورد...</div>
-<div style="font-size:11px;color:#aaa;margin-top:6px">اسحب للتحرك - اضغط على قطعة لإضاءة مسارها - الخريطة فيكتور واضحة 1200x800 مثل بورنيو</div>
+<div class="borneo-board" id="boardWrap">
+<div class="board-img-wrap" id="boardImgWrap">
+<img id="boardImg" src="board-a12.jpg" alt="Real Board">
+<svg class="trace-svg" id="traceSvg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+<div id="hotspots"></div>
+</div>
+</div>
+<div id="partInfoBorneo">اضغط على اي قطعة بالبورد الواقعي...</div>
+<div style="font-size:11px;color:#aaa;margin-top:6px">بورد واقعي HD - اضغط على المربع الأصفر لإضاءة المسار - كبر بالازرار</div>
 </div>
 <div class="borneo-side">
 <h4>SCHEMATIC DIAGRAM</h4>
@@ -123,59 +132,54 @@ if ('serviceWorker' in navigator) {
   try{ navigator.serviceWorker.register('./sw.js'); }catch(e){}
 }
 const BORNEO_DATA = {
-"Samsung A12": { code:"SM-A125F", chip:"MTK MT6765", schematic:"<b>VCC_MAIN 3.8V</b> → PMIC MT6357 → CPU<br><b>VBUS 5V</b> → CHARGE BQ25601 → BATTERY<br><b>MIPI</b> → LCD FPC → DISPLAY<br><b>RF</b> → FILTER → ANTENNA",
+"Samsung A12": { code:"SM-A125F", chip:"MTK MT6765", img:"board-a12.jpg", schematic:"<b>VCC_MAIN 3.8V</b> → PMIC MT6357 → CPU<br><b>VBUS 5V</b> → CHARGE BQ25601 → BATTERY<br><b>MIPI</b> → LCD FPC → DISPLAY<br><b>RF</b> → FILTER → ANTENNA",
   traces:[
-    {net:"VBUS", color:"#ff5252", d:"M 850 620 L 850 420 L 500 420 L 500 300"},
-    {net:"VCC_MAIN", color:"#ffb400", d:"M 200 650 L 200 420 L 400 420 L 400 260"},
-    {net:"MIPI", color:"#00b0ff", d:"M 600 650 L 600 500 L 750 500 L 750 320"},
-    {net:"RF", color:"#00d26a", d:"M 1000 650 L 1000 450 L 900 450 L 900 320"},
+    {net:"VBUS", color:"#ff5252", d:"M 48 95 L 48 65 L 62 65"},
+    {net:"VCC_MAIN", color:"#ffb400", d:"M 12 58 L 30 58 L 46 58"},
+    {net:"MIPI", color:"#00b0ff", d:"M 82 95 L 82 70 L 70 70"},
+    {net:"ISP", color:"#00d26a", d:"M 22 95 L 22 75 L 35 75"},
   ],
   board:[
-    {x:320,y:80,w:260,h:130,name:"U1001 CPU",value:"MT6765",net:"VDD_CPU",volt:"0.85V",color:"#ff5252",desc:"المعالج - اذا حمي سوي ريبولنك",pads:12},
-    {x:650,y:80,w:200,h:130,name:"U2001 EMMC",value:"64GB",net:"VCCQ",volt:"1.8V",color:"#ffb400",desc:"الذاكرة - ISP: CLK CMD D0",pads:10},
-    {x:920,y:80,w:180,h:130,name:"U3001 PMIC",value:"MT6357",net:"VPH_PWR",volt:"3.8V",color:"#00b0ff",desc:"ايسي الباور",pads:10},
-    {x:80,y:280,w:220,h:100,name:"U4001 CHARGE",value:"BQ25601",net:"VBUS",volt:"5.0V",color:"#00d26a",desc:"ايسي الشحن - 5V دخول 4.2V خروج",pads:8},
-    {x:380,y:280,w:240,h:100,name:"J5001 LCD FPC",value:"LCD 6.5",net:"MIPI",volt:"1.2V",color:"#c792ff",desc:"كونكتر الشاشة 40 بن",pads:14},
-    {x:700,y:280,w:220,h:100,name:"J6001 CHARGE FPC",value:"Type-C",net:"VBUS",volt:"5V",color:"#ff7ab8",desc:"كونكتر الشحن",pads:12},
-    {x:980,y:280,w:150,h:100,name:"FL7001 FILTER",value:"RF",net:"ANT",volt:"0V",color:"#7afcff",desc:"فلتر الشبكة",pads:6},
-    {x:80,y:450,w:240,h:110,name:"U8001 AUDIO",value:"AW8737",net:"SPK",volt:"3.3V",color:"#a5ff7a",desc:"ايسي الصوت",pads:8},
-    {x:400,y:450,w:240,h:110,name:"L2400 COIL",value:"إضاءة",net:"LED_A",volt:"20V",color:"#ffd700",desc:"ملف الإضاءة - اذا مقطوع الشاشة سوداء",pads:4},
-    {x:720,y:450,w:220,h:110,name:"D2401 DIODE",value:"إضاءة",net:"LED_K",volt:"20V",color:"#ff8c00",desc:"دايود الإضاءة",pads:4},
-    {x:1000,y:450,w:130,h:110,name:"TP ISP",value:"Test Point",net:"ISP",volt:"1.8V",color:"#d4af37",desc:"نقاط ISP - CLK CMD D0 GND",pads:4},
+    {name:"U1001 CPU",value:"MT6765",net:"VDD_CPU",volt:"0.85V",color:"#ffb400",desc:"المعالج - اذا حمي سوي ريبولنك",x:34,y:8,w:27,h:28},
+    {name:"U2001 EMMC",value:"32GB",net:"VCCQ",volt:"1.8V",color:"#ffb400",desc:"الذاكرة - ISP: CLK CMD D0",x:63,y:12,w:18,h:18},
+    {name:"U3001 PMIC",value:"SM5504",net:"VPH_PWR",volt:"3.8V",color:"#ffb400",desc:"ايسي الباور",x:40,y:45,w:14,h:14},
+    {name:"U4001 CHARGE",value:"RT9471",net:"VBUS",volt:"5.0V",color:"#ffb400",desc:"ايسي الشحن - 5V دخول 4.2V خروج",x:56,y:48,w:10,h:10},
+    {name:"J5001 LCD FPC",value:"LCD 40PIN",net:"MIPI",volt:"1.2V",color:"#ffb400",desc:"كونكتر الشاشة - J4001",x:64,y:85,w:22,h:10},
+    {name:"J6001 CHARGE FPC",value:"Type-C",net:"VBUS",volt:"5V",color:"#ffb400",desc:"كونكتر الشحن USB-C - J5001",x:39,y:85,w:18,h:10},
+    {name:"J7001 BAT CONN",value:"BAT",net:"VBAT",volt:"3.8V",color:"#ffb400",desc:"كونكتر البطارية - J6001",x:4,y:35,w:8,h:16},
+    {name:"J8001 SIM/SD",value:"SIM",net:"SIM",volt:"1.8V",color:"#ffb400",desc:"كونكتر السيم",x:2,y:68,w:8,h:16},
+    {name:"L2400 COIL",value:"إضاءة",net:"LED_A",volt:"20V",color:"#ffb400",desc:"ملف الإضاءة - اذا مقطوع الشاشة سوداء",x:82,y:32,w:6,h:8},
+    {name:"TP ISP",value:"Test Point",net:"ISP",volt:"1.8V",color:"#ff0000",desc:"نقاط ISP - CLK CMD D0 GND - فوق CPU",x:30,y:4,w:6,h:6},
   ],
   ways:[
-    {title:"Charging Ways - لا يشحن",desc:"J6001 (VBUS 5V) → فيوز F2000 → U4001 CHARGE → البطارية 4.2V"},
-    {title:"Light Ways - شاشة سوداء",desc:"L2400 (20V) → D2401 → J5001 - افحص 20V على الملف"},
-    {title:"Network Ways - لا توجد شبكة",desc:"ANT → FL7001 → PA - نظف الانتينا"},
-    {title:"Power Ways - لا يشتغل",desc:"VBAT 3.8V → PMIC U3001 → CPU"},
+    {title:"Charging Ways - لا يشحن",desc:"J5001 (VBUS 5V) → فيوز → U4001 CHARGE RT9471 → البطارية 4.2V - افحص 5V على كونكتر الشحن"},
+    {title:"Light Ways - شاشة سوداء",desc:"L2400 (20V) → D2401 → J4001 LCD - افحص 20V على الملف"},
+    {title:"Network Ways - لا توجد شبكة",desc:"ANT → RF PA → CPU - نظف الانتينا"},
+    {title:"Power Ways - لا يشتغل",desc:"VBAT 3.8V → PMIC SM5504 → CPU - افحص فولت زر الباور"},
   ]},
-"iPhone 11": { code:"A2111", chip:"A13 Bionic", schematic:"<b>VDD_MAIN 3.8V</b> → PMIC → A13<br><b>TRISTAR</b> → Lightning<br><b>PP1V8</b> → Face ID",
-  traces:[{net:"VDD_MAIN", color:"#ffb400", d:"M 200 650 L 200 400 L 400 400 L 400 250"}],
+"iPhone 11": { code:"A2111", chip:"A13 Bionic", img:"board-a12.jpg", schematic:"<b>VDD_MAIN 3.8V</b> → PMIC → A13<br><b>TRISTAR</b> → Lightning<br><b>PP1V8</b> → Face ID",
+  traces:[{net:"VDD_MAIN", color:"#ffb400", d:"M 20 80 L 40 80 L 40 40"}],
   board:[
-    {x:320,y:80,w:260,h:130,name:"U1001 A13 CPU",value:"A13",net:"VDD_MAIN",volt:"3.8V",color:"#ff5252",desc:"معالج A13",pads:14},
-    {x:650,y:80,w:200,h:130,name:"U2001 NAND",value:"128GB",net:"VCC",volt:"1.8V",color:"#ffb400",desc:"ناند",pads:10},
-    {x:920,y:80,w:180,h:130,name:"U3300 TRISTAR",value:"1610A3",net:"VBUS",volt:"5V",color:"#00d26a",desc:"ترايستار",pads:10},
-    {x:80,y:280,w:240,h:100,name:"U3001 PMIC",value:"338S00482",net:"VDD",volt:"1.2V",color:"#00b0ff",desc:"باور",pads:8},
-    {x:400,y:280,w:240,h:100,name:"J4300 FACE ID",value:"FPC",net:"PP1V8",volt:"1.8V",color:"#c792ff",desc:"فيس ايدي",pads:12},
+    {name:"U1001 A13 CPU",value:"A13",net:"VDD_MAIN",volt:"3.8V",color:"#ffb400",desc:"معالج A13",x:34,y:10,w:27,h:28},
+    {name:"U2001 NAND",value:"128GB",net:"VCC",volt:"1.8V",color:"#ffb400",desc:"ناند",x:63,y:12,w:18,h:18},
+    {name:"U3300 TRISTAR",value:"1610A3",net:"VBUS",volt:"5V",color:"#ffb400",desc:"ترايستار",x:56,y:48,w:10,h:10},
+    {name:"J4300 FACE ID",value:"FPC",net:"PP1V8",volt:"1.8V",color:"#ffb400",desc:"فيس ايدي",x:40,y:45,w:14,h:14},
   ],
   ways:[{title:"Not Charging",desc:"افحص U3300"},{title:"Face ID",desc:"افحص J4300"}]},
-"Redmi Note 10": { code:"M2101K6G", chip:"Snapdragon 678", schematic:"<b>VBUS</b> → SMB1396 → BATTERY<br><b>VPH</b> → PM6150 → CPU",
-  traces:[{net:"VBUS", color:"#ff5252", d:"M 850 620 L 850 420 L 500 420 L 500 300"}],
+"Redmi Note 10": { code:"M2101K6G", chip:"Snapdragon 678", img:"board-a12.jpg", schematic:"<b>VBUS</b> → SMB1396 → BATTERY<br><b>VPH</b> → PM6150 → CPU",
+  traces:[{net:"VBUS", color:"#ff5252", d:"M 48 95 L 48 65"}],
   board:[
-    {x:320,y:80,w:260,h:130,name:"U1001 CPU",value:"SD678",net:"VDD",volt:"0.9V",color:"#ff5252",desc:"معالج",pads:12},
-    {x:650,y:80,w:200,h:130,name:"U2001 UFS",value:"128GB",net:"VCCQ",volt:"1.8V",color:"#ffb400",desc:"ذاكرة",pads:10},
-    {x:920,y:80,w:180,h:130,name:"U3001 PMIC",value:"PM6150",net:"VPH",volt:"3.8V",color:"#00b0ff",desc:"باور",pads:10},
-    {x:80,y:280,w:220,h:100,name:"U4001 CHARGE",value:"SMB1396",net:"VBUS",volt:"5V",color:"#00d26a",desc:"شحن",pads:8},
+    {name:"U1001 CPU",value:"SD678",net:"VDD",volt:"0.9V",color:"#ffb400",desc:"معالج",x:34,y:10,w:27,h:28},
+    {name:"U2001 UFS",value:"128GB",net:"VCCQ",volt:"1.8V",color:"#ffb400",desc:"ذاكرة",x:63,y:12,w:18,h:18},
+    {name:"U3001 PMIC",value:"PM6150",net:"VPH",volt:"3.8V",color:"#ffb400",desc:"باور",x:40,y:45,w:14,h:14},
   ],
   ways:[{title:"Restart",desc:"افحص البطارية + PMIC"}]},
-"Infinix Hot 30": { code:"X6831", chip:"Helio G99", schematic:"<b>VBUS</b> → LN8000 → BATTERY<br><b>VPH</b> → MT6360 → G99",
-  traces:[{net:"VBUS", color:"#ff5252", d:"M 850 620 L 850 420 L 500 420 L 500 300"}],
+"Infinix Hot 30": { code:"X6831", chip:"Helio G99", img:"board-a12.jpg", schematic:"<b>VBUS</b> → LN8000 → BATTERY<br><b>VPH</b> → MT6360 → G99",
+  traces:[{net:"VBUS", color:"#ff5252", d:"M 48 95 L 48 65"}],
   board:[
-    {x:320,y:80,w:260,h:130,name:"U1001 G99",value:"Helio G99",net:"VDD",volt:"0.9V",color:"#ff5252",desc:"معالج",pads:12},
-    {x:650,y:80,w:200,h:130,name:"U2001 UFS",value:"128GB",net:"VCCQ",volt:"1.8V",color:"#ffb400",desc:"ذاكرة",pads:10},
-    {x:920,y:80,w:180,h:130,name:"U3001 PMIC",value:"MT6360",net:"VPH",volt:"3.8V",color:"#00b0ff",desc:"باور",pads:10},
-    {x:80,y:280,w:220,h:100,name:"U4001 CHARGE",value:"LN8000",net:"VBUS",volt:"5-11V",color:"#00d26a",desc:"شحن سريع 33W",pads:8},
-    {x:720,y:280,w:220,h:100,name:"ISP",value:"Test Point",net:"ISP",volt:"1.8V",color:"#d4af37",desc:"CLK CMD D0 GND",pads:6},
+    {name:"U1001 G99",value:"Helio G99",net:"VDD",volt:"0.9V",color:"#ffb400",desc:"معالج",x:34,y:10,w:27,h:28},
+    {name:"U2001 UFS",value:"128GB",net:"VCCQ",volt:"1.8V",color:"#ffb400",desc:"ذاكرة",x:63,y:12,w:18,h:18},
+    {name:"U4001 CHARGE",value:"LN8000",net:"VBUS",volt:"5-11V",color:"#ffb400",desc:"شحن سريع 33W",x:56,y:48,w:10,h:10},
   ],
   ways:[{title:"شحن سريع لا يعمل",desc:"افحص LN8000"},{title:"FRP ISP",desc:"CLK - CMD - D0 - GND"}]}
 };
@@ -285,37 +289,39 @@ function openBorneo(model){
 }
 function renderBorneo(){
   let d=BORNEO_DATA[currentBorneo]; if(!d) return;
-  document.getElementById('borneoTitle').innerText="Borneo HD - "+currentBorneo+" - "+d.code+" - "+d.chip;
-  let svg=document.getElementById('boardSvg');
-  let h=`<rect x="15" y="15" width="1170" height="770" rx="18" fill="#0a2e1a" stroke="#ffb400" stroke-width="3"/><text x="600" y="42" text-anchor="middle" fill="#ffb400" font-size="17" font-weight="bold">BOARD VIEW - ${currentBorneo} (${d.code})</text><text x="600" y="65" text-anchor="middle" fill="#888" font-size="11">TOP SIDE - PCB LAYOUT - HD 1200x800</text>`;
-  d.traces.forEach(t=>{
-    let dim = selectedNetBorneo && selectedNetBorneo!==t.net ? 'opacity="0.15"' : '';
-    h+=`<path class="trace-line" d="${t.d}" stroke="${t.color}" ${dim}/>`;
-  });
+  document.getElementById('borneoTitle').innerText="Borneo REAL - "+currentBorneo+" - "+d.code+" - "+d.chip;
+  document.getElementById('boardImg').src=d.img;
+  let hs=document.getElementById('hotspots'); hs.innerHTML="";
   d.board.forEach((p,i)=>{
-    let dim = selectedNetBorneo && selectedNetBorneo!==p.net ? 'opacity="0.25"' : '';
-    let pads="";
-    for(let k=0;k<(p.pads||8);k++){ let px=p.x+8+(k*(p.w-16)/((p.pads||8)-1)); pads+=`<rect class="pad" x="${px-3}" y="${p.y+p.h-4}" width="6" height="8"/><rect class="pad" x="${px-3}" y="${p.y-4}" width="6" height="8"/>`; }
-    h+=`<g onclick="showBorneoPart(${i})" style="cursor:pointer" ${dim}><rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" rx="8" fill="${p.color}" stroke="#000" stroke-width="1.5"/><text x="${p.x+p.w/2}" y="${p.y+32}" text-anchor="middle" fill="#000" font-size="14" font-weight="bold">${p.name}</text><text x="${p.x+p.w/2}" y="${p.y+54}" text-anchor="middle" fill="#111" font-size="12">${p.value}</text><text x="${p.x+p.w/2}" y="${p.y+p.h-18}" text-anchor="middle" fill="#222" font-size="11" font-weight="bold">${p.net} | ${p.volt}</text>${pads}</g>`;
+    let div=document.createElement('div');
+    div.className='hotspot'+(selectedNetBorneo===p.net?' active':'');
+    div.style.left=p.x+'%'; div.style.top=p.y+'%'; div.style.width=p.w+'%'; div.style.height=p.h+'%';
+    div.innerHTML=`<span>${p.name}</span>`;
+    div.onclick=()=>showBorneoPart(i);
+    hs.appendChild(div);
   });
-  svg.innerHTML=h; applyBorneoTransform();
+  let svg=document.getElementById('traceSvg'); svg.innerHTML="";
+  d.traces.forEach(t=>{
+    let op = selectedNetBorneo && selectedNetBorneo!==t.net ? 0.1 : 0.9;
+    svg.innerHTML+=`<path d="${t.d}" stroke="${t.color}" stroke-width="0.8" fill="none" opacity="${op}"/>`;
+  });
+  applyBorneoTransform();
   document.getElementById('schematicBoxBorneo').innerHTML=`<b>${currentBorneo} - ${d.chip}</b><br><br>${d.schematic}`;
   document.getElementById('compListBorneo').innerHTML=d.board.map((p,i)=>`<div class="comp-row" onclick="showBorneoPart(${i})"><span>${p.name}</span><span>${p.value} | ${p.net}</span></div>`).join("");
   document.getElementById('waysBorneo').innerHTML=`<h3 style="color:#ffb400">WAYS / HARDWARE SOLUTION - ${currentBorneo}</h3>`+d.ways.map(w=>`<div class="way-borneo"><b>${w.title}</b><p>${w.desc}</p></div>`).join("");
-  document.getElementById('partInfoBorneo').innerHTML="اضغط على اي قطعة...";
+  document.getElementById('partInfoBorneo').innerHTML="اضغط على اي مربع اصفر بالبورد الواقعي...";
 }
 function showBorneoPart(i){ let p=BORNEO_DATA[currentBorneo].board[i]; selectedNetBorneo=p.net; document.getElementById('partInfoBorneo').innerHTML=`<b style="color:#ffb400">${p.name}</b> | القيمة: ${p.value} | الشبكة: <b>${p.net}</b> | الفولت: <b>${p.volt}</b><br><small>${p.desc}</small> | <a href="#" onclick="selectedNetBorneo=null;renderBorneo();return false" style="color:#fff">الغاء التظليل</a>`; renderBorneo(); }
-function applyBorneoTransform(){ let s=document.getElementById('boardSvg'); s.style.transform=`scale(${zoomBorneoVal})`; s.style.transformOrigin="center center"; }
-function zoomBorneo(v){ zoomBorneoVal=Math.max(0.5,Math.min(3.5,zoomBorneoVal+v)); applyBorneoTransform(); }
+function applyBorneoTransform(){ let w=document.getElementById('boardImgWrap'); w.style.transform=`scale(${zoomBorneoVal})`; }
+function zoomBorneo(v){ zoomBorneoVal=Math.max(0.6,Math.min(3,zoomBorneoVal+v)); applyBorneoTransform(); }
 function resetZoomBorneo(){ zoomBorneoVal=1; applyBorneoTransform(); }
 function setBorneoMode(m,btn){ document.querySelectorAll('.borneo-tools button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); if(m==='ways') document.getElementById('waysBorneo').scrollIntoView({behavior:"smooth"}); }
-
 function renderCompat(list){
 let div=document.getElementById('compatList'); div.innerHTML='';
 list.forEach(item=>{
 let icon=item[2]=='screen'?'📱':item[2]=='battery'?'🔋':item[2]=='charge'?'🔌':'📜';
 let click = item[2]=='schematic' ? `onclick="openBorneoFromCompat(this)"` : ``;
-div.innerHTML+=`<div class="compat-card ${item[2]}" ${click}><b>${icon} ${item[0]}</b><br><small>✅ ${item[1]}</small>${item[2]=='schematic' ? '<br><small style="color:#ffb400">👉 اضغط لفتح خريطة بورنيو الواضحة</small>' : ''}</div>`;
+div.innerHTML+=`<div class="compat-card ${item[2]}" ${click}><b>${icon} ${item[0]}</b><br><small>✅ ${item[1]}</small>${item[2]=='schematic' ? '<br><small style="color:#ffb400">👉 اضغط لفتح البورد الواقعي</small>' : ''}</div>`;
 });
 }
 function openBorneoFromCompat(el){
