@@ -8,7 +8,6 @@
 <meta name="theme-color" content="#6a5cff">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <link rel="icon" href="./icon-192.png">
-<!-- ===== تحديث جديد: مكتبات الكاميرا والذكاء الاصطناعي ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 <style>
@@ -25,6 +24,7 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 .cat-card:nth-child(4){background:linear-gradient(135deg,#2e1a2e,#3e1a2e)}
 .cat-card.unlock{background:linear-gradient(135deg,#3a0a0a,#5a1111)!important;border:1px solid #ff4444}
 .cat-card.scan-cam{background:linear-gradient(135deg,#0f5132,#198754)!important;border:1px solid #4ade80}
+.cat-card.repair{background:linear-gradient(135deg,#4a1a00,#7a2e00)!important;border:1px solid #ff8c00}
 .brands-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
 .brand-card{background:#1a1a1a;border-radius:10px;padding:10px;text-align:center;border:1px solid #222;cursor:pointer}
 .hidden{display:none!important}
@@ -34,7 +34,6 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 .compat-card{background:#1e1e1e;border-radius:8px;padding:9px;margin:6px 0;border-right:4px solid #ffa500;font-size:12px;line-height:1.4;cursor:pointer}
 .compat-card.screen{border-color:#4ade80} .compat-card.battery{border-color:#f87171} .compat-card.charge{border-color:#60a5fa} .compat-card.schematic{border-color:#a78bfa;background:#1e1a2e}
 .back-btn{background:#222;border:1px solid #333;color:#fff;padding:8px 14px;border-radius:8px;cursor:pointer;margin-bottom:10px}
-/* ===== UnlockTool ===== */
 .unlock-wrap{display:grid;grid-template-columns:280px 1fr;gap:12px;margin-top:10px}
 .unlock-left{background:#1a1a1a;border:1px solid #333;border-radius:10px;padding:12px}
 .unlock-left h4{color:#ff4444;font-size:13px;margin:12px 0 8px;border-bottom:1px solid #333;padding-bottom:6px}
@@ -61,7 +60,6 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 .log-box .ok{color:#00ff88}.log-box .err{color:#ff4444}.log-box .info{color:#00b0ff}.log-box .warn{color:#ffb400}
 .device-info{background:#1e2a1e;border:1px solid #2a4a2a;padding:10px;border-radius:8px;font-size:12px;line-height:1.8;margin:10px 0}
 @media(max-width:800px){.unlock-wrap{grid-template-columns:1fr}}
-/* ===== بورنيو ===== */
 .borneo-top{background:#0d2b52;padding:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;border-bottom:3px solid #ffb400}
 .borneo-top span{background:#ffb400;color:#000;font-size:11px;padding:3px 8px;border-radius:4px}
 .borneo-tools button{background:#132f5e;color:#fff;border:1px solid #2a4a7a;padding:7px 10px;cursor:pointer;font-weight:bold;font-size:12px}
@@ -89,7 +87,6 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 .badge-series{background:#ff0000;color:#fff;padding:2px 6px;border-radius:10px;font-size:10px}
 .badge-parallel{background:#00aaff;color:#fff;padding:2px 6px;border-radius:10px;font-size:10px}
 @media(max-width:800px){.borneo-wrap{flex-direction:column}.borneo-side{width:100%}.borneo-board{height:420px}}
-/* ===== تحديث جديد: ستايل الكاميرا ===== */
 #scannerView video{width:100%;border-radius:14px;background:#000;max-height:420px;object-fit:cover}
 .scan-box{border:2px dashed #4ade80;border-radius:14px;padding:10px;text-align:center;margin:10px 0;position:relative;overflow:hidden}
 .scan-line{position:absolute;left:0;right:0;height:3px;background:#4ade80;box-shadow:0 0 15px #4ade80;top:10%;animation:scanMove 1.8s infinite}
@@ -102,6 +99,25 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 .btn-dark{background:#222;color:#fff;border:1px solid #444}
 .conf-bar{height:10px;background:#333;border-radius:20px;overflow:hidden;margin:6px 0}
 .conf-fill{height:100%;background:#4ade80}
+.repair-form{background:#1a1a1a;border:1px solid #333;border-radius:14px;padding:14px}
+.repair-form label{font-size:12px;color:#aaa;display:block;margin:10px 0 4px}
+.repair-form input,.repair-form select{width:100%;padding:12px;background:#222;border:1px solid #444;color:#fff;border-radius:10px;font-size:14px}
+.repair-stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin:12px 0}
+.repair-stat{background:#1a1a1a;border-radius:10px;padding:10px;text-align:center;border:1px solid #222}
+.repair-stat b{font-size:18px;display:block}
+.repair-card{background:#1e1e1e;border-radius:12px;padding:12px;margin:8px 0;border-right:5px solid #ffb400;line-height:1.8;font-size:13px}
+.repair-card.done{border-color:#00d26a}
+.repair-card.notwork{border-color:#ff4444}
+.repair-card .top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.repair-card .badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;color:#000}
+.badge-done{background:#00d26a}.badge-wait{background:#ffb400}
+.repair-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.repair-btns button{flex:1;padding:10px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:12px;min-width:100px}
+.btn-wa{background:#25D366;color:#000}
+.btn-done{background:#00d26a;color:#000}
+.btn-call{background:#667eea;color:#fff}
+.btn-del{background:#ff4444;color:#fff}
+.btn-edit{background:#ffb400;color:#000}
 </style>
 </head>
 <body>
@@ -117,8 +133,8 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 <div class="cat-card" onclick="openCat('accessories')"><div style="font-size:32px">🎧</div><h3>اكسسوارات</h3><small>كفرات وشواحن</small></div>
 <div class="cat-card" onclick="openCat('devices')"><div style="font-size:32px">📱</div><h3>اجهزة</h3><small>كل الهواتف</small></div>
 <div class="cat-card" onclick="openBorneo('Samsung A12')"><div style="font-size:32px">📜</div><h3>مخطط Borneo</h3><small>بورد واقعي + توالي / توازي</small></div>
-<!-- ===== تحديث جديد: زر الكاميرا ===== -->
 <div class="cat-card scan-cam" onclick="openScanner()"><div style="font-size:32px">📷</div><h3>صور الجهاز واعرفه</h3><small>كاميرا ذكاء اصطناعي - جديد</small></div>
+<div class="cat-card repair" onclick="openRepair()"><div style="font-size:32px">🛠️</div><h3>صيانة سيد عباس</h3><small>استلام - صيانة - تسليم</small></div>
 </div>
 <h2 class="section-title">🏢 شركات الهواتف</h2>
 <div class="brands-grid">
@@ -132,333 +148,140 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 <div class="brand-card" onclick="openUnlockBrand('Apple')">🍎<br><small>ابل</small></div>
 </div>
 </div>
-
-<!-- ===== تحديث جديد: قسم الكاميرا كامل ===== -->
 <div id="scannerView" class="hidden">
 <button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
 <h2 class="section-title">📷 صور الجهاز - التعرف التلقائي</h2>
-<p style="color:#aaa;font-size:13px">وجه الكاميرا على ظهر الجهاز، وخلي الاضاءة قوية. لا تصور الكارتون.</p>
-<div class="scan-box" id="scanBox">
-<div class="scan-line" id="scanLine" style="display:none"></div>
-<video id="camVideo" playsinline muted></video>
-<canvas id="camCanvas" style="display:none"></canvas>
-</div>
+<p style="color:#aaa;font-size:13px">وجه الكاميرا على ظهر الجهاز، وخلي الاضاءة قوية.</p>
+<div class="scan-box"><div class="scan-line" id="scanLine" style="display:none"></div><video id="camVideo" playsinline muted></video><canvas id="camCanvas" style="display:none"></canvas></div>
 <button class="btn btn-green" onclick="startCamera()">📷 افتح الكاميرا</button>
 <button class="btn btn-blue" onclick="captureAndIdentify()">🔍 صور واعرف الموديل</button>
 <label class="btn btn-dark" style="display:block;text-align:center">📁 او اختار صورة من الاستوديو<input type="file" id="fileInput" accept="image/*" style="display:none" onchange="onFilePicked(event)"></label>
 <button class="btn btn-dark" onclick="stopCamera()">⏹️ اطفاء الكاميرا</button>
-<div id="scanResult"></div>
-<div id="scanTop3"></div>
+<div id="scanResult"></div><div id="scanTop3"></div>
+</div>
+<div id="repairView" class="hidden">
+<button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
+<h2 class="section-title">🛠️ صيانة سيد عباس - البصرة العشار</h2>
+<div class="repair-stats">
+<div class="repair-stat"><b id="repTotal" style="color:#fff">0</b><small>كل الاجهزة</small></div>
+<div class="repair-stat"><b id="repWait" style="color:#ffb400">0</b><small>قيد الصيانة</small></div>
+<div class="repair-stat"><b id="repDone" style="color:#00d26a">0</b><small>كمل</small></div>
+<div class="repair-stat"><b id="repMoney" style="color:#4ade80">0</b><small>مجموع السعر</small></div>
+</div>
+<div class="repair-form">
+<h3 style="color:#ff8c00">➕ اضافة جهاز جديد للصيانة</h3>
+<label>📱 اسم الهاتف *</label><input id="repDevice" placeholder="مثال: Samsung A12 - Redmi 10C">
+<label>🔧 نوع العطل *</label><input id="repFault" placeholder="مثال: شاشة مكسورة - ما يشحن - FRP">
+<label>⚙️ يعمل او لا ؟ *</label><select id="repWorks"><option value="لا يعمل">❌ لا يعمل</option><option value="يعمل">✅ يعمل</option><option value="يعمل لكن بيه مشكلة">⚠️ يعمل لكن بيه مشكلة</option></select>
+<label>👤 اسم الزبون *</label><input id="repCustomer" placeholder="اسم الزبون">
+<label>📞 رقم الهاتف *</label><input id="repPhone" type="tel" dir="ltr" placeholder="077XXXXXXXXX" style="text-align:right">
+<label>💰 السعر (دينار)</label><input id="repPrice" type="number" placeholder="مثال: 25000">
+<label>⏱️ مدة العمل</label><input id="repDuration" placeholder="مثال: ساعة - يوم - يومين">
+<label>📊 حالة الجهاز</label><select id="repStatus"><option value="قيد الصيانة">🛠️ قيد الصيانة</option><option value="تم">✅ كمل - جاهز للتسليم</option><option value="بانتظار القطعة">⏳ بانتظار القطعة</option><option value="تم التسليم">📦 تم التسليم</option></select>
+<button class="btn btn-green" onclick="addRepair()">➕ حفظ الجهاز</button>
+<button class="btn btn-dark" onclick="clearRepairForm()">مسح الحقول</button>
+</div>
+<h3 class="section-title">🔍 بحث بالاجهزة</h3>
+<input id="repSearch" class="search-box" placeholder="ابحث: اسم زبون , رقم , جهاز , عطل..." oninput="renderRepairs()">
+<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-dark" style="width:auto" onclick="filterRepair('الكل')">الكل</button><button class="btn btn-dark" style="width:auto" onclick="filterRepair('قيد الصيانة')">قيد الصيانة</button><button class="btn btn-dark" style="width:auto" onclick="filterRepair('تم')">كمل</button><button class="btn btn-dark" style="width:auto" onclick="filterRepair('تم التسليم')">تم التسليم</button></div>
+<div id="repairList"></div>
 </div>
 <div id="unlockView" class="hidden">
 <button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
 <h2 class="section-title">🔓 UnlockTool - Phone Flex Edition</h2>
 <div class="unlock-wrap">
 <div class="unlock-left">
-<h4>1. اختر الشركة BRAND</h4>
-<div class="brand-tabs" id="unlockBrands"></div>
-<h4>2. اختر الموديل MODEL</h4>
-<input id="unlockSearch" placeholder="ابحث موديل: A12 , Hot 30..." oninput="filterUnlockModels()">
-<select id="unlockModel" size="6" onchange="onUnlockModelChange()"></select>
-<h4>3. اختر الوضع MODE</h4>
-<div class="mode-tabs" id="unlockModes">
-<button class="active" onclick="setUnlockMode('Download',this)">Download</button>
-<button onclick="setUnlockMode('Preloader',this)">Preloader</button>
-<button onclick="setUnlockMode('EDL 9008',this)">EDL 9008</button>
-<button onclick="setUnlockMode('Fastboot',this)">Fastboot</button>
-<button onclick="setUnlockMode('ADB',this)">ADB</button>
-</div>
-<h4>4. اختر العملية OPERATION</h4>
-<div class="op-list" id="unlockOps"></div>
+<h4>1. اختر الشركة BRAND</h4><div class="brand-tabs" id="unlockBrands"></div>
+<h4>2. اختر الموديل MODEL</h4><input id="unlockSearch" placeholder="ابحث موديل: A12 , Hot 30..." oninput="filterUnlockModels()"><select id="unlockModel" size="6" onchange="onUnlockModelChange()"></select>
+<h4>3. اختر الوضع MODE</h4><div class="mode-tabs" id="unlockModes"><button class="active" onclick="setUnlockMode('Download',this)">Download</button><button onclick="setUnlockMode('Preloader',this)">Preloader</button><button onclick="setUnlockMode('EDL 9008',this)">EDL 9008</button><button onclick="setUnlockMode('Fastboot',this)">Fastboot</button><button onclick="setUnlockMode('ADB',this)">ADB</button></div>
+<h4>4. اختر العملية OPERATION</h4><div class="op-list" id="unlockOps"></div>
 </div>
 <div class="unlock-right">
-<div class="unlock-top">
-<div><b id="unlockTitle">Samsung - Galaxy A12 (SM-A125F)</b><br><small id="unlockSub" style="color:#aaa">Download Mode | MT6765 | FRP Ready</small></div>
-<div><button class="btn-start" id="btnStart" onclick="startUnlock()">▶ START</button> <button class="btn-stop" onclick="stopUnlock()">■ STOP</button></div>
-</div>
+<div class="unlock-top"><div><b id="unlockTitle">Samsung - Galaxy A12 (SM-A125F)</b><br><small id="unlockSub" style="color:#aaa">Download Mode | MT6765 | FRP Ready</small></div><div><button class="btn-start" id="btnStart" onclick="startUnlock()">▶ START</button> <button class="btn-stop" onclick="stopUnlock()">■ STOP</button></div></div>
 <div class="device-info" id="unlockDeviceInfo">📱 الجهاز: Samsung A12 - SM-A125F<br>🔌 الوضع: Download - Vol- + Vol+ + USB<br>⚙️ العملية: اختر عملية من اليسار ثم اضغط START</div>
 <div class="progress"><div id="unlockProgress"></div></div>
 <div style="display:flex;justify-content:space-between;font-size:11px;color:#aaa"><span id="unlockStatus">Ready...</span><span id="unlockPercent">0%</span></div>
 <div class="log-box" id="unlockLog"></div>
-<div style="font-size:11px;color:#888;margin-top:8px">⚠️ هذا شرح وارشاد داخل التطبيق - التنفيذ الحقيقي يحتاج UnlockTool + كابل + تعريف + سيرفر. التطبيق يعلمك الخطوات بالضبط مثل البرنامج الاصلي.</div>
-</div>
-</div>
-</div>
-
+<div style="font-size:11px;color:#888;margin-top:8px">⚠️ هذا شرح وارشاد داخل التطبيق - التنفيذ الحقيقي يحتاج UnlockTool + كابل + تعريف + سيرفر.</div>
+</div></div></div>
 <div id="compatView" class="hidden">
 <button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
 <h2 class="section-title">🔧 الموسوعة الكاملة - 200 توافق</h2>
-<div class="compat-tabs">
-<button class="active" onclick="filterCompat('all',this)">الكل</button>
-<button onclick="filterCompat('screen',this)">📱 شاشات</button>
-<button onclick="filterCompat('battery',this)">🔋 بطاريات</button>
-<button onclick="filterCompat('charge',this)">🔌 قواعد</button>
-<button onclick="filterCompat('schematic',this)">📜 مخططات</button>
-</div>
-<div id="compatList"></div>
-</div>
+<div class="compat-tabs"><button class="active" onclick="filterCompat('all',this)">الكل</button><button onclick="filterCompat('screen',this)">📱 شاشات</button><button onclick="filterCompat('battery',this)">🔋 بطاريات</button><button onclick="filterCompat('charge',this)">🔌 قواعد</button><button onclick="filterCompat('schematic',this)">📜 مخططات</button></div>
+<div id="compatList"></div></div>
 <div id="borneoView" class="hidden">
 <button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
-<div class="borneo-top">
-<div><b id="borneoTitle">Borneo - Samsung A12</b> <span>CLICK ANY PART</span></div>
-<div class="borneo-tools">
-<button class="active" onclick="setBorneoMode('bitmap',this)">BITMAP</button>
-<button onclick="setBorneoMode('schematic',this)">SCHEMATIC</button>
-<button onclick="setBorneoMode('ways',this)">WAYS</button>
-<button onclick="clearBorneoSelection()">✕ مسح التحديد</button>
-<button onclick="zoomBorneo(0.3)">+ تكبير</button>
-<button onclick="zoomBorneo(-0.3)">- تصغير</button>
-<button onclick="resetZoomBorneo()">⟲ 100%</button>
-</div>
-</div>
-<div class="borneo-wrap">
-<div style="flex:1">
-<div class="borneo-board" id="boardWrap">
-<div class="board-img-wrap" id="boardImgWrap">
-<img id="boardImg" src="board-a12.jpg" alt="Real Board">
-<svg class="trace-svg" id="traceSvg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
-<div id="connLabels"></div>
-<div id="hotspots"></div>
-</div>
-</div>
-<div id="partInfoBorneo">👆 اضغط على اي قطعة بالبورد... راح يطلع مخططها كامل وين توصل وتوالي لو توازي</div>
-</div>
-<div class="borneo-side">
-<h4>SCHEMATIC - مخطط القطعة المحددة</h4>
-<div id="schematicBoxBorneo">اضغط على اي قطعة...</div>
-<h4 style="margin-top:10px">COMPONENT LIST</h4>
-<div id="compListBorneo"></div>
-</div>
-</div>
-<div id="waysBorneo"></div>
-</div>
+<div class="borneo-top"><div><b id="borneoTitle">Borneo - Samsung A12</b> <span>CLICK ANY PART</span></div><div class="borneo-tools"><button class="active" onclick="setBorneoMode('bitmap',this)">BITMAP</button><button onclick="setBorneoMode('schematic',this)">SCHEMATIC</button><button onclick="setBorneoMode('ways',this)">WAYS</button><button onclick="clearBorneoSelection()">✕ مسح التحديد</button><button onclick="zoomBorneo(0.3)">+ تكبير</button><button onclick="zoomBorneo(-0.3)">- تصغير</button><button onclick="resetZoomBorneo()">⟲ 100%</button></div></div>
+<div class="borneo-wrap"><div style="flex:1"><div class="borneo-board" id="boardWrap"><div class="board-img-wrap" id="boardImgWrap"><img id="boardImg" src="board-a12.jpg" alt="Real Board"><svg class="trace-svg" id="traceSvg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><div id="connLabels"></div><div id="hotspots"></div></div></div><div id="partInfoBorneo">👆 اضغط على اي قطعة بالبورد...</div></div><div class="borneo-side"><h4>SCHEMATIC - مخطط القطعة المحددة</h4><div id="schematicBoxBorneo">اضغط على اي قطعة...</div><h4 style="margin-top:10px">COMPONENT LIST</h4><div id="compListBorneo"></div></div></div><div id="waysBorneo"></div></div>
 <div id="lessonsView" class="hidden"><button class="back-btn" onclick="goHome()">← رجوع</button><h2 class="section-title">🎓 دورات اون لاين</h2><video controls style="width:100%"><source src="ad.mp4"></video></div>
 <div id="listView" class="hidden"><button class="back-btn" onclick="goHome()">← رجوع</button><h2 id="viewTitle" class="section-title"></h2><div id="viewGrid"></div></div>
 </div>
 <footer style="text-align:center;padding:15px;background:#000;margin-top:15px;font-size:11px;color:#777">© 2026 فون فلكس - البصرة العشار - 07738105665 - بادارة الاستاذ سيد عباس</footer>
 <script>
-// ===== تحديث جديد: محرك الكاميرا + قاعدة اجهزة الكاميرا =====
-const MODEL_URL = "https://teachablemachine.withgoogle.com/models/PUT_YOUR_MODEL_URL_HERE/";
-let tmModel=null, camStream=null, isModelLoaded=false;
-
-const CAMERA_PHONES = [
+const MODEL_URL="https://teachablemachine.withgoogle.com/models/PUT_YOUR_MODEL_URL_HERE/";
+let tmModel=null,camStream=null,isModelLoaded=false;
+const CAMERA_PHONES=[
 {name:"SAMSUNG A30s",code:"A30s",ram:"4",rom:"128",cpu:"Exynos 7885",cam:"25MP ثلاثية",bat:"4000",screen:"6.4 Super AMOLED",price:"125,000",img:"https://fdn.gsmarena.com/imgroot/reviews/19/samsung-galaxy-a30s/-1024x768w2/gsmarena_001.jpg"},
 {name:"Redmi 10C",code:"10C",ram:"4",rom:"128",cpu:"Snapdragon 680",cam:"50MP",bat:"5000",screen:"6.71 HD+",price:"125,000",img:"https://fdn.gsmarena.com/imgroot/reviews/22/xiaomi-redmi-10c/-1024x768w2/gsmarena_001.jpg"},
 {name:"SAMSUNG A12",code:"A12",ram:"4",rom:"128",cpu:"Helio P35",cam:"16MP",bat:"5000",screen:"6.5 IPS",price:"150,000",img:"https://fdn.gsmarena.com/imgroot/reviews/20/samsung-galaxy-a12/-1024x768w2/gsmarena_001.jpg"},
 {name:"Infinix Hot 30",code:"Hot 30",ram:"8",rom:"128",cpu:"Helio G88",cam:"50MP",bat:"5000",screen:"6.78 90Hz",price:"180,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/infinix-hot-30/-1024x768w2/gsmarena_001.jpg"},
-{name:"Tecno Spark 10",code:"Spark 10",ram:"8",rom:"128",cpu:"Helio G37",cam:"50MP",bat:"5000",screen:"6.6 90Hz",price:"170,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/tecno-spark-10/-1024x768w2/gsmarena_001.jpg"},
-];
-// اذا تريد تضيف جهاز: انسخ سطر وضيفه هنا، والـ code لازم يطابق اسم الـ Class بالـ Teachable Machine
-
-function findPhoneByCode(code){
-  code = String(code).toLowerCase().replace(/\s/g,'');
-  for(let p of CAMERA_PHONES){
-    let pc = p.code.toLowerCase().replace(/\s/g,'');
-    if(pc===code || p.name.toLowerCase().replace(/\s/g,'').includes(code) || code.includes(pc)) return p;
-  }
-  return null;
-}
-function findCompatForCamera(code){
-  return compatData.filter(c=>c[0].includes(code) || c[1].includes(code));
-}
-function manualPickHTML(){
-  let opts = CAMERA_PHONES.map(p=>`<option value="${p.code}">${p.name}</option>`).join('');
-  return `<div style="margin-top:10px"><select id="manualCode" style="width:100%;padding:12px;border-radius:10px;background:#1e1e1e;color:#fff;border:1px solid #444">${opts}</select><button class="btn btn-green" onclick="showPhoneResult(document.getElementById('manualCode').value, 100)">عرض الجهاز</button></div>`;
-}
-async function loadModel(){
-  if(isModelLoaded) return true;
-  try{
-    document.getElementById('scanResult').innerHTML = '<p style="text-align:center">⏳ جاري تحميل موديل الذكاء الاصطناعي...</p>';
-    if(MODEL_URL.includes("PUT_YOUR_MODEL")){
-      document.getElementById('scanResult').innerHTML = '<p style="color:#fbbf24;text-align:center">⚠️ بعدك ما حاط رابط الموديل.<br>روح للجزء 4 وحط رابط Teachable Machine.<br>هسه راح اشتغل بالوضع اليدوي - اختار الموديل من القائمة.</p>' + manualPickHTML();
-      return false;
-    }
-    tmModel = await tmImage.load(MODEL_URL + "model.json", MODEL_URL + "metadata.json");
-    isModelLoaded = true; return true;
-  }catch(e){
-    document.getElementById('scanResult').innerHTML = '<p style="color:#f87171">❌ ما كدرت احمل الموديل. تأكد من الرابط والنت.</p>' + manualPickHTML();
-    return false;
-  }
-}
-function openScanner(){
-  hideAllViews(); document.getElementById('scannerView').classList.remove('hidden');
-  document.getElementById('scanResult').innerHTML=''; document.getElementById('scanTop3').innerHTML='';
-  loadModel(); window.scrollTo(0,0);
-}
-async function startCamera(){
-  await loadModel();
-  try{
-    camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}, audio:false});
-    let v = document.getElementById('camVideo'); v.srcObject = camStream; v.play();
-    document.getElementById('scanLine').style.display='block';
-  }catch(e){ alert('ما كدرت افتح الكاميرا - لازم تسمح للمتصفح بالكاميرا، ولازم الموقع يكون https'); }
-}
-function stopCamera(){
-  if(camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream=null; }
-  let sl=document.getElementById('scanLine'); if(sl) sl.style.display='none';
-}
-async function captureAndIdentify(){
-  let v = document.getElementById('camVideo');
-  let canvas = document.getElementById('camCanvas');
-  if(!v.srcObject){ alert('افتح الكاميرا اولاً او اختار صورة'); return; }
-  canvas.width = v.videoWidth; canvas.height = v.videoHeight;
-  canvas.getContext('2d').drawImage(v,0,0);
-  await identifyImage(canvas);
-}
-async function onFilePicked(e){
-  let file = e.target.files[0]; if(!file) return;
-  let img = new Image(); img.onload = async ()=>{
-    let canvas = document.getElementById('camCanvas');
-    canvas.width = img.width; canvas.height = img.height;
-    canvas.getContext('2d').drawImage(img,0,0);
-    await identifyImage(canvas);
-  };
-  img.src = URL.createObjectURL(file);
-}
-async function identifyImage(canvas){
-  let ok = await loadModel();
-  if(!ok || !tmModel) return;
-  document.getElementById('scanResult').innerHTML = '<p style="text-align:center">🔍 جاري التعرف على الجهاز...</p>';
-  try{
-    let preds = await tmModel.predict(canvas);
-    preds = preds.sort((a,b)=>b.probability-a.probability);
-    let top = preds[0];
-    let conf = Math.round(top.probability*100);
-    let top3 = preds.slice(0,3).map(p=>`<div style="background:#222;padding:8px;border-radius:8px;margin:4px 0"><b>${p.className}</b> - ${Math.round(p.probability*100)}%<div class="conf-bar"><div class="conf-fill" style="width:${Math.round(p.probability*100)}%"></div></div></div>`).join('');
-    document.getElementById('scanTop3').innerHTML = '<h3 style="margin-top:12px">اقرب 3 نتائج:</h3>'+top3;
-    if(conf < 55){
-      document.getElementById('scanResult').innerHTML = `<div class="result-card"><h2>⚠️ مو متأكد (${conf}%)</h2><p>الصورة مو واضحة او الجهاز مو مدرب عليه. اختار من القائمة:</p></div>` + manualPickHTML();
-      return;
-    }
-    showPhoneResult(top.className, conf);
-  }catch(e){ alert('خطأ بالتعرف: '+e.message); }
-}
-function showPhoneResult(code, conf){
-  let p = findPhoneByCode(code);
-  if(!p){ document.getElementById('scanResult').innerHTML = '<p>ما لكيت الجهاز بقاعدة البيانات. ضيفه بالجزء 4.</p>'; return; }
-  let compat = findCompatForCamera(p.code);
-  let compatHTML = compat.length ? compat.map(c=>`<div class="compat-card">${c[0]} - ${c[1]}</div>`).join('') : '<p style="color:#aaa">ماكو توافق مسجل لهذا الموديل بعد</p>';
-  document.getElementById('scanResult').innerHTML = `
-  <div class="result-card">
-    <p style="color:#4ade80">✅ تم التعرف بنجاح - دقة ${conf}%</p>
-    <div style="font-size:22px;font-weight:900">${p.name}</div>
-    <p style="color:#aaa">النوع: ${p.name} | الموديل: ${p.code}</p>
-    <img src="${p.img}" style="width:100%;max-height:220px;object-fit:contain;background:#111;border-radius:10px;margin:8px 0">
-    <p>📱 الشاشة: ${p.screen}</p>
-    <p>🧠 المعالج: ${p.cpu}</p>
-    <p>💾 الذاكرة: ${p.rom} | الرام: ${p.ram}</p>
-    <p>📷 الكاميرا: ${p.cam}</p>
-    <p>🔋 البطارية: ${p.bat}</p>
-    <p style="color:#fbbf24;font-size:18px;font-weight:900">السعر: ${p.price} دينار</p>
-    <button class="btn btn-green" onclick="alert('تم حفظ ${p.name} بالمخزون')">➕ اضافة للمخزون</button>
-    <button class="btn btn-blue" onclick="window.open('https://wa.me/9647738105665?text=عندي ${p.name} - ${p.rom}/${p.ram} - السعر ${p.price}')">📲 مشاركة واتساب</button>
-    <h3 style="margin-top:12px">🔧 توافقات هذا الجهاز:</h3>
-    ${compatHTML}
-  </div>`;
-  stopCamera();
-}
-    </script>
-    <script>
-if ('serviceWorker' in navigator) { try{ navigator.serviceWorker.register('./sw.js'); }catch(e){} }
-// ===== UnlockTool Data =====
-const UNLOCK_DATA = {
-"Samsung": { chip:"MTK / Exynos / Qualcomm", modes:["Download","Preloader","EDL 9008","ADB"],
-  models:["Galaxy A12 SM-A125F","Galaxy A12 Nacho SM-A127F","Galaxy A02s SM-A025F","Galaxy A03s SM-A037F","Galaxy A13 SM-A135F","Galaxy A14 SM-A145F","Galaxy A23 SM-A235F","Galaxy A24 SM-A245F","Galaxy A32 SM-A325F","Galaxy A52 SM-A525F","Galaxy S21 SM-G991B"],
-  ops:[
-    {name:"Erase FRP", desc:"ازالة قفل كوكل - Download / Preloader", mode:"Download", time:"1-2 دقيقة", steps:["طفي الجهاز","اضغط Vol- + Vol+ واشبك USB","انتظر Download Mode","اضغط START","انتظر Reboot"]},
-    {name:"Factory Reset", desc:"فورمات كامل - بدون فقدان FRP", mode:"Download", time:"2 دقيقة", steps:["Download Mode","Factory Reset","Wipe Data","Reboot"]},
-    {name:"Remove MDM", desc:"ازالة قفل الشركات MDM", mode:"Download", time:"3 دقيقة", steps:["Download Mode","Remove MDM","لا تشبك واي فاي اول تشغيل"]},
-    {name:"Remove KG Locked", desc:"ازالة قفل Knox Guard", mode:"Download", time:"5 دقيقة", steps:["Download Mode","KG Remove","تخطي الاعداد بدون نت"]},
-    {name:"Flash Firmware", desc:"تفليش فلاشة رسمية", mode:"Download", time:"8-15 دقيقة", steps:["حمل فلاشة نفس الحماية","اختر AP BL CP CSC","Flash","انتظر PASS"]},
-    {name:"Unlock Bootloader", desc:"فتح البوت لودر", mode:"Download", time:"2 دقيقة", steps:["فعل OEM Unlock","Download Mode","Unlock Bootloader"]},
-    {name:"Read Info", desc:"قراءة معلومات الجهاز", mode:"Download", time:"30 ثانية", steps:["Download Mode","Read Info"]},
-    {name:"FRP + Factory Reset", desc:"FRP + فورمات مع بعض", mode:"Download", time:"3 دقيقة", steps:["Download Mode","FRP + Reset","Reboot"]},
-  ]},
-"Infinix": { chip:"MTK Helio", modes:["Preloader","Download","Fastboot","ADB"],
-  models:["Hot 10 X682B","Hot 11 X662","Hot 12 X6817","Hot 20 X6826","Hot 30 X6831","Hot 30i X669","Hot 40 X6836","Note 30 X6833B","Note 12 X663","Smart 7 X6515"],
-  ops:[
-    {name:"Erase FRP", desc:"ازالة FRP - Preloader", mode:"Preloader", time:"1 دقيقة", steps:["طفي الجهاز","اضغط Vol+ و Vol- واشبك USB","Preloader Mode","START"]},
-    {name:"Factory Reset + FRP", desc:"فورمات + FRP", mode:"Preloader", time:"2 دقيقة", steps:["Preloader","Factory Reset + FRP","Reboot"]},
-    {name:"Remove MDM", desc:"ازالة MDM / Demo", mode:"Preloader", time:"2 دقيقة", steps:["Preloader","Remove MDM","لا تشبك نت"]},
-    {name:"Remove Demo", desc:"ازالة وضع المعرض Demo", mode:"Preloader", time:"2 دقيقة", steps:["Preloader","Remove Demo"]},
-    {name:"Flash Firmware", desc:"تفليش", mode:"Preloader", time:"10 دقيقة", steps:["حمل فلاشة","Preloader","Flash"]},
-    {name:"Unlock Bootloader", desc:"فتح بوت لودر", mode:"Fastboot", time:"1 دقيقة", steps:["Fastboot","Unlock Bootloader"]},
-    {name:"Read Info", desc:"قراءة معلومات", mode:"Preloader", time:"20 ثانية", steps:["Preloader","Read Info"]},
-  ]},
-"Tecno": { chip:"MTK Helio", modes:["Preloader","Fastboot","ADB"],
-  models:["Spark 7 KF6","Spark 8 KG5","Spark 9 KH6","Spark 10 KI5","Spark 20 KJ5","Camon 19 CI6","Camon 20 CK6","Pova 5 LH7"],
-  ops:[
-    {name:"Erase FRP", desc:"FRP - Preloader", mode:"Preloader", time:"1 دقيقة", steps:["طفي","Vol+ Vol- + USB","START"]},
-    {name:"Factory Reset + FRP", desc:"فورمات + FRP", mode:"Preloader", time:"2 دقيقة", steps:["Preloader","Reset + FRP"]},
-    {name:"Remove MDM", desc:"MDM", mode:"Preloader", time:"2 دقيقة", steps:["Preloader","MDM Remove"]},
-    {name:"Flash Firmware", desc:"تفليش", mode:"Preloader", time:"10 دقيقة", steps:["فلاشة","Flash"]},
-  ]},
-"Xiaomi": { chip:"MTK / Qualcomm", modes:["EDL 9008","Fastboot","ADB","Preloader"],
-  models:["Redmi 9A M2006C3LG","Redmi 10A 220233L2C","Redmi 10C 220333QAG","Redmi 12 23053RN02A","Redmi Note 8 M1908C3JG","Redmi Note 9 M2003J15SG","Redmi Note 11 2201117TG","Poco X3 M2007J20CG","Poco C65 2310FPCA4G"],
-  ops:[
-    {name:"Erase FRP", desc:"FRP - EDL / Fastboot", mode:"EDL 9008", time:"1 دقيقة", steps:["EDL 9008 - Test Point او Vol+ Vol-","START","Reboot"]},
-    {name:"Mi Account Remove", desc:"ازالة حساب شاومي", mode:"EDL 9008", time:"3 دقيقة", steps:["EDL","Mi Account Remove","لا تشبك نت"]},
-    {name:"Factory Reset", desc:"فورمات", mode:"EDL 9008", time:"2 دقيقة", steps:["EDL","Factory Reset"]},
-    {name:"Flash Firmware", desc:"تفليش Fastboot", mode:"Fastboot", time:"10 دقيقة", steps:["Fastboot","Flash"]},
-    {name:"Unlock Bootloader", desc:"فتح بوت لودر - يحتاج اذن", mode:"Fastboot", time:"7 ايام انتظار شاومي", steps:["Mi Unlock Tool","طلب فتح","انتظر 168 ساعة"]},
-  ]},
-"Realme": { chip:"MTK / Qualcomm", modes:["Preloader","EDL 9008","Fastboot"],
-  models:["C11 RMX2185","C35 RMX3511","C51 RMX3830","C53 RMX3760","C55 RMX3710","Realme 8 RMX3085","Realme 10 RMX3630"],
-  ops:[
-    {name:"Erase FRP", desc:"FRP", mode:"Preloader", time:"1 دقيقة", steps:["Preloader","FRP"]},
-    {name:"Factory Reset", desc:"فورمات", mode:"Preloader", time:"2 دقيقة", steps:["Preloader","Reset"]},
-    {name:"Flash Firmware", desc:"تفليش", mode:"Preloader", time:"10 دقيقة", steps:["فلاشة","Flash"]},
-  ]},
-"Oppo": { chip:"MTK / Qualcomm", modes:["Preloader","EDL 9008"],
-  models:["A15 CPH2185","A16 CPH2269","A54 CPH2239","A57 CPH2387","A78 CPH2565","Reno 8 CPH2359"],
-  ops:[
-    {name:"Erase FRP", desc:"FRP", mode:"Preloader", time:"1 دقيقة", steps:["Preloader","FRP"]},
-    {name:"Factory Reset", desc:"فورمات", mode:"Preloader", time:"2 دقيقة", steps:["Preloader","Reset"]},
-    {name:"Demo Remove", desc:"ازالة Demo", mode:"Preloader", time:"2 دقيقة", steps:["Preloader","Demo"]},
-  ]},
-"Vivo": { chip:"MTK / Qualcomm", modes:["Preloader","EDL 9008","Fastboot"],
-  models:["Y15 1901","Y20 2027","Y33s V2110","Y35 V2205","Y21 V2111"],
-  ops:[
-    {name:"Erase FRP", desc:"FRP", mode:"Preloader", time:"1 دقيقة", steps:["Preloader","FRP"]},
-    {name:"Factory Reset", desc:"فورمات", mode:"Preloader", time:"2 دقيقة", steps:["Preloader","Reset"]},
-  ]},
-"Apple": { chip:"A12 - A17 Pro", modes:["DFU","Recovery"],
-  models:["iPhone 7 A1778","iPhone 8 A1905","iPhone X A1901","iPhone 11 A2111","iPhone 12 A2403","iPhone 13 A2633","iPhone 14 A2882","iPhone 15 A3090"],
-  ops:[
-    {name:"Hello Screen Bypass", desc:"تخطي شاشة Hello - يحتاج جيلبريك", mode:"DFU", time:"10 دقيقة", steps:["DFU","Jailbreak","Bypass"]},
-    {name:"Passcode Remove", desc:"ازالة رمز - يمسح البيانات", mode:"Recovery", time:"10 دقيقة", steps:["Recovery","Restore","iTunes"]},
-    {name:"Flash iOS", desc:"تفليش iOS", mode:"DFU", time:"15 دقيقة", steps:["DFU","Restore IPSW"]},
-  ]},
+{name:"Tecno Spark 10",code:"Spark 10",ram:"8",rom:"128",cpu:"Helio G37",cam:"50MP",bat:"5000",screen:"6.6 90Hz",price:"170,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/tecno-spark-10/-1024x768w2/gsmarena_001.jpg"}];
+function findPhoneByCode(code){code=String(code).toLowerCase().replace(/\s/g,'');for(let p of CAMERA_PHONES){let pc=p.code.toLowerCase().replace(/\s/g,'');if(pc===code||p.name.toLowerCase().replace(/\s/g,'').includes(code)||code.includes(pc))return p;}return null;}
+function findCompatForCamera(code){return compatData.filter(c=>c[0].includes(code)||c[1].includes(code));}
+function manualPickHTML(){let opts=CAMERA_PHONES.map(p=>`<option value="${p.code}">${p.name}</option>`).join('');return `<div style="margin-top:10px"><select id="manualCode" style="width:100%;padding:12px;border-radius:10px;background:#1e1e1e;color:#fff;border:1px solid #444">${opts}</select><button class="btn btn-green" onclick="showPhoneResult(document.getElementById('manualCode').value,100)">عرض الجهاز</button></div>`;}
+async function loadModel(){if(isModelLoaded)return true;try{document.getElementById('scanResult').innerHTML='<p style="text-align:center">⏳ جاري تحميل الموديل...</p>';if(MODEL_URL.includes("PUT_YOUR_MODEL")){document.getElementById('scanResult').innerHTML='<p style="color:#fbbf24;text-align:center">⚠️ بعدك ما حاط رابط الموديل.</p>'+manualPickHTML();return false;}tmModel=await tmImage.load(MODEL_URL+"model.json",MODEL_URL+"metadata.json");isModelLoaded=true;return true;}catch(e){document.getElementById('scanResult').innerHTML='<p style="color:#f87171">❌ ما كدرت احمل الموديل.</p>'+manualPickHTML();return false;}}
+function openScanner(){hideAllViews();document.getElementById('scannerView').classList.remove('hidden');document.getElementById('scanResult').innerHTML='';document.getElementById('scanTop3').innerHTML='';loadModel();window.scrollTo(0,0);}
+async function startCamera(){await loadModel();try{camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"},audio:false});let v=document.getElementById('camVideo');v.srcObject=camStream;v.play();document.getElementById('scanLine').style.display='block';}catch(e){alert('ما كدرت افتح الكاميرا - لازم تسمح للمتصفح ولازم https');}}
+function stopCamera(){if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}let sl=document.getElementById('scanLine');if(sl)sl.style.display='none';}
+async function captureAndIdentify(){let v=document.getElementById('camVideo');let canvas=document.getElementById('camCanvas');if(!v.srcObject){alert('افتح الكاميرا اولاً');return;}canvas.width=v.videoWidth;canvas.height=v.videoHeight;canvas.getContext('2d').drawImage(v,0,0);await identifyImage(canvas);}
+async function onFilePicked(e){let file=e.target.files[0];if(!file)return;let img=new Image();img.onload=async()=>{let canvas=document.getElementById('camCanvas');canvas.width=img.width;canvas.height=img.height;canvas.getContext('2d').drawImage(img,0,0);await identifyImage(canvas);};img.src=URL.createObjectURL(file);}
+async function identifyImage(canvas){let ok=await loadModel();if(!ok||!tmModel)return;document.getElementById('scanResult').innerHTML='<p style="text-align:center">🔍 جاري التعرف...</p>';try{let preds=await tmModel.predict(canvas);preds=preds.sort((a,b)=>b.probability-a.probability);let top=preds[0];let conf=Math.round(top.probability*100);let top3=preds.slice(0,3).map(p=>`<div style="background:#222;padding:8px;border-radius:8px;margin:4px 0"><b>${p.className}</b> - ${Math.round(p.probability*100)}%<div class="conf-bar"><div class="conf-fill" style="width:${Math.round(p.probability*100)}%"></div></div></div>`).join('');document.getElementById('scanTop3').innerHTML='<h3>اقرب 3 نتائج:</h3>'+top3;if(conf<55){document.getElementById('scanResult').innerHTML=`<div class="result-card"><h2>⚠️ مو متأكد (${conf}%)</h2></div>`+manualPickHTML();return;}showPhoneResult(top.className,conf);}catch(e){alert('خطأ: '+e.message);}}
+function showPhoneResult(code,conf){let p=findPhoneByCode(code);if(!p){document.getElementById('scanResult').innerHTML='<p>ما لكيت الجهاز.</p>';return;}let compat=findCompatForCamera(p.code);let compatHTML=compat.length?compat.map(c=>`<div class="compat-card">${c[0]} - ${c[1]}</div>`).join(''):'<p>ماكو توافق</p>';document.getElementById('scanResult').innerHTML=`<div class="result-card"><p style="color:#4ade80">✅ تم التعرف - دقة ${conf}%</p><div style="font-size:22px;font-weight:900">${p.name}</div><p>النوع: ${p.name} | الموديل: ${p.code}</p><img src="${p.img}" style="width:100%;max-height:220px;object-fit:contain;background:#111;border-radius:10px;margin:8px 0"><p>📱 الشاشة: ${p.screen}</p><p>🧠 المعالج: ${p.cpu}</p><p>💾 الذاكرة: ${p.rom} | الرام: ${p.ram}</p><p>📷 الكاميرا: ${p.cam}</p><p>🔋 البطارية: ${p.bat}</p><p style="color:#fbbf24;font-size:18px;font-weight:900">السعر: ${p.price} دينار</p><h3>🔧 توافقات:</h3>${compatHTML}</div>`;stopCamera();}
+</script>
+<script>
+let repairs=JSON.parse(localStorage.getItem('abbas_repairs')||'[]');let repFilter='الكل';let repEditId=null;
+function openRepair(){hideAllViews();document.getElementById('repairView').classList.remove('hidden');renderRepairs();window.scrollTo(0,0);}
+function saveRepairs(){localStorage.setItem('abbas_repairs',JSON.stringify(repairs));}
+function cleanPhone(p){p=String(p).replace(/\D/g,'');if(p.startsWith('00964'))p=p.slice(5);if(p.startsWith('964'))p=p.slice(3);if(p.startsWith('0'))p=p.slice(1);return '964'+p;}
+function cleanPhoneDisplay(p){return String(p).replace(/\D/g,'');}
+function addRepair(){
+let device=document.getElementById('repDevice').value.trim();let fault=document.getElementById('repFault').value.trim();let works=document.getElementById('repWorks').value;let customer=document.getElementById('repCustomer').value.trim();let phone=document.getElementById('repPhone').value.trim();let price=document.getElementById('repPrice').value.trim()||'0';let duration=document.getElementById('repDuration').value.trim()||'غير محدد';let status=document.getElementById('repStatus').value;
+if(!device||!fault||!customer||!phone){alert('املأ: اسم الهاتف + نوع العطل + اسم الزبون + رقم الهاتف');return;}
+if(cleanPhoneDisplay(phone).length<10){alert('رقم الهاتف مو صحيح');return;}
+if(repEditId){let r=repairs.find(x=>x.id===repEditId);if(r){r.device=device;r.fault=fault;r.works=works;r.customer=customer;r.phone=phone;r.price=price;r.duration=duration;r.status=status;}repEditId=null;alert('تم تعديل الجهاز ✅');}
+else{repairs.unshift({id:Date.now(),device,fault,works,customer,phone,price,duration,status,date:new Date().toLocaleDateString('ar-IQ')+' '+new Date().toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'})});alert('تم حفظ الجهاز ✅\n'+customer+' - '+device);if(confirm('تريد تدز للزبون رسالة واتساب انه تم استلام جهازه؟')){sendRepairWhatsApp(repairs[0].id,'received');}}
+saveRepairs();clearRepairForm();renderRepairs();}
+function clearRepairForm(){['repDevice','repFault','repCustomer','repPhone','repPrice','repDuration'].forEach(id=>document.getElementById(id).value='');document.getElementById('repWorks').value='لا يعمل';document.getElementById('repStatus').value='قيد الصيانة';repEditId=null;}
+function filterRepair(f){repFilter=f;renderRepairs();}
+function editRepair(id){let r=repairs.find(x=>x.id===id);if(!r)return;repEditId=id;document.getElementById('repDevice').value=r.device;document.getElementById('repFault').value=r.fault;document.getElementById('repWorks').value=r.works;document.getElementById('repCustomer').value=r.customer;document.getElementById('repPhone').value=r.phone;document.getElementById('repPrice').value=r.price;document.getElementById('repDuration').value=r.duration;document.getElementById('repStatus').value=r.status;window.scrollTo(0,0);alert('عدّل الحقول واضغط حفظ الجهاز');}
+function deleteRepair(id){if(!confirm('متأكد تريد تحذف؟'))return;repairs=repairs.filter(x=>x.id!==id);saveRepairs();renderRepairs();}
+function markDone(id){let r=repairs.find(x=>x.id===id);if(!r)return;r.status='تم';saveRepairs();renderRepairs();if(confirm('الجهاز كمل ✅\nتريد تدز رسالة واتساب "جهازك كمل" هسه؟'))sendRepairWhatsApp(id,'done');}
+function markDelivered(id){let r=repairs.find(x=>x.id===id);if(!r)return;r.status='تم التسليم';saveRepairs();renderRepairs();alert('تم تسليم الجهاز ✅');}
+function sendRepairWhatsApp(id,type){let r=repairs.find(x=>x.id===id);if(!r)return;let num=cleanPhone(r.phone);let msg='';if(type==='done'){msg=`هلا ${r.customer} 👋\n\nجهازك *${r.device}* كمل ✅\nالعطل كان: ${r.fault}\nالسعر: ${r.price} دينار\n\nتكدر تجي تستلمه هسه 🙏\n\n📍 صيانة سيد عباس - البصرة العشار\n📞 07738105665`;}else if(type==='received'){msg=`هلا ${r.customer} 👋\n\nتم استلام جهازك *${r.device}* للصيانة 🛠️\nالعطل: ${r.fault}\nحالة الجهاز: ${r.works}\nمدة العمل المتوقعة: ${r.duration}\nالسعر المتوقع: ${r.price} دينار\n\nمن يكمل نتصل بيك 🙏\n\n📍 صيانة سيد عباس - البصرة العشار`;}else if(type==='waiting'){msg=`هلا ${r.customer} 👋\n\nجهازك *${r.device}* بعده قيد الصيانة 🛠️\nالعطل: ${r.fault}\nمدة العمل: ${r.duration}\n\nمن يكمل ندزلك رسالة 🙏\n📍 صيانة سيد عباس`;}else if(type==='price'){msg=`هلا ${r.customer} 👋\n\nبخصوص جهازك *${r.device}*\nالعطل: ${r.fault}\nالسعر: ${r.price} دينار\nمدة العمل: ${r.duration}\n\nاذا موافق نكمل الصيانة رد علينا ✅\n📍 صيانة سيد عباس`;}window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');}
+function renderRepairs(){let listEl=document.getElementById('repairList');if(!listEl)return;let q=(document.getElementById('repSearch')?.value||'').toLowerCase().trim();let filtered=repairs.filter(r=>{let mf=repFilter==='الكل'||r.status===repFilter;let ms=!q||(r.device+' '+r.fault+' '+r.customer+' '+r.phone+' '+r.works).toLowerCase().includes(q);return mf&&ms;});document.getElementById('repTotal').innerText=repairs.length;document.getElementById('repWait').innerText=repairs.filter(r=>r.status==='قيد الصيانة'||r.status==='بانتظار القطعة').length;document.getElementById('repDone').innerText=repairs.filter(r=>r.status==='تم').length;let totalMoney=repairs.reduce((s,r)=>s+(parseInt(r.price)||0),0);document.getElementById('repMoney').innerText=totalMoney.toLocaleString();if(filtered.length===0){listEl.innerHTML='<p style="text-align:center;color:#888;padding:20px">ماكو اجهزة بعد - اضف اول جهاز 👆</p>';return;}listEl.innerHTML=filtered.map(r=>{let cls=r.status==='تم'?'done':(r.works==='لا يعمل'?'notwork':'');let badgeCls=r.status==='تم'?'badge-done':'badge-wait';let worksIcon=r.works==='لا يعمل'?'❌ لا يعمل':r.works==='يعمل'?'✅ يعمل':'⚠️ '+r.works;return `<div class="repair-card ${cls}"><div class="top"><b style="font-size:15px">📱 ${r.device}</b><span class="badge ${badgeCls}">${r.status}</span></div><div>🔧 <b>العطل:</b> ${r.fault}</div><div>⚙️ <b>يعمل او لا:</b> ${worksIcon}</div><div>👤 <b>الزبون:</b> ${r.customer} - <span dir="ltr">${cleanPhoneDisplay(r.phone)}</span></div><div>💰 <b>السعر:</b> ${r.price} دينار | ⏱️ <b>مدة العمل:</b> ${r.duration}</div><div style="color:#888;font-size:11px">📅 ${r.date}</div><div class="repair-btns"><button class="btn-wa" onclick="sendRepairWhatsApp(${r.id},'done')">💬 جهازك كمل ✅</button><button class="btn-wa" style="background:#25D366;opacity:.85" onclick="sendRepairWhatsApp(${r.id},'received')">📩 تم الاستلام</button><button class="btn-done" onclick="markDone(${r.id})">✅ كمل</button><button class="btn-call" onclick="window.open('tel:${cleanPhoneDisplay(r.phone)}')">📞 اتصال</button><button class="btn-edit" onclick="editRepair(${r.id})">✏️ تعديل</button><button class="btn-del" onclick="deleteRepair(${r.id})">🗑️ حذف</button></div><div class="repair-btns"><button class="btn-dark" onclick="sendRepairWhatsApp(${r.id},'waiting')">⏳ بعده قيد الصيانة</button><button class="btn-dark" onclick="sendRepairWhatsApp(${r.id},'price')">💰 دز السعر</button><button class="btn-dark" onclick="markDelivered(${r.id})">📦 تم التسليم</button></div></div>`;}).join('');}
+                                                                                                                                                                                                      </script>
+                                                                                                                                                                                                      <script>
+if('serviceWorker' in navigator){try{navigator.serviceWorker.register('./sw.js');}catch(e){}}
+const UNLOCK_DATA={
+"Samsung":{chip:"MTK / Exynos / Qualcomm",modes:["Download","Preloader","EDL 9008","ADB"],models:["Galaxy A12 SM-A125F","Galaxy A12 Nacho SM-A127F","Galaxy A02s SM-A025F","Galaxy A03s SM-A037F","Galaxy A13 SM-A135F","Galaxy A14 SM-A145F","Galaxy A23 SM-A235F","Galaxy A24 SM-A245F","Galaxy A32 SM-A325F","Galaxy A52 SM-A525F","Galaxy S21 SM-G991B"],ops:[{name:"Erase FRP",desc:"ازالة قفل كوكل - Download / Preloader",mode:"Download",time:"1-2 دقيقة",steps:["طفي الجهاز","اضغط Vol- + Vol+ واشبك USB","انتظر Download Mode","اضغط START","انتظر Reboot"]},{name:"Factory Reset",desc:"فورمات كامل",mode:"Download",time:"2 دقيقة",steps:["Download Mode","Factory Reset","Wipe Data","Reboot"]},{name:"Remove MDM",desc:"ازالة قفل الشركات MDM",mode:"Download",time:"3 دقيقة",steps:["Download Mode","Remove MDM","لا تشبك واي فاي اول تشغيل"]},{name:"Remove KG Locked",desc:"ازالة قفل Knox Guard",mode:"Download",time:"5 دقيقة",steps:["Download Mode","KG Remove","تخطي الاعداد بدون نت"]},{name:"Flash Firmware",desc:"تفليش فلاشة رسمية",mode:"Download",time:"8-15 دقيقة",steps:["حمل فلاشة نفس الحماية","اختر AP BL CP CSC","Flash","انتظر PASS"]},{name:"Unlock Bootloader",desc:"فتح البوت لودر",mode:"Download",time:"2 دقيقة",steps:["فعل OEM Unlock","Download Mode","Unlock Bootloader"]},{name:"Read Info",desc:"قراءة معلومات الجهاز",mode:"Download",time:"30 ثانية",steps:["Download Mode","Read Info"]},{name:"FRP + Factory Reset",desc:"FRP + فورمات مع بعض",mode:"Download",time:"3 دقيقة",steps:["Download Mode","FRP + Reset","Reboot"]}]},
+"Infinix":{chip:"MTK Helio",modes:["Preloader","Download","Fastboot","ADB"],models:["Hot 10 X682B","Hot 11 X662","Hot 12 X6817","Hot 20 X6826","Hot 30 X6831","Hot 30i X669","Hot 40 X6836","Note 30 X6833B","Note 12 X663","Smart 7 X6515"],ops:[{name:"Erase FRP",desc:"ازالة FRP - Preloader",mode:"Preloader",time:"1 دقيقة",steps:["طفي الجهاز","اضغط Vol+ و Vol- واشبك USB","Preloader Mode","START"]},{name:"Factory Reset + FRP",desc:"فورمات + FRP",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Factory Reset + FRP","Reboot"]},{name:"Remove MDM",desc:"ازالة MDM / Demo",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Remove MDM","لا تشبك نت"]},{name:"Remove Demo",desc:"ازالة وضع المعرض Demo",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Remove Demo"]},{name:"Flash Firmware",desc:"تفليش",mode:"Preloader",time:"10 دقيقة",steps:["حمل فلاشة","Preloader","Flash"]},{name:"Unlock Bootloader",desc:"فتح بوت لودر",mode:"Fastboot",time:"1 دقيقة",steps:["Fastboot","Unlock Bootloader"]},{name:"Read Info",desc:"قراءة معلومات",mode:"Preloader",time:"20 ثانية",steps:["Preloader","Read Info"]}]},
+"Tecno":{chip:"MTK Helio",modes:["Preloader","Fastboot","ADB"],models:["Spark 7 KF6","Spark 8 KG5","Spark 9 KH6","Spark 10 KI5","Spark 20 KJ5","Camon 19 CI6","Camon 20 CK6","Pova 5 LH7"],ops:[{name:"Erase FRP",desc:"FRP - Preloader",mode:"Preloader",time:"1 دقيقة",steps:["طفي","Vol+ Vol- + USB","START"]},{name:"Factory Reset + FRP",desc:"فورمات + FRP",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Reset + FRP"]},{name:"Remove MDM",desc:"MDM",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","MDM Remove"]},{name:"Flash Firmware",desc:"تفليش",mode:"Preloader",time:"10 دقيقة",steps:["فلاشة","Flash"]}]},
+"Xiaomi":{chip:"MTK / Qualcomm",modes:["EDL 9008","Fastboot","ADB","Preloader"],models:["Redmi 9A M2006C3LG","Redmi 10A 220233L2C","Redmi 10C 220333QAG","Redmi 12 23053RN02A","Redmi Note 8 M1908C3JG","Redmi Note 9 M2003J15SG","Redmi Note 11 2201117TG","Poco X3 M2007J20CG","Poco C65 2310FPCA4G"],ops:[{name:"Erase FRP",desc:"FRP - EDL / Fastboot",mode:"EDL 9008",time:"1 دقيقة",steps:["EDL 9008 - Test Point او Vol+ Vol-","START","Reboot"]},{name:"Mi Account Remove",desc:"ازالة حساب شاومي",mode:"EDL 9008",time:"3 دقيقة",steps:["EDL","Mi Account Remove","لا تشبك نت"]},{name:"Factory Reset",desc:"فورمات",mode:"EDL 9008",time:"2 دقيقة",steps:["EDL","Factory Reset"]},{name:"Flash Firmware",desc:"تفليش Fastboot",mode:"Fastboot",time:"10 دقيقة",steps:["Fastboot","Flash"]},{name:"Unlock Bootloader",desc:"فتح بوت لودر - يحتاج اذن",mode:"Fastboot",time:"7 ايام انتظار شاومي",steps:["Mi Unlock Tool","طلب فتح","انتظر 168 ساعة"]}]},
+"Realme":{chip:"MTK / Qualcomm",modes:["Preloader","EDL 9008","Fastboot"],models:["C11 RMX2185","C35 RMX3511","C51 RMX3830","C53 RMX3760","C55 RMX3710","Realme 8 RMX3085","Realme 10 RMX3630"],ops:[{name:"Erase FRP",desc:"FRP",mode:"Preloader",time:"1 دقيقة",steps:["Preloader","FRP"]},{name:"Factory Reset",desc:"فورمات",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Reset"]},{name:"Flash Firmware",desc:"تفليش",mode:"Preloader",time:"10 دقيقة",steps:["فلاشة","Flash"]}]},
+"Oppo":{chip:"MTK / Qualcomm",modes:["Preloader","EDL 9008"],models:["A15 CPH2185","A16 CPH2269","A54 CPH2239","A57 CPH2387","A78 CPH2565","Reno 8 CPH2359"],ops:[{name:"Erase FRP",desc:"FRP",mode:"Preloader",time:"1 دقيقة",steps:["Preloader","FRP"]},{name:"Factory Reset",desc:"فورمات",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Reset"]},{name:"Demo Remove",desc:"ازالة Demo",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Demo"]}]},
+"Vivo":{chip:"MTK / Qualcomm",modes:["Preloader","EDL 9008","Fastboot"],models:["Y15 1901","Y20 2027","Y33s V2110","Y35 V2205","Y21 V2111"],ops:[{name:"Erase FRP",desc:"FRP",mode:"Preloader",time:"1 دقيقة",steps:["Preloader","FRP"]},{name:"Factory Reset",desc:"فورمات",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Reset"]}]},
+"Apple":{chip:"A12 - A17 Pro",modes:["DFU","Recovery"],models:["iPhone 7 A1778","iPhone 8 A1905","iPhone X A1901","iPhone 11 A2111","iPhone 12 A2403","iPhone 13 A2633","iPhone 14 A2882","iPhone 15 A3090"],ops:[{name:"Hello Screen Bypass",desc:"تخطي شاشة Hello - يحتاج جيلبريك",mode:"DFU",time:"10 دقيقة",steps:["DFU","Jailbreak","Bypass"]},{name:"Passcode Remove",desc:"ازالة رمز - يمسح البيانات",mode:"Recovery",time:"10 دقيقة",steps:["Recovery","Restore","iTunes"]},{name:"Flash iOS",desc:"تفليش iOS",mode:"DFU",time:"15 دقيقة",steps:["DFU","Restore IPSW"]}]}
 };
-let unlockBrand="Samsung", unlockModel="Galaxy A12 SM-A125F", unlockMode="Download", unlockOp=null, unlockRunning=false, unlockTimer=null;
-      <script>
-// ===== Borneo Data - بورد تلفون حقيقي =====
-const BORNEO_DATA = {
-"Samsung A12": { code:"SM-A125F", chip:"MTK MT6765", img:"board-a12.jpg", schematic:"اضغط على قطعة",
-  board:[
-    {name:"J6001 CHARGE",value:"Type-C",net:"VBUS",volt:"5V",desc:"كونكتر الشحن",x:40,y:78,w:16,h:14,conns:[{to:"U4001 CHARGE",toX:70,toY:68,type:"توالي",volt:"5V",color:"#ff0000",note:"VBUS - توالي: اذا انقطع ما يشحن"},{to:"F2000 فيوز",toX:55,toY:75,type:"توالي",volt:"5V",color:"#ff0000",note:"فيوز - توالي"}]},
-    {name:"U4001 CHARGE",value:"RT9471",net:"VBUS",volt:"5V",desc:"ايسي الشحن",x:66,y:62,w:10,h:10,conns:[{to:"J6001 CHARGE",toX:48,toY:85,type:"توالي",volt:"5V دخول",color:"#ff0000",note:"يستلم 5V - توالي"},{to:"U3001 PMIC",toX:52,toY:38,type:"توالي",volt:"4.2V",color:"#ffb400",note:"يطلع 4.2V - توالي"},{to:"J7001 BAT",toX:58,toY:80,type:"توالي",volt:"4.2V",color:"#00d26a",note:"شحن البطارية - توالي"}]},
-    {name:"J7001 BAT CONN",value:"BAT",net:"VBAT",volt:"3.8V",desc:"كونكتر البطارية",x:52,y:76,w:10,h:8,conns:[{to:"U3001 PMIC",toX:52,toY:38,type:"توالي",volt:"3.8V",color:"#00ffff",note:"VBAT - توالي: اذا انقطع الجهاز ميت"}]},
-    {name:"U3001 PMIC",value:"SM5705",net:"VPH_PWR",volt:"3.8V",desc:"ايسي الباور",x:46,y:30,w:14,h:16,conns:[{to:"J7001 BAT",toX:57,toY:80,type:"توالي",volt:"3.8V دخول",color:"#00ffff",note:"يستلم VBAT - توالي"},{to:"U1001 CPU",toX:25,toY:38,type:"توالي",volt:"0.85V",color:"#ffb400",note:"فولت المعالج - توالي"},{to:"U2001 EMMC",toX:74,toY:42,type:"توالي",volt:"1.8V",color:"#ffb400",note:"فولت الذاكرة - توالي"}]},
-    {name:"U1001 CPU",value:"MT6765",net:"VDD_CPU",volt:"0.85V",desc:"المعالج",x:18,y:30,w:16,h:20,conns:[{to:"U3001 PMIC",toX:53,toY:38,type:"توالي",volt:"0.85V",color:"#ffb400",note:"فولت - توالي"},{to:"U2001 EMMC",toX:74,toY:42,type:"توالي",volt:"DATA",color:"#00ff00",note:"CLK CMD D0 - توالي"},{to:"J5001 LCD",toX:90,toY:50,type:"توالي",volt:"MIPI",color:"#00b0ff",note:"شاشة - توالي"}]},
-    {name:"U2001 EMMC",value:"64GB",net:"VCCQ",volt:"1.8V",desc:"الذاكرة",x:68,y:35,w:12,h:14,conns:[{to:"U1001 CPU",toX:26,toY:40,type:"توالي",volt:"CLK CMD D0",color:"#00ff00",note:"ISP - توالي"},{to:"U3001 PMIC",toX:53,toY:38,type:"توالي",volt:"1.8V",color:"#ffb400",note:"فولت - توالي"}]},
-    {name:"J5001 LCD FPC",value:"LCD",net:"MIPI",volt:"1.2V",desc:"كونكتر الشاشة",x:88,y:45,w:8,h:18,conns:[{to:"U1001 CPU",toX:26,toY:40,type:"توالي",volt:"MIPI",color:"#00b0ff",note:"بيانات - توالي"},{to:"L2400 COIL",toX:84,toY:68,type:"توالي",volt:"20V",color:"#ffff00",note:"اضاءة - توالي"}]},
-    {name:"L2400 COIL",value:"إضاءة",net:"LED_A",volt:"20V",desc:"ملف الاضاءة",x:82,y:62,w:6,h:8,conns:[{to:"U3001 PMIC",toX:53,toY:38,type:"توالي",volt:"3.8V",color:"#ffb400",note:"دخول - توالي"},{to:"J5001 LCD",toX:92,toY:54,type:"توالي",volt:"20V",color:"#ffff00",note:"خروج 20V - توالي"}]},
-    {name:"J8001 SIM",value:"SIM",net:"SIM",volt:"1.8V",desc:"كونكتر السيم",x:4,y:62,w:14,h:18,conns:[{to:"U1001 CPU",toX:26,toY:40,type:"توالي",volt:"SIM_DATA",color:"#ff00ff",note:"بيانات السيم - توالي"}]},
-    {name:"TP ISP",value:"Test Point",net:"ISP",volt:"1.8V",desc:"نقاط ISP",x:28,y:22,w:6,h:6,conns:[{to:"U2001 EMMC",toX:74,toY:42,type:"توازي",volt:"CLK CMD D0",color:"#00ff00",note:"ISP - توازي: للفحص فقط"}]},
-  ],
-  ways:[{title:"Charging Ways",desc:"J6001 → F2000 → U4001 → BAT - توالي"},{title:"Light Ways",desc:"PMIC → L2400 → LCD - توالي 20V"},{title:"Power Ways",desc:"BAT → PMIC → CPU → EMMC - توالي"}]},
-"iPhone 11": { code:"A2111", chip:"A13 Bionic", img:"board-a12.jpg", schematic:"اضغط على قطعة",
-  board:[
-    {name:"U1001 A13 CPU",value:"A13",net:"VDD_MAIN",volt:"3.8V",desc:"معالج",x:34,y:10,w:27,h:28,conns:[{to:"U3001 PMIC",toX:47,toY:52,type:"توالي",volt:"3.8V",color:"#ffb400",note:"فولت - توالي"}]},
-    {name:"U2001 NAND",value:"128GB",net:"VCC",volt:"1.8V",desc:"ناند",x:63,y:12,w:18,h:18,conns:[{to:"U1001 A13 CPU",toX:47,toY:22,type:"توالي",volt:"DATA",color:"#00ff00",note:"بيانات - توالي"}]},
-  ], ways:[{title:"Not Charging",desc:"افحص U3300"}]},
-"Redmi Note 10": { code:"M2101K6G", chip:"Snapdragon 678", img:"board-a12.jpg", schematic:"اضغط على قطعة",
-  board:[{name:"U1001 CPU",value:"SD678",net:"VDD",volt:"0.9V",desc:"معالج",x:34,y:10,w:27,h:28,conns:[{to:"U3001 PMIC",toX:47,toY:52,type:"توالي",volt:"0.9V",color:"#ffb400",note:"فولت - توالي"}]}], ways:[{title:"Restart",desc:"افحص PMIC"}]},
-"Infinix Hot 30": { code:"X6831", chip:"Helio G99", img:"board-a12.jpg", schematic:"اضغط على قطعة",
-  board:[{name:"U1001 G99",value:"Helio G99",net:"VDD",volt:"0.9V",desc:"معالج",x:34,y:10,w:27,h:28,conns:[{to:"U3001 PMIC",toX:47,toY:52,type:"توالي",volt:"0.9V",color:"#ffb400",note:"فولت - توالي"}]}], ways:[{title:"FRP ISP",desc:"CLK CMD D0 GND"}]}
+let unlockBrand="Samsung",unlockModel="Galaxy A12 SM-A125F",unlockMode="Download",unlockOp=null,unlockRunning=false,unlockTimer=null;
+                                                                                                                                                                                                      </script>
+                                                                                                                                                                                                      <script>
+const BORNEO_DATA={
+"Samsung A12":{code:"SM-A125F",chip:"MTK MT6765",img:"board-a12.jpg",schematic:"اضغط على قطعة",board:[{name:"J6001 CHARGE",value:"Type-C",net:"VBUS",volt:"5V",desc:"كونكتر الشحن",x:40,y:78,w:16,h:14,conns:[{to:"U4001 CHARGE",toX:70,toY:68,type:"توالي",volt:"5V",color:"#ff0000",note:"VBUS - توالي: اذا انقطع ما يشحن"},{to:"F2000 فيوز",toX:55,toY:75,type:"توالي",volt:"5V",color:"#ff0000",note:"فيوز - توالي"}]},{name:"U4001 CHARGE",value:"RT9471",net:"VBUS",volt:"5V",desc:"ايسي الشحن",x:66,y:62,w:10,h:10,conns:[{to:"J6001 CHARGE",toX:48,toY:85,type:"توالي",volt:"5V دخول",color:"#ff0000",note:"يستلم 5V - توالي"},{to:"U3001 PMIC",toX:52,toY:38,type:"توالي",volt:"4.2V",color:"#ffb400",note:"يطلع 4.2V - توالي"},{to:"J7001 BAT",toX:58,toY:80,type:"توالي",volt:"4.2V",color:"#00d26a",note:"شحن البطارية - توالي"}]},{name:"J7001 BAT CONN",value:"BAT",net:"VBAT",volt:"3.8V",desc:"كونكتر البطارية",x:52,y:76,w:10,h:8,conns:[{to:"U3001 PMIC",toX:52,toY:38,type:"توالي",volt:"3.8V",color:"#00ffff",note:"VBAT - توالي: اذا انقطع الجهاز ميت"}]},{name:"U3001 PMIC",value:"SM5705",net:"VPH_PWR",volt:"3.8V",desc:"ايسي الباور",x:46,y:30,w:14,h:16,conns:[{to:"J7001 BAT",toX:57,toY:80,type:"توالي",volt:"3.8V دخول",color:"#00ffff",note:"يستلم VBAT - توالي"},{to:"U1001 CPU",toX:25,toY:38,type:"توالي",volt:"0.85V",color:"#ffb400",note:"فولت المعالج - توالي"},{to:"U2001 EMMC",toX:74,toY:42,type:"توالي",volt:"1.8V",color:"#ffb400",note:"فولت الذاكرة - توالي"}]},{name:"U1001 CPU",value:"MT6765",net:"VDD_CPU",volt:"0.85V",desc:"المعالج",x:18,y:30,w:16,h:20,conns:[{to:"U3001 PMIC",toX:53,toY:38,type:"توالي",volt:"0.85V",color:"#ffb400",note:"فولت - توالي"},{to:"U2001 EMMC",toX:74,toY:42,type:"توالي",volt:"DATA",color:"#00ff00",note:"CLK CMD D0 - توالي"},{to:"J5001 LCD",toX:90,toY:50,type:"توالي",volt:"MIPI",color:"#00b0ff",note:"شاشة - توالي"}]},{name:"U2001 EMMC",value:"64GB",net:"VCCQ",volt:"1.8V",desc:"الذاكرة",x:68,y:35,w:12,h:14,conns:[{to:"U1001 CPU",toX:26,toY:40,type:"توالي",volt:"CLK CMD D0",color:"#00ff00",note:"ISP - توالي"},{to:"U3001 PMIC",toX:53,toY:38,type:"توالي",volt:"1.8V",color:"#ffb400",note:"فولت - توالي"}]},{name:"J5001 LCD FPC",value:"LCD",net:"MIPI",volt:"1.2V",desc:"كونكتر الشاشة",x:88,y:45,w:8,h:18,conns:[{to:"U1001 CPU",toX:26,toY:40,type:"توالي",volt:"MIPI",color:"#00b0ff",note:"بيانات - توالي"},{to:"L2400 COIL",toX:84,toY:68,type:"توالي",volt:"20V",color:"#ffff00",note:"اضاءة - توالي"}]},{name:"L2400 COIL",value:"إضاءة",net:"LED_A",volt:"20V",desc:"ملف الاضاءة",x:82,y:62,w:6,h:8,conns:[{to:"U3001 PMIC",toX:53,toY:38,type:"توالي",volt:"3.8V",color:"#ffb400",note:"دخول - توالي"},{to:"J5001 LCD",toX:92,toY:54,type:"توالي",volt:"20V",color:"#ffff00",note:"خروج 20V - توالي"}]},{name:"J8001 SIM",value:"SIM",net:"SIM",volt:"1.8V",desc:"كونكتر السيم",x:4,y:62,w:14,h:18,conns:[{to:"U1001 CPU",toX:26,toY:40,type:"توالي",volt:"SIM_DATA",color:"#ff00ff",note:"بيانات السيم - توالي"}]},{name:"TP ISP",value:"Test Point",net:"ISP",volt:"1.8V",desc:"نقاط ISP",x:28,y:22,w:6,h:6,conns:[{to:"U2001 EMMC",toX:74,toY:42,type:"توازي",volt:"CLK CMD D0",color:"#00ff00",note:"ISP - توازي: للفحص فقط"}]}],ways:[{title:"Charging Ways",desc:"J6001 → F2000 → U4001 → BAT - توالي"},{title:"Light Ways",desc:"PMIC → L2400 → LCD - توالي 20V"},{title:"Power Ways",desc:"BAT → PMIC → CPU → EMMC - توالي"}]},
+"iPhone 11":{code:"A2111",chip:"A13 Bionic",img:"board-a12.jpg",schematic:"اضغط على قطعة",board:[{name:"U1001 A13 CPU",value:"A13",net:"VDD_MAIN",volt:"3.8V",desc:"معالج",x:34,y:10,w:27,h:28,conns:[{to:"U3001 PMIC",toX:47,toY:52,type:"توالي",volt:"3.8V",color:"#ffb400",note:"فولت - توالي"}]},{name:"U2001 NAND",value:"128GB",net:"VCC",volt:"1.8V",desc:"ناند",x:63,y:12,w:18,h:18,conns:[{to:"U1001 A13 CPU",toX:47,toY:22,type:"توالي",volt:"DATA",color:"#00ff00",note:"بيانات - توالي"}]}],ways:[{title:"Not Charging",desc:"افحص U3300"}]},
+"Redmi Note 10":{code:"M2101K6G",chip:"Snapdragon 678",img:"board-a12.jpg",schematic:"اضغط على قطعة",board:[{name:"U1001 CPU",value:"SD678",net:"VDD",volt:"0.9V",desc:"معالج",x:34,y:10,w:27,h:28,conns:[{to:"U3001 PMIC",toX:47,toY:52,type:"توالي",volt:"0.9V",color:"#ffb400",note:"فولت - توالي"}]}],ways:[{title:"Restart",desc:"افحص PMIC"}]},
+"Infinix Hot 30":{code:"X6831",chip:"Helio G99",img:"board-a12.jpg",schematic:"اضغط على قطعة",board:[{name:"U1001 G99",value:"Helio G99",net:"VDD",volt:"0.9V",desc:"معالج",x:34,y:10,w:27,h:28,conns:[{to:"U3001 PMIC",toX:47,toY:52,type:"توالي",volt:"0.9V",color:"#ffb400",note:"فولت - توالي"}]}],ways:[{title:"FRP ISP",desc:"CLK CMD D0 GND"}]}
 };
-  const compatData=[
+const compatData=[
 ["شاشة A02s / A02 / M02s / A03s / A03 / A03 Core","6.5 IPS - A02s , A02 , A03s , M02s , F02s , A03","screen"],
 ["شاشة A10s / A10 / M10s / A10e","A10s , A10 , M10s - 6.2","screen"],
 ["شاشة A11 / M11 / F11 / A12","A11 , M11 , F11 , A12 - 6.4-6.5 PLS","screen"],
@@ -510,7 +333,7 @@ const BORNEO_DATA = {
 ["بطارية انفينكس Hot 20 / Hot 30 / Hot 40 / Note 30","BL-58FT 5000mAh - Hot 20 , 30 , 40 , Note 30","battery"],
 ["بطارية انفينكس Note 8 / Note 10 / Note 11 / Note 12","BL-49FX/54ST 5000mAh - Note 8 , 10 , 11 , 12","battery"],
 ["بطارية شاومي Redmi 8 / 8A / 9A / 9C / 9 / Poco M3","BN21/62 5000mAh - 8 , 8A , 9A , 9C , 9 , M3","battery"],
-["بطارية شاومي Redmi 10A / 10C / 10 / 12 / 13C","BN62/5R 5000mAh - Redmi 12 , 13C , C65","battery"],
+["بطارية شاومي Redmi 10A / 10C / 10 / 12 / 13C","BN62/5R 5000mAh - 10A , 10C , 10 , 12 , 13C","battery"],
 ["بطارية شاومي Note 8 / Note 9 / Note 10 / Note 11 / Note 12","BN46/54/55/5A/5G 4000-5020mAh - Note 8 , 9 , 10 , 11 , 12","battery"],
 ["بطارية شاومي Poco X3 / X3 Pro / X5 / F3 / F4","BN59/5A 5160mAh - Poco X3 , X5 , F3 , F4","battery"],
 ["بطارية تكنو Spark 6 / 7 / 8 / 9 / 10 / 20 / Camon","BL-49FT/54ST 5000mAh - Spark 6/7/8/9/10/20 , Camon","battery"],
@@ -554,168 +377,39 @@ const BORNEO_DATA = {
 ["مخطط بورد ايفون - طبقتين - فك وتركيب","iPhone Board Layers - فك طبقات البورد - A12 , A13 , A14 - فك وتركيب بدون تلف","schematic"],
 ["مخطط حماية MDM و KG Locked و FRP - حلول 2024","KG Locked / MDM / FRP Bypass - حلول 2024 - سامسونج وانفينكس وتكنو وشاومي - بدون بوكس","schematic"]
 ];
-</script>
-<script>
-  // ===== UnlockTool Functions =====
-function openUnlock(){ hideAllViews(); document.getElementById('unlockView').classList.remove('hidden'); initUnlock(); window.scrollTo(0,0); }
-function openUnlockBrand(b){ openUnlock(); setUnlockBrand(b); }
-// تعديل واحد فقط هنا: ضفنا scannerView للقائمة حتى تختفي من تروح لغير قسم - باقي الكود نفسه
-function hideAllViews(){ ['homeView','compatView','lessonsView','listView','borneoView','unlockView','scannerView'].forEach(id=>document.getElementById(id).classList.add('hidden')); }
-function initUnlock(){
-  let brands=document.getElementById('unlockBrands'); brands.innerHTML="";
-  Object.keys(UNLOCK_DATA).forEach(b=>{
-    let btn=document.createElement('button'); btn.innerText=b; if(b===unlockBrand) btn.className='active';
-    btn.onclick=()=>setUnlockBrand(b); brands.appendChild(btn);
-  });
-  renderUnlockModels(); renderUnlockOps(); updateUnlockHeader(); unlockLog("Phone Flex UnlockTool Ready...", "info");
-}
-function setUnlockBrand(b){
-  unlockBrand=b; unlockModel=UNLOCK_DATA[b].models[0]; unlockMode=UNLOCK_DATA[b].modes[0]; unlockOp=null;
-  document.querySelectorAll('#unlockBrands button').forEach(btn=>btn.classList.toggle('active', btn.innerText===b));
-  let modes=document.getElementById('unlockModes'); modes.innerHTML="";
-  UNLOCK_DATA[b].modes.forEach(m=>{
-    let btn=document.createElement('button'); btn.innerText=m; if(m===unlockMode) btn.className='active';
-    btn.onclick=()=>setUnlockMode(m,btn); modes.appendChild(btn);
-  });
-  renderUnlockModels(); renderUnlockOps(); updateUnlockHeader();
-}
-function setUnlockMode(m,btn){ unlockMode=m; document.querySelectorAll('#unlockModes button').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); updateUnlockHeader(); unlockLog("Mode changed to: "+m, "info"); }
-function renderUnlockModels(){
-  let sel=document.getElementById('unlockModel'); sel.innerHTML="";
-  let q=(document.getElementById('unlockSearch')?.value||"").toLowerCase();
-  UNLOCK_DATA[unlockBrand].models.filter(m=>m.toLowerCase().includes(q)).forEach(m=>{
-    let o=document.createElement('option'); o.value=m; o.text=m; o.selected=(m===unlockModel); sel.appendChild(o);
-  });
-}
-function filterUnlockModels(){ renderUnlockModels(); }
-function onUnlockModelChange(){ unlockModel=document.getElementById('unlockModel').value; updateUnlockHeader(); }
-function renderUnlockOps(){
-  let div=document.getElementById('unlockOps'); div.innerHTML="";
-  UNLOCK_DATA[unlockBrand].ops.forEach((op,i)=>{
-    let d=document.createElement('div'); d.className='op-item'+(unlockOp===op?' active':'');
-    d.innerHTML=`<div><b>🔓 ${op.name}</b><small>${op.desc} | ⏱ ${op.time} | Mode: ${op.mode}</small></div><span>›</span>`;
-    d.onclick=()=>{ unlockOp=op; renderUnlockOps(); updateUnlockHeader(); unlockLog("Selected: "+op.name+" - Mode: "+op.mode, "warn"); };
-    div.appendChild(d);
-  });
-}
-function updateUnlockHeader(){
-  document.getElementById('unlockTitle').innerText=unlockBrand+" - "+unlockModel;
-  document.getElementById('unlockSub').innerText=unlockMode+" Mode | "+UNLOCK_DATA[unlockBrand].chip+" | "+(unlockOp?unlockOp.name:"اختر عملية");
-  document.getElementById('unlockDeviceInfo').innerHTML=`📱 الجهاز: ${unlockBrand} ${unlockModel}<br>🔌 الوضع: ${unlockMode} - ${getModeHint(unlockMode)}<br>⚙️ العملية: ${unlockOp?unlockOp.name+" - "+unlockOp.desc+" - ⏱ "+unlockOp.time:"اختر عملية من اليسار ثم اضغط START"}<br>${unlockOp? "📋 الخطوات: "+unlockOp.steps.join(" → "):""}`;
-}
-function getModeHint(m){ if(m==="Download") return "طفي الجهاز + Vol- + Vol+ + USB"; if(m==="Preloader") return "طفي الجهاز + Vol+ + Vol- + USB بدون زر باور"; if(m==="EDL 9008") return "Test Point + USB - او Vol+ + Vol-"; if(m==="Fastboot") return "Vol- + Power"; if(m==="DFU") return "Vol- + Power 10 ثواني"; if(m==="Recovery") return "Vol+ + Power"; return "اشبك USB"; }
-function unlockLog(msg, cls){
-  let log=document.getElementById('unlockLog'); let t=new Date().toLocaleTimeString('en-GB');
-  log.innerHTML+=`<div class="${cls||''}">[${t}] ${msg}</div>`; log.scrollTop=log.scrollHeight;
-}
-function startUnlock(){
-  if(!unlockOp){ alert("اختر عملية اولاً من اليسار"); return; }
-  if(unlockRunning) return;
-  unlockRunning=true; let p=0;
-  document.getElementById('unlockStatus').innerText="Working... "+unlockOp.name;
-  unlockLog("=================================", "info");
-  unlockLog("Phone Flex UnlockTool v1.0", "info");
-  unlockLog("Brand: "+unlockBrand+" | Model: "+unlockModel, "info");
-  unlockLog("Operation: "+unlockOp.name, "warn");
-  unlockLog("Mode: "+unlockMode+" - "+getModeHint(unlockMode), "info");
-  unlockLog("Waiting for device...", "info");
-  let steps=["Connecting to device...","Reading device info...","Checking DA / Auth...","Sending loader...","Executing "+unlockOp.name+"...","Verifying...","Rebooting device..."];
-  let si=0;
-  unlockTimer=setInterval(()=>{
-    p+=Math.floor(Math.random()*12)+4; if(p>100) p=100;
-    document.getElementById('unlockProgress').style.width=p+"%";
-    document.getElementById('unlockPercent').innerText=p+"%";
-    if(si<steps.length && p> (si+1)*14){ unlockLog("✓ "+steps[si], "ok"); si++; }
-    if(p>=100){
-      clearInterval(unlockTimer); unlockRunning=false;
-      unlockLog("✓ DONE - "+unlockOp.name+" Success!", "ok");
-      unlockLog("Device will reboot now - لا تشبك واي فاي اول تشغيل اذا FRP/MDM/KG", "warn");
-      document.getElementById('unlockStatus').innerText="Done ✓ - "+unlockOp.name;
-      if(unlockOp.name.includes("FRP")||unlockOp.name.includes("MDM")||unlockOp.name.includes("KG")) unlockLog("⚠️ لا تشبك واي فاي اول تشغيل - كمل الاعداد بدون نت", "warn");
-    }
-  }, 500);
-}
-function stopUnlock(){ if(unlockTimer) clearInterval(unlockTimer); unlockRunning=false; document.getElementById('unlockStatus').innerText="Stopped"; unlockLog("Operation stopped by user", "err"); }
-
-// ===== Borneo =====
-let currentBorneo="Samsung A12", zoomBorneoVal=1, selectedBorneo=-1;
-function openBorneo(model){
-  currentBorneo=model; hideAllViews(); document.getElementById('borneoView').classList.remove('hidden');
-  selectedBorneo=-1; zoomBorneoVal=1; renderBorneo(); window.scrollTo(0,0);
-}
-function renderBorneo(){
-  let d=BORNEO_DATA[currentBorneo]; if(!d) return;
-  document.getElementById('borneoTitle').innerText="Borneo - "+currentBorneo+" - "+d.code+" - "+d.chip;
-  document.getElementById('boardImg').src=d.img;
-  let hs=document.getElementById('hotspots'); hs.innerHTML="";
-  d.board.forEach((p,i)=>{
-    let div=document.createElement('div'); div.className='hotspot'+(selectedBorneo===i?' active':'');
-    div.style.left=p.x+'%'; div.style.top=p.y+'%'; div.style.width=p.w+'%'; div.style.height=p.h+'%';
-    div.innerHTML=`<span>${p.name}</span>`; div.onclick=()=>showBorneoPart(i); hs.appendChild(div);
-  });
-  let svg=document.getElementById('traceSvg'); svg.innerHTML="";
-  let labels=document.getElementById('connLabels'); labels.innerHTML="";
-  if(selectedBorneo>=0){
-    let p=d.board[selectedBorneo]; let sx=p.x+p.w/2, sy=p.y+p.h/2;
-    (p.conns||[]).forEach(c=>{
-      let midX=(sx+c.toX)/2, midY=(sy+c.toY)/2-4;
-      svg.innerHTML+=`<path d="M ${sx} ${sy} L ${midX} ${midY} L ${c.toX} ${c.toY}" stroke="${c.color}" stroke-width="2.2" fill="none" opacity="0.95" stroke-linecap="round" style="filter:drop-shadow(0 0 3px ${c.color})"/>`;
-      svg.innerHTML+=`<circle cx="${c.toX}" cy="${c.toY}" r="2.2" fill="${c.color}" stroke="#fff" stroke-width="0.5"/>`;
-      let lab=document.createElement('div'); lab.className='conn-label'; lab.style.left=midX+'%'; lab.style.top=midY+'%'; lab.style.borderColor=c.color; lab.innerText=c.to+" | "+c.volt+" | "+c.type; labels.appendChild(lab);
-    });
-  }
-  applyBorneoTransform();
-  document.getElementById('compListBorneo').innerHTML=d.board.map((p,i)=>`<div class="comp-row ${selectedBorneo===i?'active':''}" onclick="showBorneoPart(${i})"><span>${p.name}</span><span>${p.value} | ${p.net}</span></div>`).join("");
-  document.getElementById('waysBorneo').innerHTML=`<h3 style="color:#ffb400">WAYS - ${currentBorneo}</h3>`+d.ways.map(w=>`<div class="way-borneo"><b>${w.title}</b><p>${w.desc}</p></div>`).join("");
-  if(selectedBorneo<0){ document.getElementById('schematicBoxBorneo').innerHTML="اضغط على اي قطعة..."; document.getElementById('partInfoBorneo').innerHTML="👆 اضغط على اي قطعة بالبورد... راح يطلع مخططها كامل وين توصل وتوالي لو توازي"; }
-}
-function showBorneoPart(i){
-  selectedBorneo=i; let p=BORNEO_DATA[currentBorneo].board[i];
-  let rows=(p.conns||[]).map(c=>{ let badge=c.type==="توالي" ? '<span class="badge-series">توالي SERIES</span>' : '<span class="badge-parallel">توازي PARALLEL</span>'; return `<tr><td><b>${c.to}</b><br><small>${c.note}</small></td><td>${badge}</td><td><b>${c.volt}</b></td></tr>`; }).join("");
-  document.getElementById('partInfoBorneo').innerHTML=`<b style="color:#ffb400;font-size:15px">${p.name} - ${p.value}</b> | ${p.net} | ${p.volt}<br><small>${p.desc}</small><table class="conn-table"><tr><th>يوصل الى</th><th>النوع</th><th>الفولت</th></tr>${rows}</table><div style="margin-top:8px;color:#ccc;font-size:12px">🔴 توالي: اذا انقطع يوقف الكل | 🔵 توازي: فرع | <a href="#" onclick="clearBorneoSelection();return false" style="color:#fff">مسح</a></div>`;
-  document.getElementById('schematicBoxBorneo').innerHTML=`<b>${p.name} - ${p.value}</b><br><b>الشبكة:</b> ${p.net} | <b>الفولت:</b> ${p.volt}<br><br><b>المخطط الكامل:</b><br>`+(p.conns||[]).map(c=>`➡ <b>${p.name}</b> <span style="color:${c.color}">── ${c.volt} ──</span> <b>${c.to}</b> [${c.type}]<br><small>${c.note}</small><br>`).join("");
-  renderBorneo();
-}
-function clearBorneoSelection(){ selectedBorneo=-1; renderBorneo(); }
-function applyBorneoTransform(){ let w=document.getElementById('boardImgWrap'); w.style.transform=`scale(${zoomBorneoVal})`; }
-function zoomBorneo(v){ zoomBorneoVal=Math.max(0.6,Math.min(3,zoomBorneoVal+v)); applyBorneoTransform(); }
-function resetZoomBorneo(){ zoomBorneoVal=1; applyBorneoTransform(); }
-function setBorneoMode(m,btn){ document.querySelectorAll('.borneo-tools button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); if(m==='ways') document.getElementById('waysBorneo').scrollIntoView({behavior:"smooth"}); }
-
-// ===== Compat / General =====
-function renderCompat(list){
-let div=document.getElementById('compatList'); div.innerHTML='';
-list.forEach(item=>{
-let icon=item[2]=='screen'?'📱':item[2]=='battery'?'🔋':item[2]=='charge'?'🔌':'📜';
-let click = item[2]=='schematic' ? `onclick="openBorneoFromCompat(this)"` : ``;
-div.innerHTML+=`<div class="compat-card ${item[2]}" ${click}><b>${icon} ${item[0]}</b><br><small>✅ ${item[1]}</small>${item[2]=='schematic' ? '<br><small style="color:#ffb400">👉 اضغط لفتح البورد الواقعي</small>' : ''}</div>`;
-});
-}
-function openBorneoFromCompat(el){
-  let t=el.innerText;
-  if(t.includes('ايفون')) openBorneo('iPhone 11');
-  else if(t.includes('شاومي')) openBorneo('Redmi Note 10');
-  else if(t.includes('انفينكس')) openBorneo('Infinix Hot 30');
-  else openBorneo('Samsung A12');
-}
-function filterCompat(type,btn){
-document.querySelectorAll('.compat-tabs button').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-if(type=='all') renderCompat(compatData); else renderCompat(compatData.filter(x=>x[2]==type));
-}
-function openCat(id){
-hideAllViews();
-if(id=='compat'){document.getElementById('compatView').classList.remove('hidden');renderCompat(compatData);}
-else if(id=='lessons'){document.getElementById('lessonsView').classList.remove('hidden');}
-else if(id=='devices'){document.getElementById('listView').classList.remove('hidden');document.getElementById('viewTitle').innerText='كل الاجهزة';document.getElementById('viewGrid').innerHTML='<div>Galaxy A12</div>';}
-else if(id=='accessories'){document.getElementById('listView').classList.remove('hidden');document.getElementById('viewTitle').innerText='الاكسسوارات';document.getElementById('viewGrid').innerHTML='<div>AirPods Pro 2</div>';}
-}
-function goHome(){ hideAllViews(); document.getElementById('homeView').classList.remove('hidden'); stopCamera(); }
-function doSearch(){
-let q=document.getElementById('search').value.toLowerCase().trim();
-if(q.length<1){renderCompat(compatData);return;}
-let filtered=compatData.filter(x=>x[0].toLowerCase().includes(q)||x[1].toLowerCase().includes(q));
-hideAllViews(); document.getElementById('compatView').classList.remove('hidden'); renderCompat(filtered);
-}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   </script>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+  <script>
+function openUnlock(){hideAllViews();document.getElementById('unlockView').classList.remove('hidden');initUnlock();window.scrollTo(0,0);}
+function openUnlockBrand(b){openUnlock();setUnlockBrand(b);}
+function hideAllViews(){['homeView','compatView','lessonsView','listView','borneoView','unlockView','scannerView','repairView'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
+function initUnlock(){let brands=document.getElementById('unlockBrands');brands.innerHTML="";Object.keys(UNLOCK_DATA).forEach(b=>{let btn=document.createElement('button');btn.innerText=b;if(b===unlockBrand)btn.className='active';btn.onclick=()=>setUnlockBrand(b);brands.appendChild(btn);});renderUnlockModels();renderUnlockOps();updateUnlockHeader();unlockLog("Phone Flex UnlockTool Ready...","info");}
+function setUnlockBrand(b){unlockBrand=b;unlockModel=UNLOCK_DATA[b].models[0];unlockMode=UNLOCK_DATA[b].modes[0];unlockOp=null;document.querySelectorAll('#unlockBrands button').forEach(btn=>btn.classList.toggle('active',btn.innerText===b));let modes=document.getElementById('unlockModes');modes.innerHTML="";UNLOCK_DATA[b].modes.forEach(m=>{let btn=document.createElement('button');btn.innerText=m;if(m===unlockMode)btn.className='active';btn.onclick=()=>setUnlockMode(m,btn);modes.appendChild(btn);});renderUnlockModels();renderUnlockOps();updateUnlockHeader();}
+function setUnlockMode(m,btn){unlockMode=m;document.querySelectorAll('#unlockModes button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');updateUnlockHeader();unlockLog("Mode changed to: "+m,"info");}
+function renderUnlockModels(){let sel=document.getElementById('unlockModel');sel.innerHTML="";let q=(document.getElementById('unlockSearch')?.value||"").toLowerCase();UNLOCK_DATA[unlockBrand].models.filter(m=>m.toLowerCase().includes(q)).forEach(m=>{let o=document.createElement('option');o.value=m;o.text=m;o.selected=(m===unlockModel);sel.appendChild(o);});}
+function filterUnlockModels(){renderUnlockModels();}
+function onUnlockModelChange(){unlockModel=document.getElementById('unlockModel').value;updateUnlockHeader();}
+function renderUnlockOps(){let div=document.getElementById('unlockOps');div.innerHTML="";UNLOCK_DATA[unlockBrand].ops.forEach((op,i)=>{let d=document.createElement('div');d.className='op-item'+(unlockOp===op?' active':'');d.innerHTML=`<div><b>🔓 ${op.name}</b><small>${op.desc} | ⏱ ${op.time} | Mode: ${op.mode}</small></div><span>›</span>`;d.onclick=()=>{unlockOp=op;renderUnlockOps();updateUnlockHeader();unlockLog("Selected: "+op.name+" - Mode: "+op.mode,"warn");};div.appendChild(d);});}
+function updateUnlockHeader(){document.getElementById('unlockTitle').innerText=unlockBrand+" - "+unlockModel;document.getElementById('unlockSub').innerText=unlockMode+" Mode | "+UNLOCK_DATA[unlockBrand].chip+" | "+(unlockOp?unlockOp.name:"اختر عملية");document.getElementById('unlockDeviceInfo').innerHTML=`📱 الجهاز: ${unlockBrand} ${unlockModel}<br>🔌 الوضع: ${unlockMode} - ${getModeHint(unlockMode)}<br>⚙️ العملية: ${unlockOp?unlockOp.name+" - "+unlockOp.desc+" - ⏱ "+unlockOp.time:"اختر عملية من اليسار ثم اضغط START"}<br>${unlockOp? "📋 الخطوات: "+unlockOp.steps.join(" → "):""}`;}
+function getModeHint(m){if(m==="Download")return "طفي الجهاز + Vol- + Vol+ + USB";if(m==="Preloader")return "طفي الجهاز + Vol+ + Vol- + USB بدون زر باور";if(m==="EDL 9008")return "Test Point + USB - او Vol+ + Vol-";if(m==="Fastboot")return "Vol- + Power";if(m==="DFU")return "Vol- + Power 10 ثواني";if(m==="Recovery")return "Vol+ + Power";return "اشبك USB";}
+function unlockLog(msg,cls){let log=document.getElementById('unlockLog');let t=new Date().toLocaleTimeString('en-GB');log.innerHTML+=`<div class="${cls||''}">[${t}] ${msg}</div>`;log.scrollTop=log.scrollHeight;}
+function startUnlock(){if(!unlockOp){alert("اختر عملية اولاً من اليسار");return;}if(unlockRunning)return;unlockRunning=true;let p=0;document.getElementById('unlockStatus').innerText="Working... "+unlockOp.name;unlockLog("=================================","info");unlockLog("Phone Flex UnlockTool v1.0","info");unlockLog("Brand: "+unlockBrand+" | Model: "+unlockModel,"info");unlockLog("Operation: "+unlockOp.name,"warn");unlockLog("Mode: "+unlockMode+" - "+getModeHint(unlockMode),"info");unlockLog("Waiting for device...","info");let steps=["Connecting to device...","Reading device info...","Checking DA / Auth...","Sending loader...","Executing "+unlockOp.name+"...","Verifying...","Rebooting device..."];let si=0;unlockTimer=setInterval(()=>{p+=Math.floor(Math.random()*12)+4;if(p>100)p=100;document.getElementById('unlockProgress').style.width=p+"%";document.getElementById('unlockPercent').innerText=p+"%";if(si<steps.length && p>(si+1)*14){unlockLog("✓ "+steps[si],"ok");si++;}if(p>=100){clearInterval(unlockTimer);unlockRunning=false;unlockLog("✓ DONE - "+unlockOp.name+" Success!","ok");unlockLog("Device will reboot now - لا تشبك واي فاي اول تشغيل اذا FRP/MDM/KG","warn");document.getElementById('unlockStatus').innerText="Done ✓ - "+unlockOp.name;if(unlockOp.name.includes("FRP")||unlockOp.name.includes("MDM")||unlockOp.name.includes("KG"))unlockLog("⚠️ لا تشبك واي فاي اول تشغيل - كمل الاعداد بدون نت","warn");}},500);}
+function stopUnlock(){if(unlockTimer)clearInterval(unlockTimer);unlockRunning=false;document.getElementById('unlockStatus').innerText="Stopped";unlockLog("Operation stopped by user","err");}
+let currentBorneo="Samsung A12",zoomBorneoVal=1,selectedBorneo=-1;
+function openBorneo(model){currentBorneo=model;hideAllViews();document.getElementById('borneoView').classList.remove('hidden');selectedBorneo=-1;zoomBorneoVal=1;renderBorneo();window.scrollTo(0,0);}
+function renderBorneo(){let d=BORNEO_DATA[currentBorneo];if(!d)return;document.getElementById('borneoTitle').innerText="Borneo - "+currentBorneo+" - "+d.code+" - "+d.chip;document.getElementById('boardImg').src=d.img;let hs=document.getElementById('hotspots');hs.innerHTML="";d.board.forEach((p,i)=>{let div=document.createElement('div');div.className='hotspot'+(selectedBorneo===i?' active':'');div.style.left=p.x+'%';div.style.top=p.y+'%';div.style.width=p.w+'%';div.style.height=p.h+'%';div.innerHTML=`<span>${p.name}</span>`;div.onclick=()=>showBorneoPart(i);hs.appendChild(div);});let svg=document.getElementById('traceSvg');svg.innerHTML="";let labels=document.getElementById('connLabels');labels.innerHTML="";if(selectedBorneo>=0){let p=d.board[selectedBorneo];let sx=p.x+p.w/2,sy=p.y+p.h/2;(p.conns||[]).forEach(c=>{let midX=(sx+c.toX)/2,midY=(sy+c.toY)/2-4;svg.innerHTML+=`<path d="M ${sx} ${sy} L ${midX} ${midY} L ${c.toX} ${c.toY}" stroke="${c.color}" stroke-width="2.2" fill="none" opacity="0.95" stroke-linecap="round" style="filter:drop-shadow(0 0 3px ${c.color})"/>`;svg.innerHTML+=`<circle cx="${c.toX}" cy="${c.toY}" r="2.2" fill="${c.color}" stroke="#fff" stroke-width="0.5"/>`;let lab=document.createElement('div');lab.className='conn-label';lab.style.left=midX+'%';lab.style.top=midY+'%';lab.style.borderColor=c.color;lab.innerText=c.to+" | "+c.volt+" | "+c.type;labels.appendChild(lab);});}applyBorneoTransform();document.getElementById('compListBorneo').innerHTML=d.board.map((p,i)=>`<div class="comp-row ${selectedBorneo===i?'active':''}" onclick="showBorneoPart(${i})"><span>${p.name}</span><span>${p.value} | ${p.net}</span></div>`).join("");document.getElementById('waysBorneo').innerHTML=`<h3 style="color:#ffb400">WAYS - ${currentBorneo}</h3>`+d.ways.map(w=>`<div class="way-borneo"><b>${w.title}</b><p>${w.desc}</p></div>`).join("");if(selectedBorneo<0){document.getElementById('schematicBoxBorneo').innerHTML="اضغط على اي قطعة...";document.getElementById('partInfoBorneo').innerHTML="👆 اضغط على اي قطعة بالبورد... راح يطلع مخططها كامل وين توصل وتوالي لو توازي";}}
+function showBorneoPart(i){selectedBorneo=i;let p=BORNEO_DATA[currentBorneo].board[i];let rows=(p.conns||[]).map(c=>{let badge=c.type==="توالي"?'<span class="badge-series">توالي SERIES</span>':'<span class="badge-parallel">توازي PARALLEL</span>';return `<tr><td><b>${c.to}</b><br><small>${c.note}</small></td><td>${badge}</td><td><b>${c.volt}</b></td></tr>`;}).join("");document.getElementById('partInfoBorneo').innerHTML=`<b style="color:#ffb400;font-size:15px">${p.name} - ${p.value}</b> | ${p.net} | ${p.volt}<br><small>${p.desc}</small><table class="conn-table"><tr><th>يوصل الى</th><th>النوع</th><th>الفولت</th></tr>${rows}</table><div style="margin-top:8px;color:#ccc;font-size:12px">🔴 توالي: اذا انقطع يوقف الكل | 🔵 توازي: فرع | <a href="#" onclick="clearBorneoSelection();return false" style="color:#fff">مسح</a></div>`;document.getElementById('schematicBoxBorneo').innerHTML=`<b>${p.name} - ${p.value}</b><br><b>الشبكة:</b> ${p.net} | <b>الفولت:</b> ${p.volt}<br><br><b>المخطط الكامل:</b><br>`+(p.conns||[]).map(c=>`➡ <b>${p.name}</b> <span style="color:${c.color}">── ${c.volt} ──</span> <b>${c.to}</b> [${c.type}]<br><small>${c.note}</small><br>`).join("");renderBorneo();}
+function clearBorneoSelection(){selectedBorneo=-1;renderBorneo();}
+function applyBorneoTransform(){let w=document.getElementById('boardImgWrap');w.style.transform=`scale(${zoomBorneoVal})`;}
+function zoomBorneo(v){zoomBorneoVal=Math.max(0.6,Math.min(3,zoomBorneoVal+v));applyBorneoTransform();}
+function resetZoomBorneo(){zoomBorneoVal=1;applyBorneoTransform();}
+function setBorneoMode(m,btn){document.querySelectorAll('.borneo-tools button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');if(m==='ways')document.getElementById('waysBorneo').scrollIntoView({behavior:"smooth"});}
+function renderCompat(list){let div=document.getElementById('compatList');div.innerHTML='';list.forEach(item=>{let icon=item[2]=='screen'?'📱':item[2]=='battery'?'🔋':item[2]=='charge'?'🔌':'📜';let click=item[2]=='schematic'?`onclick="openBorneoFromCompat(this)"`:``;div.innerHTML+=`<div class="compat-card ${item[2]}" ${click}><b>${icon} ${item[0]}</b><br><small>✅ ${item[1]}</small>${item[2]=='schematic'?'<br><small style="color:#ffb400">👉 اضغط لفتح البورد الواقعي</small>':''}</div>`;});}
+function openBorneoFromCompat(el){let t=el.innerText;if(t.includes('ايفون'))openBorneo('iPhone 11');else if(t.includes('شاومي'))openBorneo('Redmi Note 10');else if(t.includes('انفينكس'))openBorneo('Infinix Hot 30');else openBorneo('Samsung A12');}
+function filterCompat(type,btn){document.querySelectorAll('.compat-tabs button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');if(type=='all')renderCompat(compatData);else renderCompat(compatData.filter(x=>x[2]==type));}
+function openCat(id){hideAllViews();if(id=='compat'){document.getElementById('compatView').classList.remove('hidden');renderCompat(compatData);}else if(id=='lessons'){document.getElementById('lessonsView').classList.remove('hidden');}else if(id=='devices'){document.getElementById('listView').classList.remove('hidden');document.getElementById('viewTitle').innerText='كل الاجهزة';document.getElementById('viewGrid').innerHTML='<div>Galaxy A12</div>';}else if(id=='accessories'){document.getElementById('listView').classList.remove('hidden');document.getElementById('viewTitle').innerText='الاكسسوارات';document.getElementById('viewGrid').innerHTML='<div>AirPods Pro 2</div>';}}
+function goHome(){hideAllViews();document.getElementById('homeView').classList.remove('hidden');stopCamera();}
+function doSearch(){let q=document.getElementById('search').value.toLowerCase().trim();if(q.length<1){renderCompat(compatData);return;}let filtered=compatData.filter(x=>x[0].toLowerCase().includes(q)||x[1].toLowerCase().includes(q));hideAllViews();document.getElementById('compatView').classList.remove('hidden');renderCompat(filtered);}
 document.getElementById('countAll').innerText=compatData.length+' توافق + مخطط - اضغط للدخول';
 renderCompat(compatData);
 </script>
