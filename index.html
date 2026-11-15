@@ -2,62 +2,49 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Phone Flex - صيانة سيد عباس - البصرة</title>
-<meta name="theme-color" content="#0a0a0a">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phone Flex - سيد عباس</title>
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:#0a0a0a;color:#fff;font-family:'Segoe UI',Tahoma,Arial,sans-serif;padding-bottom:70px}
-a{color:#4ade80;text-decoration:none}
-.topbar{background:#000;padding:10px 12px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;border-bottom:1px solid #222}
-.logo{font-size:22px;font-weight:900;color:#fbbf24}
-.logo span{color:#fff;font-size:12px;display:block}
+*{box-sizing:border-box}
+body{margin:0;background:#0a0a0a;color:#fff;font-family:Tahoma,Arial}
+.topbar{background:#000;padding:10px;display:flex;gap:10px;align-items:center;position:sticky;top:0;z-index:99;border-bottom:1px solid #222}
+.logo{font-weight:900;color:#fbbf24;font-size:20px;line-height:1.1}
+.logo span{color:#fff;font-size:11px;display:block}
 .search-box{flex:1;display:flex;gap:5px}
 .search-box input{flex:1;padding:10px;border-radius:10px;border:1px solid #333;background:#1a1a1a;color:#fff}
 .search-box button{padding:10px 14px;border-radius:10px;border:0;background:#fbbf24;font-weight:900;cursor:pointer}
-.nav{display:flex;gap:6px;overflow-x:auto;background:#111;padding:8px;position:sticky;top:56px;z-index:99}
-.nav a{white-space:nowrap;padding:8px 12px;border-radius:20px;background:#222;color:#ddd;font-size:13px;cursor:pointer}
+.nav{display:flex;gap:6px;overflow-x:auto;background:#111;padding:8px;white-space:nowrap}
+.nav a{padding:8px 12px;border-radius:20px;background:#222;color:#ddd;font-size:13px;cursor:pointer}
 .nav a.active{background:#fbbf24;color:#000;font-weight:900}
 .view{padding:12px;max-width:1100px;margin:auto}
 .hidden{display:none!important}
-.hero{background:linear-gradient(135deg,#1e1e1e,#0f0f0f);border:1px solid #333;border-radius:16px;padding:16px;text-align:center}
-.hero h1{margin:5px 0;font-size:24px}.hero p{color:#aaa;font-size:13px}
-.hero-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.hero{background:#151515;border:1px solid #333;border-radius:16px;padding:16px;text-align:center}
+.hero h1{margin:5px 0}.hero p{color:#aaa;font-size:13px}
 .btn{padding:12px 18px;border-radius:12px;border:0;font-weight:900;cursor:pointer;font-size:14px}
 .btn-green{background:#25D366;color:#fff}.btn-yellow{background:#fbbf24;color:#000}.btn-blue{background:#2563eb;color:#fff}.btn-red{background:#ef4444;color:#fff}.btn-dark{background:#333;color:#fff}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
 .card{background:#151515;border:1px solid #262626;border-radius:14px;padding:10px;text-align:center}
 .card img{width:100%;height:140px;object-fit:cover;border-radius:10px;background:#222}
-.card h3{font-size:14px;margin:8px 0 4px}.card p{font-size:12px;color:#aaa;margin:0 0 6px;min-height:28px}
+.card h3{font-size:14px;margin:8px 0 4px}.card p{font-size:12px;color:#aaa}
 .menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
 @media(min-width:700px){.menu-grid{grid-template-columns:repeat(4,1fr)}}
 .menu-card{background:#151515;border:1px solid #262626;border-radius:14px;padding:16px 10px;text-align:center;cursor:pointer}
-.menu-card:active{transform:scale(.97)}
-.menu-card .ic{font-size:32px}.menu-card b{display:block;margin-top:6px;font-size:14px}.menu-card small{color:#aaa;font-size:11px}
+.menu-card .ic{font-size:32px}.menu-card b{display:block;margin-top:6px}.menu-card small{color:#aaa;font-size:11px}
 .section-title{font-size:20px;font-weight:900;margin:10px 0}
 .back-btn{background:#222;color:#fff;border:1px solid #444;padding:10px 14px;border-radius:10px;cursor:pointer;margin-bottom:10px}
-input,select,textarea{font-family:inherit}
+.field{width:100%;padding:12px;border-radius:10px;background:#1e1e1e;color:#fff;border:1px solid #444;margin-bottom:6px}
 label{font-size:13px;color:#ccc;display:block;margin:8px 0 4px}
-.field{width:100%;padding:12px;border-radius:10px;background:#1e1e1e;color:#fff;border:1px solid #444}
-.compat-search{display:flex;gap:6px;margin:10px 0}.compat-search input{flex:1}
 .scanner-box{background:#111;border:1px solid #333;border-radius:14px;padding:12px;text-align:center}
 #camVideo{width:100%;max-height:320px;background:#000;border-radius:10px}
 .scan-frame{position:relative;overflow:hidden;border-radius:10px}
-#scanLine{position:absolute;left:0;right:0;height:3px;background:#f00;box-shadow:0 0 12px #f00;display:none;animation:scan 1.6s infinite}
-@keyframes scan{0%{top:5%}100%{top:95%}}
-.conf-bar{background:#333;height:8px;border-radius:10px;overflow:hidden;margin-top:4px}
-.conf-fill{background:#4ade80;height:100%}
+#scanLine{position:absolute;left:0;right:0;height:3px;background:red;display:none}
 .result-card{background:#151515;border:1px solid #333;border-radius:14px;padding:14px;margin-top:12px}
 .repair-form{background:#151515;border:1px solid #333;border-radius:14px;padding:14px}
 .repair-card{background:#151515;border:1px solid #333;border-radius:12px;padding:12px;margin:10px 0}
-.repair-card.done{border-color:#4ade80}
-.repair-card .top{display:flex;justify-content:space-between;align-items:center}
-.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:900}
-.badge-done{background:#4ade80;color:#000}.badge-wait{background:#fbbf24;color:#000}
 .repair-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .repair-btns button{padding:9px 10px;border-radius:9px;border:0;font-weight:800;cursor:pointer;font-size:12px;color:#fff}
-.btn-wa{background:#25D366}.btn-done{background:#16a34a}.btn-call{background:#2563eb}.btn-edit{background:#f59e0b;color:#000}.btn-del{background:#ef4444}.btn-dark{background:#444}
+.btn-wa{background:#25D366}.btn-done{background:#16a34a}.btn-call{background:#2563eb}.btn-edit{background:#f59e0b;color:#000}.btn-del{background:#ef4444}
 .unlock-wrap{display:grid;gap:12px}
 @media(min-width:800px){.unlock-wrap{grid-template-columns:340px 1fr}}
 .unlock-left,.unlock-right{background:#151515;border:1px solid #333;border-radius:14px;padding:12px}
@@ -65,45 +52,27 @@ label{font-size:13px;color:#ccc;display:block;margin:8px 0 4px}
 .brand-tabs button,.mode-tabs button{padding:8px 12px;border-radius:20px;border:1px solid #444;background:#222;color:#fff;cursor:pointer}
 .brand-tabs button.active,.mode-tabs button.active{background:#fbbf24;color:#000;font-weight:900}
 #unlockModel{width:100%;background:#1e1e1e;color:#fff;border:1px solid #444;border-radius:10px;padding:8px}
-#unlockSearch{width:100%;padding:10px;border-radius:10px;background:#1e1e1e;color:#fff;border:1px solid #444;margin-bottom:6px}
-.op-list{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow:auto}
-.op-item{background:#222;border:1px solid #333;border-radius:10px;padding:10px;cursor:pointer;position:relative}
+.op-item{background:#222;border:1px solid #333;border-radius:10px;padding:10px;cursor:pointer;margin-bottom:6px}
 .op-item.selected{border-color:#fbbf24;background:#2a2200}
-.op-mode{position:absolute;left:10px;top:10px;background:#fbbf24;color:#000;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:900}
-.unlock-top{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
 .btn-start{background:#22c55e;color:#fff;padding:12px 22px;border:0;border-radius:10px;font-weight:900;cursor:pointer;font-size:16px}
 .btn-stop{background:#ef4444;color:#fff;padding:12px 18px;border:0;border-radius:10px;font-weight:900;cursor:pointer}
-.device-info{background:#0f0f0f;border:1px solid #333;border-radius:10px;padding:10px;font-size:13px;line-height:1.8;margin:10px 0}
 .progress{background:#333;height:12px;border-radius:20px;overflow:hidden;margin:8px 0}
-#unlockProgress{height:100%;width:0%;background:linear-gradient(90deg,#fbbf24,#22c55e);transition:width .3s}
-.log-box{background:#000;border:1px solid #333;border-radius:10px;height:180px;overflow:auto;padding:10px;font-size:12px;font-family:monospace;direction:ltr;text-align:left}
+#unlockProgress{height:100%;width:0%;background:#22c55e}
+.log-box{background:#000;border:1px solid #333;border-radius:10px;height:180px;overflow:auto;padding:10px;font-size:12px;direction:ltr;text-align:left}
 .compat-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
 .compat-tabs button{padding:8px 12px;border-radius:20px;border:1px solid #444;background:#222;color:#fff;cursor:pointer}
-.compat-tabs button.active{background:#fbbf24;color:#000;font-weight:900}
+.compat-tabs button.active{background:#fbbf24;color:#000}
 .compat-card{background:#151515;border:1px solid #333;border-radius:12px;padding:12px;margin:8px 0}
-.borneo-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;background:#111;padding:10px;border-radius:12px}
-.borneo-tools{display:flex;gap:5px;flex-wrap:wrap}
-.borneo-tools button{padding:7px 10px;border-radius:8px;border:1px solid #444;background:#222;color:#fff;cursor:pointer;font-size:12px}
-.borneo-tools button.active{background:#fbbf24;color:#000;font-weight:900}
-.borneo-wrap{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-.borneo-board{flex:1;min-width:280px;background:#000;border:1px solid #333;border-radius:12px;overflow:hidden;position:relative;min-height:320px}
-.board-img-wrap{position:relative;width:100%;height:100%;transform-origin:top right;transition:transform .2s}
+.borneo-board{background:#000;border:1px solid #333;border-radius:12px;min-height:320px;position:relative;overflow:hidden}
 #boardImg{width:100%;display:block}
-.trace-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
-#hotspots{position:absolute;inset:0;z-index:6}
-.hotspot{position:absolute;border:2px dashed rgba(255,255,255,.7);background:rgba(251,191,36,.15);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.hotspot span{font-size:9px;background:#000;color:#fff;padding:1px 4px;border-radius:4px}
-.hotspot.selected{border-color:#22c55e;background:rgba(34,197,94,.35);border-style:solid}
-.conn-label{position:absolute;background:#fbbf24;color:#000;font-size:10px;padding:2px 6px;border-radius:6px;transform:translate(-50%,-120%);z-index:7;white-space:nowrap}
-#connLabels{position:absolute;inset:0;z-index:7;pointer-events:none}
-.borneo-side{width:100%;max-width:320px;background:#151515;border:1px solid #333;border-radius:12px;padding:12px}
-@media(min-width:900px){.borneo-side{width:320px}}
+#hotspots{position:absolute;inset:0}
+.hotspot{position:absolute;border:2px dashed #fff;background:rgba(251,191,36,.2);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.hotspot span{font-size:10px;background:#000;padding:2px 5px;border-radius:4px}
+.hotspot.selected{border-color:#22c55e;background:rgba(34,197,94,.4)}
+.borneo-side{background:#151515;border:1px solid #333;border-radius:12px;padding:12px;margin-top:10px}
 .comp-item{background:#222;border:1px solid #333;border-radius:8px;padding:8px;margin:5px 0;cursor:pointer;font-size:13px}
-#partInfoBorneo{background:#111;border:1px solid #333;border-radius:10px;padding:10px;margin-top:8px;font-size:13px;line-height:1.7}
-#schematicBoxBorneo{background:#000;border:1px solid #333;border-radius:10px;padding:10px;min-height:100px;font-size:13px;line-height:1.7}
-.way-card{background:#151515;border:1px solid #333;border-radius:10px;padding:10px;margin:8px 0;display:inline-block;margin-left:8px}
 .lesson-card{background:#151515;border:1px solid #333;border-radius:14px;padding:12px;margin:10px 0}
-.lesson-card video{width:100%;border-radius:10px;background:#000;max-height:320px}
+.lesson-card video{width:100%;border-radius:10px;background:#000;max-height:340px}
 </style>
 </head>
 <body>
@@ -119,9 +88,9 @@ label{font-size:13px;color:#ccc;display:block;margin:8px 0 4px}
 </div>
 
 <div id="homeView" class="view">
-<div class="hero"><div style="font-size:40px">📱</div><h1>فون فلكس - Phone Flex</h1><p>موبايلات - اكسسوارات - صيانة - سوفت وير - البصرة العشار</p><div class="hero-btns"><button class="btn btn-green" onclick="window.open('https://wa.me/9647738105665')">💬 واتساب 07738105665</button><button class="btn btn-yellow" onclick="openView('scanner')">📷 صور جهازك واعرفه</button><button class="btn btn-blue" onclick="openView('repair')">🛠️ سجل جهاز للصيانة</button></div></div>
+<div class="hero"><div style="font-size:40px">📱</div><h1>فون فلكس - Phone Flex</h1><p>موبايلات - اكسسوارات - صيانة - سوفت وير - البصرة العشار</p><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px"><button class="btn btn-green" onclick="window.open('https://wa.me/9647738105665')">💬 واتساب 07738105665</button><button class="btn btn-yellow" onclick="openView('scanner')">📷 صور جهازك واعرفه</button><button class="btn btn-blue" onclick="openView('repair')">🛠️ سجل جهاز للصيانة</button></div></div>
 <div class="menu-grid">
-<div class="menu-card" onclick="openHomeSection('phones')"><div class="ic">📱</div><b>الموبايلات</b><small>كل الاجهزة المتوفرة</small></div>
+<div class="menu-card" onclick="openHomeSection('phones')"><div class="ic">📱</div><b>الموبايلات</b><small>كل الاجهزة</small></div>
 <div class="menu-card" onclick="openHomeSection('accessories')"><div class="ic">🎧</div><b>الاكسسوارات</b><small>سماعات - شاحنات</small></div>
 <div class="menu-card" onclick="openHomeSection('offers')"><div class="ic">💥</div><b>العروض</b><small>عروض اليوم</small></div>
 <div class="menu-card" onclick="openView('scanner')"><div class="ic">📷</div><b>تعرف بالكاميرا</b><small>صور الجهاز</small></div>
@@ -132,8 +101,9 @@ label{font-size:13px;color:#ccc;display:block;margin:8px 0 4px}
 </div>
 <h3 style="margin:18px 0 8px">🔥 الاكثر مبيعا</h3>
 <div class="grid" id="homeGrid"></div>
-<div style="margin-top:14px;background:#151515;border:1px solid #333;border-radius:14px;padding:12px"><h3 style="margin:0 0 8px">🔧 ابحث توافق جهازك</h3><div class="compat-search"><input id="searchCompat" placeholder="مثال: A12 , Hot 30 , Redmi 10C"><button class="btn btn-yellow" onclick="searchCompat()">بحث توافق</button></div></div>
+<div style="margin-top:14px;background:#151515;border:1px solid #333;border-radius:14px;padding:12px"><h3 style="margin:0 0 8px">🔧 ابحث توافق جهازك</h3><div style="display:flex;gap:6px"><input id="searchCompat" class="field" placeholder="مثال: A12 , Hot 30" style="flex:1;margin:0"><button class="btn btn-yellow" onclick="searchCompat()">بحث توافق</button></div></div>
 </div>
+
 <div id="scannerView" class="view hidden">
 <button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
 <h2 class="section-title">📷 تعرف على جهازك بالكاميرا</h2>
@@ -147,7 +117,6 @@ label{font-size:13px;color:#ccc;display:block;margin:8px 0 4px}
 </div>
 <div style="margin-top:10px"><label style="display:block;background:#222;padding:12px;border-radius:10px;cursor:pointer">📁 او اختر صورة من الاستوديو<input type="file" accept="image/*" onchange="onFilePicked(event)" style="display:none"></label></div>
 </div>
-<div id="scanTop3"></div>
 <div id="scanResult"></div>
 </div>
 
@@ -159,8 +128,8 @@ label{font-size:13px;color:#ccc;display:block;margin:8px 0 4px}
 <label>🔧 نوع العطل</label><input id="repFault" class="field" placeholder="مثال: شاشة مكسورة">
 <label>⚙️ الجهاز يعمل او لا</label><select id="repWorks" class="field"><option>لا يعمل</option><option>يعمل</option><option>يعمل بس بيه مشكلة</option></select>
 <label>👤 اسم الزبون</label><input id="repCustomer" class="field" placeholder="اسم الزبون">
-<label>📞 رقم الهاتف</label><input id="repPhone" class="field" placeholder="077xxxxxxxx" dir="ltr" inputmode="numeric">
-<label>💰 السعر</label><input id="repPrice" class="field" placeholder="مثال: 50000" inputmode="numeric">
+<label>📞 رقم الهاتف</label><input id="repPhone" class="field" placeholder="077xxxxxxxx" dir="ltr">
+<label>💰 السعر</label><input id="repPrice" class="field" placeholder="مثال: 50000">
 <label>⏱️ مدة العمل</label><input id="repDuration" class="field" placeholder="مثال: ساعتين / يوم">
 <label>📋 الحالة</label><select id="repStatus" class="field"><option>قيد الصيانة</option><option>بانتظار القطعة</option><option>تم</option><option>تم التسليم</option></select>
 <button class="btn btn-green" style="width:100%;margin-top:12px" onclick="addRepair()">💾 حفظ الجهاز</button>
@@ -172,8 +141,8 @@ label{font-size:13px;color:#ccc;display:block;margin:8px 0 4px}
 <div style="flex:1;background:#151515;padding:10px;border-radius:10px;text-align:center">تم<br><b id="repDone">0</b></div>
 <div style="flex:1;background:#151515;padding:10px;border-radius:10px;text-align:center">المجموع<br><b id="repMoney">0</b></div>
 </div>
-<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><input id="repSearch" class="field" placeholder="ابحث: جهاز / زبون / رقم" oninput="renderRepairs()" style="flex:1"></div>
-<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+<div style="display:flex;gap:6px;margin-top:10px"><input id="repSearch" class="field" placeholder="ابحث: جهاز / زبون / رقم" oninput="renderRepairs()" style="flex:1"></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
 <button class="btn btn-dark" onclick="filterRepair('الكل')">الكل</button>
 <button class="btn btn-dark" onclick="filterRepair('قيد الصيانة')">قيد الصيانة</button>
 <button class="btn btn-dark" onclick="filterRepair('بانتظار القطعة')">بانتظار القطعة</button>
@@ -182,69 +151,95 @@ label{font-size:13px;color:#ccc;display:block;margin:8px 0 4px}
 </div>
 <div id="repairList"></div>
 </div>
-
-<script>
-const PHONES=[
-{name:"Samsung A12",spec:"4GB / 128GB - 5000mAh",price:"150,000",img:"https://fdn.gsmarena.com/imgroot/reviews/20/samsung-galaxy-a12/-1024x768w2/gsmarena_001.jpg"},
-{name:"Infinix Hot 30",spec:"8GB / 128GB - 50MP - 90Hz",price:"180,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/infinix-hot-30/-1024x768w2/gsmarena_001.jpg"},
-{name:"Redmi 10C",spec:"4GB / 128GB - Snapdragon 680",price:"125,000",img:"https://fdn.gsmarena.com/imgroot/reviews/22/xiaomi-redmi-10c/-1024x768w2/gsmarena_001.jpg"},
-{name:"Tecno Spark 10",spec:"8GB / 128GB - 50MP",price:"170,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/tecno-spark-10/-1024x768w2/gsmarena_001.jpg"}
-];
-const ACCESSORIES=[
-{name:"سماعة بلوتوث",spec:"صوت نقي - بطارية طويلة",price:"25,000",img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600"},
-{name:"شاحن سريع 25W",spec:"سامسونج اصلي - Type-C",price:"15,000",img:"https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=600"},
-{name:"كفر + لاصق",spec:"حماية كاملة",price:"10,000",img:"https://images.unsplash.com/photo-1601593346740-925612772716?w=600"}
-];
-const OFFERS=[
-{name:"عرض A12 + كفر + لاصق",spec:"عرض خاص اليوم",price:"155,000",img:"https://fdn.gsmarena.com/imgroot/reviews/20/samsung-galaxy-a12/-1024x768w2/gsmarena_001.jpg"}
-];
-</script>
 <div id="unlockView" class="view hidden">
 <button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
 <h2 class="section-title">🔓 UnlockTool - Phone Flex Edition</h2>
 <div class="unlock-wrap">
 <div class="unlock-left">
-<h4>1. اختر الشركة BRAND</h4><div class="brand-tabs" id="unlockBrands"></div>
-<h4>2. اختر الموديل MODEL</h4><input id="unlockSearch" placeholder="ابحث موديل: A12 , Hot 30..." oninput="filterUnlockModels()"><select id="unlockModel" size="6" onchange="onUnlockModelChange()"></select>
-<h4>3. اختر الوضع MODE</h4><div class="mode-tabs" id="unlockModes"><button class="active" onclick="setUnlockMode('Download',this)">Download</button><button onclick="setUnlockMode('Preloader',this)">Preloader</button><button onclick="setUnlockMode('EDL 9008',this)">EDL 9008</button><button onclick="setUnlockMode('Fastboot',this)">Fastboot</button><button onclick="setUnlockMode('ADB',this)">ADB</button></div>
-<h4>4. اختر العملية OPERATION</h4><div class="op-list" id="unlockOps"></div>
+<h4>1. اختر الشركة</h4><div class="brand-tabs" id="unlockBrands"></div>
+<h4>2. اختر الموديل</h4><input id="unlockSearch" class="field" placeholder="ابحث موديل: A12 , Hot 30..." oninput="filterUnlockModels()"><select id="unlockModel" size="6" onchange="onUnlockModelChange()"></select>
+<h4>3. اختر الوضع</h4><div class="mode-tabs" id="unlockModes"><button class="active" onclick="setUnlockMode('Download',this)">Download</button><button onclick="setUnlockMode('Preloader',this)">Preloader</button><button onclick="setUnlockMode('EDL 9008',this)">EDL 9008</button><button onclick="setUnlockMode('Fastboot',this)">Fastboot</button><button onclick="setUnlockMode('ADB',this)">ADB</button></div>
+<h4>4. اختر العملية</h4><div id="unlockOps"></div>
 </div>
 <div class="unlock-right">
-<div class="unlock-top"><div><b id="unlockTitle">Samsung - Galaxy A12 (SM-A125F)</b><br><small id="unlockSub" style="color:#aaa">Download Mode | MT6765 | FRP Ready</small></div><div><button class="btn-start" id="btnStart" onclick="startUnlock()">▶ START</button> <button class="btn-stop" onclick="stopUnlock()">■ STOP</button></div></div>
-<div class="device-info" id="unlockDeviceInfo">📱 الجهاز: Samsung A12 - SM-A125F<br>🔌 الوضع: Download - Vol- + Vol+ + USB<br>⚙️ العملية: اختر عملية من اليسار ثم اضغط START</div>
+<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><div><b id="unlockTitle">Samsung - Galaxy A12</b><br><small id="unlockSub" style="color:#aaa">Download Mode</small></div><div><button class="btn-start" onclick="startUnlock()">▶ START</button> <button class="btn-stop" onclick="stopUnlock()">■ STOP</button></div></div>
+<div id="unlockDeviceInfo" style="background:#000;border:1px solid #333;border-radius:10px;padding:10px;margin-top:10px;font-size:13px;line-height:1.8">📱 الجهاز: Samsung A12<br>🔌 الوضع: Download<br>⚙️ اختر عملية ثم START</div>
 <div class="progress"><div id="unlockProgress"></div></div>
-<div style="display:flex;justify-content:space-between;font-size:11px;color:#aaa"><span id="unlockStatus">Ready...</span><span id="unlockPercent">0%</span></div>
+<div style="display:flex;justify-content:space-between;font-size:12px;color:#aaa"><span id="unlockStatus">Ready...</span><span id="unlockPercent">0%</span></div>
 <div class="log-box" id="unlockLog"></div>
 <div style="font-size:11px;color:#888;margin-top:8px">⚠️ هذا شرح وارشاد داخل التطبيق - التنفيذ الحقيقي يحتاج UnlockTool + كابل + تعريف + سيرفر.</div>
 </div></div></div>
 
 <div id="compatView" class="view hidden">
 <button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
-<h2 class="section-title">🔧 الموسوعة الكاملة - 200 توافق</h2>
+<h2 class="section-title">🔧 الموسوعة الكاملة - التوافقات</h2>
 <div class="compat-tabs"><button class="active" onclick="filterCompat('all',this)">الكل</button><button onclick="filterCompat('screen',this)">📱 شاشات</button><button onclick="filterCompat('battery',this)">🔋 بطاريات</button><button onclick="filterCompat('charge',this)">🔌 قواعد</button><button onclick="filterCompat('schematic',this)">📜 مخططات</button></div>
 <div id="compatList"></div></div>
 
 <div id="borneoView" class="view hidden">
 <button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
-<div class="borneo-top"><div><b id="borneoTitle">Borneo - Samsung A12</b> <span>CLICK ANY PART</span></div><div class="borneo-tools"><button class="active" onclick="setBorneoMode('bitmap',this)">BITMAP</button><button onclick="setBorneoMode('schematic',this)">SCHEMATIC</button><button onclick="setBorneoMode('ways',this)">WAYS</button><button onclick="clearBorneoSelection()">✕ مسح التحديد</button><button onclick="zoomBorneo(0.3)">+ تكبير</button><button onclick="zoomBorneo(-0.3)">- تصغير</button><button onclick="resetZoomBorneo()">⟲ 100%</button></div></div>
-<div class="borneo-wrap"><div style="flex:1"><div class="borneo-board" id="boardWrap"><div class="board-img-wrap" id="boardImgWrap"><img id="boardImg" src="board-a12.jpg" alt="Real Board" onerror="this.style.display='none'"><svg class="trace-svg" id="traceSvg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><div id="connLabels"></div><div id="hotspots"></div></div></div><div id="partInfoBorneo">👆 اضغط على اي قطعة بالبورد...</div></div><div class="borneo-side"><h4>SCHEMATIC - مخطط القطعة المحددة</h4><div id="schematicBoxBorneo">اضغط على اي قطعة...</div><h4 style="margin-top:10px">COMPONENT LIST</h4><div id="compListBorneo"></div></div></div><div id="waysBorneo"></div></div>
+<h2 class="section-title" id="borneoTitle">📐 Borneo - Samsung A12</h2>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+<button class="btn btn-dark" onclick="clearBorneoSelection()">✕ مسح التحديد</button>
+</div>
+<div class="borneo-board"><img id="boardImg" src="https://via.placeholder.com/800x500/111/fff?text=Borneo+Board+A12" alt="Board"><div id="hotspots"></div></div>
+<div id="partInfoBorneo" style="background:#151515;border:1px solid #333;border-radius:12px;padding:12px;margin-top:10px">👆 اضغط على اي قطعة بالبورد...</div>
+<div class="borneo-side"><h4>SCHEMATIC - مخطط القطعة المحددة</h4><div id="schematicBoxBorneo">اضغط على اي قطعة...</div><h4 style="margin-top:10px">COMPONENT LIST</h4><div id="compListBorneo"></div></div>
+<div id="waysBorneo"></div>
+</div>
 
 <div id="lessonsView" class="view hidden">
 <button class="back-btn" onclick="goHome()">← رجوع</button>
 <h2 class="section-title">🎓 دورات اون لاين - سيد عباس</h2>
-<p style="color:#aaa;font-size:13px">🎬 اذا الفيديو ما اشتغل، ارفعه بنفس مجلد الملف بنفس الاسم: lesson1.mp4</p>
-<div class="lesson-card"><video controls preload="metadata" playsinline src="lesson1.mp4"><source src="lesson1.mp4" type="video/mp4"></video><h3 style="margin:8px 0 4px">📱 الدرس 1: تبديل شاشة</h3><p style="color:#aaa;font-size:12px">فيديو من جهازك - lesson1.mp4</p><button class="btn btn-green" onclick="window.open('https://wa.me/9647738105665?text='+encodeURIComponent('اريد استفسر عن دورة تبديل الشاشة'))">💬 استفسر واتساب</button></div>
-<div class="lesson-card"><video controls preload="metadata" playsinline src="lesson2.mp4"><source src="lesson2.mp4" type="video/mp4"></video><h3 style="margin:8px 0 4px">🔋 الدرس 2: تبديل بطارية وشحن</h3><p style="color:#aaa;font-size:12px">فيديو من جهازك - lesson2.mp4</p><button class="btn btn-green" onclick="window.open('https://wa.me/9647738105665?text='+encodeURIComponent('اريد استفسر عن دورة البطارية والشحن'))">💬 استفسر واتساب</button></div>
-<div class="lesson-card"><video controls preload="metadata" playsinline src="lesson3.mp4"><source src="lesson3.mp4" type="video/mp4"></video><h3 style="margin:8px 0 4px">🔓 الدرس 3: ازالة FRP</h3><p style="color:#aaa;font-size:12px">فيديو من جهازك - lesson3.mp4</p><button class="btn btn-green" onclick="window.open('https://wa.me/9647738105665?text='+encodeURIComponent('اريد استفسر عن دورة FRP'))">💬 استفسر واتساب</button></div>
-<div class="lesson-card"><video controls preload="metadata" playsinline src="lesson4.mp4"><source src="lesson4.mp4" type="video/mp4"></video><h3 style="margin:8px 0 4px">🛠️ الدرس 4: صيانة عامة</h3><p style="color:#aaa;font-size:12px">فيديو من جهازك - lesson4.mp4</p><button class="btn btn-green" onclick="window.open('https://wa.me/9647738105665?text='+encodeURIComponent('اريد استفسر عن دورة الصيانة العامة'))">💬 استفسر واتساب</button></div>
+<p style="color:#aaa;font-size:13px">🎬 اذا الفيديو ما اشتغل، خلي الفيديو بنفس مجلد الملف بنفس الاسم: lesson1.mp4</p>
+
+<div class="lesson-card">
+<video controls preload="metadata" playsinline><source src="lesson1.mp4" type="video/mp4"></video>
+<h3>📱 الدرس 1: تبديل شاشة</h3><p style="color:#aaa;font-size:12px">فيديو من جهازك - lesson1.mp4</p>
+<button class="btn btn-green" onclick="window.open('https://wa.me/9647738105665?text='+encodeURIComponent('اريد استفسر عن دورة تبديل الشاشة'))">💬 استفسر واتساب</button>
+</div>
+
+<div class="lesson-card">
+<video controls preload="metadata" playsinline><source src="lesson2.mp4" type="video/mp4"></video>
+<h3>🔋 الدرس 2: تبديل بطارية وشحن</h3><p style="color:#aaa;font-size:12px">فيديو من جهازك - lesson2.mp4</p>
+<button class="btn btn-green" onclick="window.open('https://wa.me/9647738105665?text='+encodeURIComponent('اريد استفسر عن دورة البطارية والشحن'))">💬 استفسر واتساب</button>
+</div>
+
+<div class="lesson-card">
+<video controls preload="metadata" playsinline><source src="lesson3.mp4" type="video/mp4"></video>
+<h3>🔓 الدرس 3: ازالة FRP</h3><p style="color:#aaa;font-size:12px">فيديو من جهازك - lesson3.mp4</p>
+<button class="btn btn-green" onclick="window.open('https://wa.me/9647738105665?text='+encodeURIComponent('اريد استفسر عن دورة FRP'))">💬 استفسر واتساب</button>
+</div>
+
+<div class="lesson-card">
+<video controls preload="metadata" playsinline><source src="lesson4.mp4" type="video/mp4"></video>
+<h3>🛠️ الدرس 4: صيانة عامة</h3><p style="color:#aaa;font-size:12px">فيديو من جهازك - lesson4.mp4</p>
+<button class="btn btn-green" onclick="window.open('https://wa.me/9647738105665?text='+encodeURIComponent('اريد استفسر عن دورة الصيانة العامة'))">💬 استفسر واتساب</button>
+</div>
 </div>
 
 <div id="listView" class="view hidden"><button class="back-btn" onclick="goHome()">← رجوع</button><h2 id="viewTitle" class="section-title"></h2><div id="viewGrid" class="grid"></div></div>
-</div>
+
 <footer style="text-align:center;padding:15px;background:#000;margin-top:15px;font-size:11px;color:#777">© 2026 فون فلكس - البصرة العشار - 07738105665 - بادارة الاستاذ سيد عباس</footer>
 <script>
-// ===== متغيرات عامة - لازم تكون قبل كل الدوال =====
-let currentSection='home',borneoModel='Samsung A12',borneoZoom=1,borneoMode='bitmap',borneoSelected=null;
+// ===== بيانات المتجر - القديمة =====
+const PHONES=[
+{name:"Samsung A12",spec:"4GB / 128GB - 5000mAh",price:"150,000",img:"https://via.placeholder.com/400x260/222/fff?text=Samsung+A12"},
+{name:"Infinix Hot 30",spec:"8GB / 128GB - 50MP - 90Hz",price:"180,000",img:"https://via.placeholder.com/400x260/222/fff?text=Hot+30"},
+{name:"Redmi 10C",spec:"4GB / 128GB - Snapdragon 680",price:"125,000",img:"https://via.placeholder.com/400x260/222/fff?text=Redmi+10C"},
+{name:"Tecno Spark 10",spec:"8GB / 128GB - 50MP",price:"170,000",img:"https://via.placeholder.com/400x260/222/fff?text=Spark+10"}
+];
+const ACCESSORIES=[
+{name:"سماعة بلوتوث",spec:"صوت نقي - بطارية طويلة",price:"25,000",img:"https://via.placeholder.com/400x260/222/fff?text=Headphone"},
+{name:"شاحن سريع 25W",spec:"سامسونج اصلي - Type-C",price:"15,000",img:"https://via.placeholder.com/400x260/222/fff?text=Charger"},
+{name:"كفر + لاصق",spec:"حماية كاملة",price:"10,000",img:"https://via.placeholder.com/400x260/222/fff?text=Cover"}
+];
+const OFFERS=[
+{name:"عرض A12 + كفر + لاصق",spec:"عرض خاص اليوم",price:"155,000",img:"https://via.placeholder.com/400x260/222/fff?text=Offer+A12"}
+];
+
+// ===== متغيرات عامة =====
+let borneoModel='Samsung A12',borneoSelected=null;
 let unlockBrand='Samsung',unlockModel='Galaxy A12 (SM-A125F)',unlockMode='Download',unlockOp=null,unlockRunning=false,unlockTimer=null;
 let repairFilter='الكل';
 let camStream=null;
@@ -263,7 +258,7 @@ renderHomeGrid();
 function openView(name){
 hideAllViews(); stopCamera();
 let el=document.getElementById(name+'View');
-if(!el){alert('الصفحة مو موجودة: '+name); goHome(); return;}
+if(!el){alert('الصفحة مو موجودة'); goHome(); return;}
 el.classList.remove('hidden');
 if(name==='unlock') initUnlock();
 if(name==='compat') renderCompat('all');
@@ -271,28 +266,33 @@ if(name==='borneo') initBorneo();
 window.scrollTo(0,0);
 }
 function openHomeSection(name){
-let titleMap={phones:'📱 الموبايلات',accessories:'🎧 الاكسسوارات',offers:'💥 العروض',maintenance:'🛠️ الصيانة',unlock:'🔓 UnlockTool',compat:'🔧 التوافقات',borneo:'📐 Borneo',lessons:'🎓 الدورات'};
+let titleMap={phones:'📱 الموبايلات',accessories:'🎧 الاكسسوارات',offers:'💥 العروض'};
 hideAllViews();
-let el=document.getElementById('listView'); el.classList.remove('hidden');
+document.getElementById('listView').classList.remove('hidden');
 document.getElementById('viewTitle').innerText=titleMap[name]||name;
 if(name==='phones') showList('phones');
 else if(name==='accessories') showList('accessories');
 else if(name==='offers') showList('offers');
-else if(name==='maintenance') document.getElementById('viewGrid').innerHTML='<p style="text-align:center;padding:20px">🛠️ خدمة الصيانة - <a href="https://wa.me/9647738105665">راسلنا واتساب 07738105665</a></p>';
 window.scrollTo(0,0);
 }
 function renderHomeGrid(){
 let g=document.getElementById('homeGrid'); if(!g) return;
-g.innerHTML=PHONES.map(p=>`<div class="card"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/300x200?text=Phone+Flex'"><h3>${p.name}</h3><p>${p.spec}</p><b style="color:#fbbf24">${p.price} دينار</b><br><button class="btn btn-green" onclick="orderPhone('${p.name}','${p.price}')">اطلب واتساب</button></div>`).join('');
+g.innerHTML=PHONES.map(p=>`<div class="card"><img src="${p.img}"><h3>${p.name}</h3><p>${p.spec}</p><b style="color:#fbbf24">${p.price} دينار</b><br><button class="btn btn-green" style="margin-top:8px" onclick="orderPhone('${p.name}','${p.price}')">اطلب واتساب</button></div>`).join('');
 }
 function showList(type){
 let data=type==='phones'?PHONES:type==='accessories'?ACCESSORIES:OFFERS;
 let grid=document.getElementById('viewGrid');
-if(!data||data.length===0){grid.innerHTML='<p style="text-align:center;padding:30px;color:#888">ماكو منتجات هسه</p>';return;}
-grid.innerHTML=data.map(p=>`<div class="card"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/300x200?text=Phone+Flex'"><h3>${p.name}</h3><p>${p.spec}</p><b style="color:#fbbf24">${p.price} دينار</b><br><button class="btn btn-green" onclick="orderPhone('${p.name}','${p.price}')">اطلب واتساب</button></div>`).join('');
+grid.innerHTML=data.map(p=>`<div class="card"><img src="${p.img}"><h3>${p.name}</h3><p>${p.spec}</p><b style="color:#fbbf24">${p.price} دينار</b><br><button class="btn btn-green" style="margin-top:8px" onclick="orderPhone('${p.name}','${p.price}')">اطلب واتساب</button></div>`).join('');
 }
-function orderPhone(name,price){window.open('https://wa.me/9647738105665?text='+encodeURIComponent('هلا سيد عباس 🙏\n\nاريد اطلب: *'+name+'*\nالسعر: '+price+' دينار\n\nممكن تفاصيل؟')),'_blank');}
-function searchPhone(){let q=document.getElementById('searchInput').value.trim(); if(!q){goHome();return;} openHomeSection('phones'); document.getElementById('viewTitle').innerText='🔍 نتائج: '+q; let f=PHONES.filter(p=>(p.name+p.spec).includes(q)); document.getElementById('viewGrid').innerHTML=f.length?f.map(p=>`<div class="card"><img src="${p.img}"><h3>${p.name}</h3><p>${p.spec}</p><b style="color:#fbbf24">${p.price} دينار</b><br><button class="btn btn-green" onclick="orderPhone('${p.name}','${p.price}')">اطلب واتساب</button></div>`).join(''):'<p style="text-align:center;padding:20px">ماكو نتيجة - راسلنا واتساب</p>';}
+function orderPhone(name,price){window.open('https://wa.me/9647738105665?text='+encodeURIComponent('هلا سيد عباس 🙏\n\nاريد اطلب: *'+name+'*\nالسعر: '+price+' دينار'),' _blank');}
+function searchPhone(){
+let q=document.getElementById('searchInput').value.trim();
+if(!q){goHome();return;}
+openHomeSection('phones');
+document.getElementById('viewTitle').innerText='🔍 نتائج: '+q;
+let f=PHONES.filter(p=>(p.name+p.spec).includes(q));
+document.getElementById('viewGrid').innerHTML=f.length?f.map(p=>`<div class="card"><img src="${p.img}"><h3>${p.name}</h3><p>${p.spec}</p><b style="color:#fbbf24">${p.price} دينار</b><br><button class="btn btn-green" onclick="orderPhone('${p.name}','${p.price}')">اطلب واتساب</button></div>`).join(''):'<p style="text-align:center;padding:20px">ماكو نتيجة - راسلنا واتساب</p>';
+}
 
 // ===== سجل الصيانة =====
 function getRepairs(){try{return JSON.parse(localStorage.getItem('repairs')||'[]')}catch(e){return[]}}
@@ -300,11 +300,9 @@ function saveRepairs(list){localStorage.setItem('repairs',JSON.stringify(list));
 function addRepair(){
 let d=document.getElementById('repDevice').value.trim();
 let f=document.getElementById('repFault').value.trim();
-let c=document.getElementById('repCustomer').value.trim();
-let ph=document.getElementById('repPhone').value.trim();
 if(!d||!f){alert('اكتب اسم الجهاز والعطل');return;}
 let list=getRepairs();
-list.unshift({id:Date.now(),device:d,fault:f,works:document.getElementById('repWorks').value,customer:c,phone:ph,price:document.getElementById('repPrice').value||'0',duration:document.getElementById('repDuration').value,status:document.getElementById('repStatus').value,date:new Date().toLocaleDateString('ar-IQ')});
+list.unshift({id:Date.now(),device:d,fault:f,works:document.getElementById('repWorks').value,customer:document.getElementById('repCustomer').value,phone:document.getElementById('repPhone').value,price:document.getElementById('repPrice').value||'0',duration:document.getElementById('repDuration').value,status:document.getElementById('repStatus').value,date:new Date().toLocaleDateString('ar-IQ')});
 saveRepairs(list); clearRepairForm(); renderRepairs();
 alert('تم حفظ الجهاز ✅');
 }
@@ -323,7 +321,7 @@ let d=document.getElementById('repDone'); if(d) d.innerText=done;
 let m=document.getElementById('repMoney'); if(m) m.innerText=money.toLocaleString();
 let box=document.getElementById('repairList'); if(!box) return;
 if(filtered.length===0){box.innerHTML='<p style="text-align:center;padding:20px;color:#888">ماكو اجهزة</p>';return;}
-box.innerHTML=filtered.map(r=>`<div class="repair-card ${r.status==='تم'||r.status==='تم التسليم'?'done':''}"><div class="top"><b>📱 ${r.device}</b><span class="badge ${r.status==='تم'||r.status==='تم التسليم'?'badge-done':'badge-wait'}">${r.status}</span></div><p style="color:#ccc;font-size:13px;margin:6px 0">🔧 ${r.fault}<br>👤 ${r.customer||'-'} - 📞 ${r.phone||'-'}<br>💰 ${r.price} دينار | ⏱️ ${r.duration||'-'} | 📅 ${r.date}</p><div class="repair-btns"><button class="btn-wa" onclick="sendRepairWA(${r.id})">واتساب</button><button class="btn-done" onclick="markRepairDone(${r.id})">✅ تم</button><button class="btn-call" onclick="callRepair(${r.id})">📞 اتصال</button><button class="btn-edit" onclick="editRepair(${r.id})">✏️ تعديل</button><button class="btn-del" onclick="deleteRepair(${r.id})">🗑️ حذف</button></div></div>`).join('');
+box.innerHTML=filtered.map(r=>`<div class="repair-card"><div style="display:flex;justify-content:space-between"><b>📱 ${r.device}</b><span>${r.status}</span></div><p style="color:#ccc;font-size:13px;margin:6px 0">🔧 ${r.fault}<br>👤 ${r.customer||'-'} - 📞 ${r.phone||'-'}<br>💰 ${r.price} دينار | ⏱️ ${r.duration||'-'} | 📅 ${r.date}</p><div class="repair-btns"><button class="btn-wa" onclick="sendRepairWA(${r.id})">واتساب</button><button class="btn-done" onclick="markRepairDone(${r.id})">✅ تم</button><button class="btn-call" onclick="callRepair(${r.id})">📞 اتصال</button><button class="btn-edit" onclick="editRepair(${r.id})">✏️ تعديل</button><button class="btn-del" onclick="deleteRepair(${r.id})">🗑️ حذف</button></div></div>`).join('');
 }
 function sendRepairWA(id){let r=getRepairs().find(x=>x.id===id); if(!r||!r.phone){alert('ماكو رقم');return;} let num=r.phone.replace(/\D/g,''); if(num.startsWith('0')) num='964'+num.slice(1); window.open('https://wa.me/'+num+'?text='+encodeURIComponent('هلا '+r.customer+' 🙏\nجهازك '+r.device+'\nالعطل: '+r.fault+'\nالحالة: '+r.status+'\nالسعر: '+r.price+' دينار\n\nفون فلكس - سيد عباس')),'_blank');}
 function markRepairDone(id){let list=getRepairs(); let r=list.find(x=>x.id===id); if(r){r.status='تم'; saveRepairs(list); renderRepairs();}}
@@ -341,7 +339,7 @@ let v=document.getElementById('camVideo'); v.srcObject=camStream; v.play();
 function stopCamera(){if(camStream){camStream.getTracks().forEach(t=>t.stop()); camStream=null;} let sl=document.getElementById('scanLine'); if(sl) sl.style.display='none';}
 async function captureAndIdentify(){
 let v=document.getElementById('camVideo');
-if(!v.srcObject && !v.src){alert('افتح الكاميرا اولاً او اختر صورة');return;}
+if(!v.srcObject){alert('افتح الكاميرا اولاً او اختر صورة');return;}
 let canvas=document.getElementById('camCanvas'); canvas.width=640; canvas.height=480; canvas.getContext('2d').drawImage(v,0,0,640,480);
 let sl=document.getElementById('scanLine'); if(sl) sl.style.display='block';
 setTimeout(()=>{if(sl) sl.style.display='none'; identifyImage(canvas);},1200);
@@ -355,10 +353,10 @@ reader.readAsDataURL(file);
 function identifyImage(canvas){
 let box=document.getElementById('scanResult');
 box.innerHTML='<div class="result-card"><h3>🔍 جاري التحليل...</h3></div>';
-setTimeout(()=>{box.innerHTML='<div class="result-card"><h3>📱 النتيجة الاقرب: Samsung A12</h3><p>الثقة: 88% - تأكد من شكل الكاميرات</p><div class="conf-bar"><div class="conf-fill" style="width:88%"></div></div><br><button class="btn btn-yellow" onclick="searchCompat()">🔧 شوف توافقات A12</button> <button class="btn btn-green" onclick="openView(\'repair\')">🛠️ سجل للصيانة</button></div>';},800);
+setTimeout(()=>{box.innerHTML='<div class="result-card"><h3>📱 النتيجة الاقرب: Samsung A12</h3><p>الثقة: 88% - تأكد من شكل الكاميرات</p><br><button class="btn btn-yellow" onclick="searchCompat()">🔧 شوف توافقات A12</button> <button class="btn btn-green" onclick="openView(\'repair\')">🛠️ سجل للصيانة</button></div>';},800);
 }
-  </script>
-  <script>
+                                                          </script>
+                                                          <script>
 // ===== بيانات UnlockTool - كاملة =====
 const UNLOCK_DATA={
 "Samsung":{chip:"MT6765 / Exynos / Qualcomm",models:["Galaxy A12 (SM-A125F)","Galaxy A13 (SM-A135F)","Galaxy A14 (SM-A145F)","Galaxy A23 (SM-A235F)","Galaxy A24 (SM-A245F)","Galaxy A02s (SM-A025F)","Galaxy A03s (SM-A037F)","Galaxy A10s (SM-A107F)","Galaxy A21s (SM-A217F)","Galaxy A32 (SM-A325F)","Galaxy A51 (SM-A515F)","Galaxy A52 (SM-A525F)","Galaxy A53 (SM-A536B)","Galaxy S21 (SM-G991B)","Galaxy S23 Ultra (SM-S918B)"],ops:[
@@ -410,7 +408,7 @@ function renderUnlockModels(){let sel=document.getElementById('unlockModel'); if
 function filterUnlockModels(){let q=document.getElementById('unlockSearch').value.toLowerCase().trim(); let models=UNLOCK_DATA[unlockBrand].models.filter(m=>m.toLowerCase().includes(q)); let sel=document.getElementById('unlockModel'); sel.innerHTML=models.map(m=>`<option>${m}</option>`).join(''); if(models[0]){unlockModel=models[0]; updateUnlockTitle();}}
 function onUnlockModelChange(){unlockModel=document.getElementById('unlockModel').value; updateUnlockTitle();}
 function setUnlockMode(m,el){unlockMode=m; document.querySelectorAll('#unlockModes button').forEach(x=>x.classList.remove('active')); if(el) el.classList.add('active'); updateUnlockTitle();}
-function renderUnlockOps(){let ops=UNLOCK_DATA[unlockBrand].ops; let div=document.getElementById('unlockOps'); if(!div) return; div.innerHTML=ops.map((op,i)=>`<div class="op-item ${unlockOp&&unlockOp.name===op.name?'selected':''}" onclick="selectUnlockOp(${i},this)"><b>${op.name}</b><br><small>${op.desc}</small><span class="op-mode">${op.mode}</span></div>`).join(''); if(!unlockOp) unlockOp=ops[0]; updateUnlockTitle();}
+function renderUnlockOps(){let ops=UNLOCK_DATA[unlockBrand].ops; let div=document.getElementById('unlockOps'); if(!div) return; div.innerHTML=ops.map((op,i)=>`<div class="op-item ${unlockOp&&unlockOp.name===op.name?'selected':''}" onclick="selectUnlockOp(${i},this)"><b>${op.name}</b><br><small>${op.desc}</small></div>`).join(''); if(!unlockOp) unlockOp=ops[0]; updateUnlockTitle();}
 function selectUnlockOp(i,el){unlockOp=UNLOCK_DATA[unlockBrand].ops[i]; document.querySelectorAll('.op-item').forEach(x=>x.classList.remove('selected')); if(el) el.classList.add('selected'); updateUnlockTitle();}
 function updateUnlockTitle(){let chip=UNLOCK_DATA[unlockBrand].chip; let t=document.getElementById('unlockTitle'); if(t) t.innerText=unlockBrand+' - '+unlockModel; let s=document.getElementById('unlockSub'); if(s) s.innerText=unlockMode+' Mode | '+chip+' | '+(unlockOp?unlockOp.name:'اختر عملية'); let info=document.getElementById('unlockDeviceInfo'); if(info) info.innerHTML='📱 الجهاز: '+unlockBrand+' '+unlockModel+'<br>🔌 الوضع: '+unlockMode+'<br>⚙️ العملية: '+(unlockOp?unlockOp.name+' - '+unlockOp.desc:'اختر عملية من اليسار ثم اضغط START')+'<br>⏱️ الوقت المتوقع: '+(unlockOp?unlockOp.time:'-');}
 function logUnlock(msg){let box=document.getElementById('unlockLog'); if(!box) return; let t=new Date().toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); box.innerHTML+='<div>['+t+'] '+msg+'</div>'; box.scrollTop=box.scrollHeight;}
@@ -434,8 +432,7 @@ if(p>80&&p<85) logUnlock('💾 جاري الكتابة...');
 },400);
 }
 function stopUnlock(){if(unlockTimer) clearInterval(unlockTimer); unlockRunning=false; let s=document.getElementById('unlockStatus'); if(s) s.innerText='⏹️ تم الايقاف'; logUnlock('⏹️ تم ايقاف العملية');}
-  </script>
-  <script>
+
 // ===== التوافقات =====
 let compatFilter='all';
 const COMPAT_DATA=[
@@ -486,7 +483,7 @@ const BORNEO_PARTS=[
 {id:"cam",name:"كونكتر الكاميرا",x:15,y:15,w:14,h:10,info:"كونكتر الكاميرا الامامية",schematic:"CAM - J200",ways:"فحص الكونكتر"}
 ];
 function initBorneo(){
-let t=document.getElementById('borneoTitle'); if(t) t.innerText='Borneo - '+borneoModel;
+let t=document.getElementById('borneoTitle'); if(t) t.innerText='📐 Borneo - '+borneoModel;
 renderBorneoHotspots(); renderBorneoList();
 }
 function renderBorneoHotspots(){
@@ -503,18 +500,12 @@ let p=BORNEO_PARTS.find(x=>x.id===id); if(!p) return;
 document.getElementById('partInfoBorneo').innerHTML='<b>'+p.name+'</b><br>'+p.info;
 document.getElementById('schematicBoxBorneo').innerHTML=p.schematic;
 let w=document.getElementById('waysBorneo');
-w.innerHTML='<div class="way-card"><b>🔌 WAYS - '+p.name+'</b><br>'+p.ways+'</div>';
+w.innerHTML='<div style="background:#151515;border:1px solid #333;border-radius:12px;padding:12px;margin-top:10px"><b>🔌 WAYS - '+p.name+'</b><br>'+p.ways+'</div>';
 renderBorneoHotspots();
-// رسم خط تتبع
-let svg=document.getElementById('traceSvg');
-svg.innerHTML=`<path d="M ${p.x+5} ${p.y+5} L 50 50" stroke="#fbbf24" stroke-width="0.6" fill="none" stroke-dasharray="2 2"/><circle cx="${p.x+5}" cy="${p.y+5}" r="2" fill="#22c55e"/><circle cx="50" cy="50" r="2" fill="#ef4444"/>`;
 }
-function setBorneoMode(m,el){borneoMode=m; document.querySelectorAll('.borneo-tools button').forEach(b=>b.classList.remove('active')); if(el) el.classList.add('active'); if(m==='ways'&&borneoSelected) selectBorneoPart(borneoSelected); else if(m==='schematic'&&borneoSelected) selectBorneoPart(borneoSelected);}
-function clearBorneoSelection(){borneoSelected=null; document.getElementById('partInfoBorneo').innerHTML='👆 اضغط على اي قطعة بالبورد...'; document.getElementById('schematicBoxBorneo').innerHTML='اضغط على اي قطعة...'; document.getElementById('waysBorneo').innerHTML=''; document.getElementById('traceSvg').innerHTML=''; renderBorneoHotspots();}
-function zoomBorneo(d){borneoZoom=Math.max(0.5,Math.min(3,borneoZoom+d)); document.getElementById('boardImgWrap').style.transform='scale('+borneoZoom+')';}
-function resetZoomBorneo(){borneoZoom=1; document.getElementById('boardImgWrap').style.transform='scale(1)';}
+function clearBorneoSelection(){borneoSelected=null; document.getElementById('partInfoBorneo').innerHTML='👆 اضغط على اي قطعة بالبورد...'; document.getElementById('schematicBoxBorneo').innerHTML='اضغط على اي قطعة...'; document.getElementById('waysBorneo').innerHTML=''; renderBorneoHotspots();}
 
-// ===== تشغيل اول مرة =====
+// ===== تشغيل اول مرة - بدون نقص =====
 document.addEventListener('DOMContentLoaded',function(){
 renderHomeGrid();
 renderRepairs();
