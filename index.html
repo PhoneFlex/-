@@ -8,6 +8,9 @@
 <meta name="theme-color" content="#6a5cff">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <link rel="icon" href="./icon-192.png">
+<!-- ===== تحديث جديد: مكتبات الكاميرا والذكاء الاصطناعي ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Tahoma,sans-serif}
 body{background:#0f0f0f;color:#fff}
@@ -21,6 +24,7 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 .cat-card:nth-child(3){background:linear-gradient(135deg,#1a2e1a,#1e3a1e)}
 .cat-card:nth-child(4){background:linear-gradient(135deg,#2e1a2e,#3e1a2e)}
 .cat-card.unlock{background:linear-gradient(135deg,#3a0a0a,#5a1111)!important;border:1px solid #ff4444}
+.cat-card.scan-cam{background:linear-gradient(135deg,#0f5132,#198754)!important;border:1px solid #4ade80}
 .brands-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
 .brand-card{background:#1a1a1a;border-radius:10px;padding:10px;text-align:center;border:1px solid #222;cursor:pointer}
 .hidden{display:none!important}
@@ -85,6 +89,19 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 .badge-series{background:#ff0000;color:#fff;padding:2px 6px;border-radius:10px;font-size:10px}
 .badge-parallel{background:#00aaff;color:#fff;padding:2px 6px;border-radius:10px;font-size:10px}
 @media(max-width:800px){.borneo-wrap{flex-direction:column}.borneo-side{width:100%}.borneo-board{height:420px}}
+/* ===== تحديث جديد: ستايل الكاميرا ===== */
+#scannerView video{width:100%;border-radius:14px;background:#000;max-height:420px;object-fit:cover}
+.scan-box{border:2px dashed #4ade80;border-radius:14px;padding:10px;text-align:center;margin:10px 0;position:relative;overflow:hidden}
+.scan-line{position:absolute;left:0;right:0;height:3px;background:#4ade80;box-shadow:0 0 15px #4ade80;top:10%;animation:scanMove 1.8s infinite}
+@keyframes scanMove{0%{top:5%}50%{top:90%}100%{top:5%}}
+.result-card{background:#1e1e1e;border:2px solid #4ade80;border-radius:14px;padding:14px;margin-top:12px}
+.result-card h2{color:#4ade80}
+.btn{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:700;width:100%;margin-top:8px;font-size:15px}
+.btn-green{background:#22c55e;color:#000}
+.btn-blue{background:#667eea;color:#fff}
+.btn-dark{background:#222;color:#fff;border:1px solid #444}
+.conf-bar{height:10px;background:#333;border-radius:20px;overflow:hidden;margin:6px 0}
+.conf-fill{height:100%;background:#4ade80}
 </style>
 </head>
 <body>
@@ -100,6 +117,8 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 <div class="cat-card" onclick="openCat('accessories')"><div style="font-size:32px">🎧</div><h3>اكسسوارات</h3><small>كفرات وشواحن</small></div>
 <div class="cat-card" onclick="openCat('devices')"><div style="font-size:32px">📱</div><h3>اجهزة</h3><small>كل الهواتف</small></div>
 <div class="cat-card" onclick="openBorneo('Samsung A12')"><div style="font-size:32px">📜</div><h3>مخطط Borneo</h3><small>بورد واقعي + توالي / توازي</small></div>
+<!-- ===== تحديث جديد: زر الكاميرا ===== -->
+<div class="cat-card scan-cam" onclick="openScanner()"><div style="font-size:32px">📷</div><h3>صور الجهاز واعرفه</h3><small>كاميرا ذكاء اصطناعي - جديد</small></div>
 </div>
 <h2 class="section-title">🏢 شركات الهواتف</h2>
 <div class="brands-grid">
@@ -114,6 +133,23 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 </div>
 </div>
 
+<!-- ===== تحديث جديد: قسم الكاميرا كامل ===== -->
+<div id="scannerView" class="hidden">
+<button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
+<h2 class="section-title">📷 صور الجهاز - التعرف التلقائي</h2>
+<p style="color:#aaa;font-size:13px">وجه الكاميرا على ظهر الجهاز، وخلي الاضاءة قوية. لا تصور الكارتون.</p>
+<div class="scan-box" id="scanBox">
+<div class="scan-line" id="scanLine" style="display:none"></div>
+<video id="camVideo" playsinline muted></video>
+<canvas id="camCanvas" style="display:none"></canvas>
+</div>
+<button class="btn btn-green" onclick="startCamera()">📷 افتح الكاميرا</button>
+<button class="btn btn-blue" onclick="captureAndIdentify()">🔍 صور واعرف الموديل</button>
+<label class="btn btn-dark" style="display:block;text-align:center">📁 او اختار صورة من الاستوديو<input type="file" id="fileInput" accept="image/*" style="display:none" onchange="onFilePicked(event)"></label>
+<button class="btn btn-dark" onclick="stopCamera()">⏹️ اطفاء الكاميرا</button>
+<div id="scanResult"></div>
+<div id="scanTop3"></div>
+</div>
 <div id="unlockView" class="hidden">
 <button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
 <h2 class="section-title">🔓 UnlockTool - Phone Flex Edition</h2>
@@ -201,6 +237,128 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 </div>
 <footer style="text-align:center;padding:15px;background:#000;margin-top:15px;font-size:11px;color:#777">© 2026 فون فلكس - البصرة العشار - 07738105665 - بادارة الاستاذ سيد عباس</footer>
 <script>
+// ===== تحديث جديد: محرك الكاميرا + قاعدة اجهزة الكاميرا =====
+const MODEL_URL = "https://teachablemachine.withgoogle.com/models/PUT_YOUR_MODEL_URL_HERE/";
+let tmModel=null, camStream=null, isModelLoaded=false;
+
+const CAMERA_PHONES = [
+{name:"SAMSUNG A30s",code:"A30s",ram:"4",rom:"128",cpu:"Exynos 7885",cam:"25MP ثلاثية",bat:"4000",screen:"6.4 Super AMOLED",price:"125,000",img:"https://fdn.gsmarena.com/imgroot/reviews/19/samsung-galaxy-a30s/-1024x768w2/gsmarena_001.jpg"},
+{name:"Redmi 10C",code:"10C",ram:"4",rom:"128",cpu:"Snapdragon 680",cam:"50MP",bat:"5000",screen:"6.71 HD+",price:"125,000",img:"https://fdn.gsmarena.com/imgroot/reviews/22/xiaomi-redmi-10c/-1024x768w2/gsmarena_001.jpg"},
+{name:"SAMSUNG A12",code:"A12",ram:"4",rom:"128",cpu:"Helio P35",cam:"16MP",bat:"5000",screen:"6.5 IPS",price:"150,000",img:"https://fdn.gsmarena.com/imgroot/reviews/20/samsung-galaxy-a12/-1024x768w2/gsmarena_001.jpg"},
+{name:"Infinix Hot 30",code:"Hot 30",ram:"8",rom:"128",cpu:"Helio G88",cam:"50MP",bat:"5000",screen:"6.78 90Hz",price:"180,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/infinix-hot-30/-1024x768w2/gsmarena_001.jpg"},
+{name:"Tecno Spark 10",code:"Spark 10",ram:"8",rom:"128",cpu:"Helio G37",cam:"50MP",bat:"5000",screen:"6.6 90Hz",price:"170,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/tecno-spark-10/-1024x768w2/gsmarena_001.jpg"},
+];
+// اذا تريد تضيف جهاز: انسخ سطر وضيفه هنا، والـ code لازم يطابق اسم الـ Class بالـ Teachable Machine
+
+function findPhoneByCode(code){
+  code = String(code).toLowerCase().replace(/\s/g,'');
+  for(let p of CAMERA_PHONES){
+    let pc = p.code.toLowerCase().replace(/\s/g,'');
+    if(pc===code || p.name.toLowerCase().replace(/\s/g,'').includes(code) || code.includes(pc)) return p;
+  }
+  return null;
+}
+function findCompatForCamera(code){
+  return compatData.filter(c=>c[0].includes(code) || c[1].includes(code));
+}
+function manualPickHTML(){
+  let opts = CAMERA_PHONES.map(p=>`<option value="${p.code}">${p.name}</option>`).join('');
+  return `<div style="margin-top:10px"><select id="manualCode" style="width:100%;padding:12px;border-radius:10px;background:#1e1e1e;color:#fff;border:1px solid #444">${opts}</select><button class="btn btn-green" onclick="showPhoneResult(document.getElementById('manualCode').value, 100)">عرض الجهاز</button></div>`;
+}
+async function loadModel(){
+  if(isModelLoaded) return true;
+  try{
+    document.getElementById('scanResult').innerHTML = '<p style="text-align:center">⏳ جاري تحميل موديل الذكاء الاصطناعي...</p>';
+    if(MODEL_URL.includes("PUT_YOUR_MODEL")){
+      document.getElementById('scanResult').innerHTML = '<p style="color:#fbbf24;text-align:center">⚠️ بعدك ما حاط رابط الموديل.<br>روح للجزء 4 وحط رابط Teachable Machine.<br>هسه راح اشتغل بالوضع اليدوي - اختار الموديل من القائمة.</p>' + manualPickHTML();
+      return false;
+    }
+    tmModel = await tmImage.load(MODEL_URL + "model.json", MODEL_URL + "metadata.json");
+    isModelLoaded = true; return true;
+  }catch(e){
+    document.getElementById('scanResult').innerHTML = '<p style="color:#f87171">❌ ما كدرت احمل الموديل. تأكد من الرابط والنت.</p>' + manualPickHTML();
+    return false;
+  }
+}
+function openScanner(){
+  hideAllViews(); document.getElementById('scannerView').classList.remove('hidden');
+  document.getElementById('scanResult').innerHTML=''; document.getElementById('scanTop3').innerHTML='';
+  loadModel(); window.scrollTo(0,0);
+}
+async function startCamera(){
+  await loadModel();
+  try{
+    camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}, audio:false});
+    let v = document.getElementById('camVideo'); v.srcObject = camStream; v.play();
+    document.getElementById('scanLine').style.display='block';
+  }catch(e){ alert('ما كدرت افتح الكاميرا - لازم تسمح للمتصفح بالكاميرا، ولازم الموقع يكون https'); }
+}
+function stopCamera(){
+  if(camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream=null; }
+  let sl=document.getElementById('scanLine'); if(sl) sl.style.display='none';
+}
+async function captureAndIdentify(){
+  let v = document.getElementById('camVideo');
+  let canvas = document.getElementById('camCanvas');
+  if(!v.srcObject){ alert('افتح الكاميرا اولاً او اختار صورة'); return; }
+  canvas.width = v.videoWidth; canvas.height = v.videoHeight;
+  canvas.getContext('2d').drawImage(v,0,0);
+  await identifyImage(canvas);
+}
+async function onFilePicked(e){
+  let file = e.target.files[0]; if(!file) return;
+  let img = new Image(); img.onload = async ()=>{
+    let canvas = document.getElementById('camCanvas');
+    canvas.width = img.width; canvas.height = img.height;
+    canvas.getContext('2d').drawImage(img,0,0);
+    await identifyImage(canvas);
+  };
+  img.src = URL.createObjectURL(file);
+}
+async function identifyImage(canvas){
+  let ok = await loadModel();
+  if(!ok || !tmModel) return;
+  document.getElementById('scanResult').innerHTML = '<p style="text-align:center">🔍 جاري التعرف على الجهاز...</p>';
+  try{
+    let preds = await tmModel.predict(canvas);
+    preds = preds.sort((a,b)=>b.probability-a.probability);
+    let top = preds[0];
+    let conf = Math.round(top.probability*100);
+    let top3 = preds.slice(0,3).map(p=>`<div style="background:#222;padding:8px;border-radius:8px;margin:4px 0"><b>${p.className}</b> - ${Math.round(p.probability*100)}%<div class="conf-bar"><div class="conf-fill" style="width:${Math.round(p.probability*100)}%"></div></div></div>`).join('');
+    document.getElementById('scanTop3').innerHTML = '<h3 style="margin-top:12px">اقرب 3 نتائج:</h3>'+top3;
+    if(conf < 55){
+      document.getElementById('scanResult').innerHTML = `<div class="result-card"><h2>⚠️ مو متأكد (${conf}%)</h2><p>الصورة مو واضحة او الجهاز مو مدرب عليه. اختار من القائمة:</p></div>` + manualPickHTML();
+      return;
+    }
+    showPhoneResult(top.className, conf);
+  }catch(e){ alert('خطأ بالتعرف: '+e.message); }
+}
+function showPhoneResult(code, conf){
+  let p = findPhoneByCode(code);
+  if(!p){ document.getElementById('scanResult').innerHTML = '<p>ما لكيت الجهاز بقاعدة البيانات. ضيفه بالجزء 4.</p>'; return; }
+  let compat = findCompatForCamera(p.code);
+  let compatHTML = compat.length ? compat.map(c=>`<div class="compat-card">${c[0]} - ${c[1]}</div>`).join('') : '<p style="color:#aaa">ماكو توافق مسجل لهذا الموديل بعد</p>';
+  document.getElementById('scanResult').innerHTML = `
+  <div class="result-card">
+    <p style="color:#4ade80">✅ تم التعرف بنجاح - دقة ${conf}%</p>
+    <div style="font-size:22px;font-weight:900">${p.name}</div>
+    <p style="color:#aaa">النوع: ${p.name} | الموديل: ${p.code}</p>
+    <img src="${p.img}" style="width:100%;max-height:220px;object-fit:contain;background:#111;border-radius:10px;margin:8px 0">
+    <p>📱 الشاشة: ${p.screen}</p>
+    <p>🧠 المعالج: ${p.cpu}</p>
+    <p>💾 الذاكرة: ${p.rom} | الرام: ${p.ram}</p>
+    <p>📷 الكاميرا: ${p.cam}</p>
+    <p>🔋 البطارية: ${p.bat}</p>
+    <p style="color:#fbbf24;font-size:18px;font-weight:900">السعر: ${p.price} دينار</p>
+    <button class="btn btn-green" onclick="alert('تم حفظ ${p.name} بالمخزون')">➕ اضافة للمخزون</button>
+    <button class="btn btn-blue" onclick="window.open('https://wa.me/9647738105665?text=عندي ${p.name} - ${p.rom}/${p.ram} - السعر ${p.price}')">📲 مشاركة واتساب</button>
+    <h3 style="margin-top:12px">🔧 توافقات هذا الجهاز:</h3>
+    ${compatHTML}
+  </div>`;
+  stopCamera();
+}
+    </script>
+    <script>
 if ('serviceWorker' in navigator) { try{ navigator.serviceWorker.register('./sw.js'); }catch(e){} }
 // ===== UnlockTool Data =====
 const UNLOCK_DATA = {
@@ -273,7 +431,7 @@ const UNLOCK_DATA = {
   ]},
 };
 let unlockBrand="Samsung", unlockModel="Galaxy A12 SM-A125F", unlockMode="Download", unlockOp=null, unlockRunning=false, unlockTimer=null;
-
+      <script>
 // ===== Borneo Data - بورد تلفون حقيقي =====
 const BORNEO_DATA = {
 "Samsung A12": { code:"SM-A125F", chip:"MTK MT6765", img:"board-a12.jpg", schematic:"اضغط على قطعة",
@@ -352,7 +510,7 @@ const BORNEO_DATA = {
 ["بطارية انفينكس Hot 20 / Hot 30 / Hot 40 / Note 30","BL-58FT 5000mAh - Hot 20 , 30 , 40 , Note 30","battery"],
 ["بطارية انفينكس Note 8 / Note 10 / Note 11 / Note 12","BL-49FX/54ST 5000mAh - Note 8 , 10 , 11 , 12","battery"],
 ["بطارية شاومي Redmi 8 / 8A / 9A / 9C / 9 / Poco M3","BN21/62 5000mAh - 8 , 8A , 9A , 9C , 9 , M3","battery"],
-["بطارية شاومي Redmi 10A / 10C / 10 / 12 / 13C","BN62/5R 5000mAh - 10A , 10C , 10 , 12 , 13C","battery"],
+["بطارية شاومي Redmi 10A / 10C / 10 / 12 / 13C","BN62/5R 5000mAh - Redmi 12 , 13C , C65","battery"],
 ["بطارية شاومي Note 8 / Note 9 / Note 10 / Note 11 / Note 12","BN46/54/55/5A/5G 4000-5020mAh - Note 8 , 9 , 10 , 11 , 12","battery"],
 ["بطارية شاومي Poco X3 / X3 Pro / X5 / F3 / F4","BN59/5A 5160mAh - Poco X3 , X5 , F3 , F4","battery"],
 ["بطارية تكنو Spark 6 / 7 / 8 / 9 / 10 / 20 / Camon","BL-49FT/54ST 5000mAh - Spark 6/7/8/9/10/20 , Camon","battery"],
@@ -396,10 +554,13 @@ const BORNEO_DATA = {
 ["مخطط بورد ايفون - طبقتين - فك وتركيب","iPhone Board Layers - فك طبقات البورد - A12 , A13 , A14 - فك وتركيب بدون تلف","schematic"],
 ["مخطط حماية MDM و KG Locked و FRP - حلول 2024","KG Locked / MDM / FRP Bypass - حلول 2024 - سامسونج وانفينكس وتكنو وشاومي - بدون بوكس","schematic"]
 ];
+</script>
+<script>
   // ===== UnlockTool Functions =====
 function openUnlock(){ hideAllViews(); document.getElementById('unlockView').classList.remove('hidden'); initUnlock(); window.scrollTo(0,0); }
 function openUnlockBrand(b){ openUnlock(); setUnlockBrand(b); }
-function hideAllViews(){ ['homeView','compatView','lessonsView','listView','borneoView','unlockView'].forEach(id=>document.getElementById(id).classList.add('hidden')); }
+// تعديل واحد فقط هنا: ضفنا scannerView للقائمة حتى تختفي من تروح لغير قسم - باقي الكود نفسه
+function hideAllViews(){ ['homeView','compatView','lessonsView','listView','borneoView','unlockView','scannerView'].forEach(id=>document.getElementById(id).classList.add('hidden')); }
 function initUnlock(){
   let brands=document.getElementById('unlockBrands'); brands.innerHTML="";
   Object.keys(UNLOCK_DATA).forEach(b=>{
@@ -411,7 +572,6 @@ function initUnlock(){
 function setUnlockBrand(b){
   unlockBrand=b; unlockModel=UNLOCK_DATA[b].models[0]; unlockMode=UNLOCK_DATA[b].modes[0]; unlockOp=null;
   document.querySelectorAll('#unlockBrands button').forEach(btn=>btn.classList.toggle('active', btn.innerText===b));
-  // تحديث ازرار المود
   let modes=document.getElementById('unlockModes'); modes.innerHTML="";
   UNLOCK_DATA[b].modes.forEach(m=>{
     let btn=document.createElement('button'); btn.innerText=m; if(m===unlockMode) btn.className='active';
@@ -549,7 +709,7 @@ else if(id=='lessons'){document.getElementById('lessonsView').classList.remove('
 else if(id=='devices'){document.getElementById('listView').classList.remove('hidden');document.getElementById('viewTitle').innerText='كل الاجهزة';document.getElementById('viewGrid').innerHTML='<div>Galaxy A12</div>';}
 else if(id=='accessories'){document.getElementById('listView').classList.remove('hidden');document.getElementById('viewTitle').innerText='الاكسسوارات';document.getElementById('viewGrid').innerHTML='<div>AirPods Pro 2</div>';}
 }
-function goHome(){ hideAllViews(); document.getElementById('homeView').classList.remove('hidden'); }
+function goHome(){ hideAllViews(); document.getElementById('homeView').classList.remove('hidden'); stopCamera(); }
 function doSearch(){
 let q=document.getElementById('search').value.toLowerCase().trim();
 if(q.length<1){renderCompat(compatData);return;}
