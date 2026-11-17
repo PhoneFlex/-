@@ -12,7 +12,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig={apiKey:"AIzaSyDAybYE2AF-dGuWcxXBvy6ZBMZT2QryYwU",authDomain:"phone-flex-52401.firebaseapp.com",projectId:"phone-flex-52401",storageBucket:"phone-flex-52401.firebasestorage.app",messagingSenderId:"19006713498",appId:"1:19006713498:web:b3fdbb5fdafdc2199e7923",measurementId:"G-H8Y50R4GBX"};
-firebase.initializeApp(firebaseConfig);
+try{firebase.initializeApp(firebaseConfig);}catch(e){}
 const db=firebase.firestore();
 let repairs=[];
 let currentUser=null;
@@ -28,8 +28,12 @@ function daysLeft(u){if(!u||u.role==='admin')return 9999;if(u.subActive===false)
 function isSubExpired(u){if(!u||u.role==='admin')return false;if(u.subActive===false)return true;return daysLeft(u)<=0;}
 function fmtDate(ts){if(!ts)return '---';try{return new Date(Number(ts)).toLocaleDateString('ar-IQ');}catch(e){return '---';}}
 function subStatusHTML(u){if(u.role==='admin')return '<span style="color:#ffb400">👑 مطور - دائمي</span>';let left=daysLeft(u);if(u.subActive===false)return '<span style="color:#ff4444;font-weight:700">⛔ ملغي من المطور</span>';if(left<=0)return '<span style="color:#ff4444;font-weight:700">❌ منتهي - 0 يوم</span>';if(left<=5)return '<span style="color:#ffb400;font-weight:700">⚠️ متبقي '+left+' يوم</span>';return '<span style="color:#00d26a;font-weight:700">✅ فعال - متبقي '+left+' يوم</span>';}
-db.collection("repairs").orderBy("createdAt","desc").onSnapshot((snap)=>{repairs=[];snap.forEach(doc=>{let d=doc.data();d.id=doc.id;d._docId=doc.id;repairs.push(d);});if(typeof renderRepairs==='function'&&document.getElementById('repairList')&&currentUser&&isAdmin())renderRepairs();if(currentUser&&!isAdmin()&&document.getElementById('repairView')&&!document.getElementById('repairView').classList.contains('hidden')&&typeof openRepair==='function')openRepair();});
-db.collection("users").onSnapshot((snap)=>{cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});usersLoaded=true;localStorage.setItem('pf_users_cloud',JSON.stringify(cloudUsers));if(document.getElementById('adminUsersList')&&currentUser&&isAdmin()&&typeof renderAdminUsers==='function')renderAdminUsers();});
+try{
+db.collection("repairs").orderBy("createdAt","desc").onSnapshot((snap)=>{repairs=[];snap.forEach(doc=>{let d=doc.data();d.id=doc.id;d._docId=doc.id;repairs.push(d);});if(typeof renderRepairs==='function'&&document.getElementById('repairList')&&currentUser&&isAdmin())renderRepairs();});
+}catch(e){}
+try{
+db.collection("users").onSnapshot((snap)=>{cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});usersLoaded=true;localStorage.setItem('pf_users_cloud',JSON.stringify(cloudUsers));if(document.getElementById('adminUsersList')&&currentUser&&isAdmin()&&typeof renderAdminUsers==='function')renderAdminUsers();},()=>{});
+}catch(e){}
 async function syncUsersFromCloud(){try{let snap=await db.collection("users").get();cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});localStorage.setItem('pf_users_cloud',JSON.stringify(cloudUsers));usersLoaded=true;return cloudUsers;}catch(e){let c=JSON.parse(localStorage.getItem('pf_users_cloud')||'[]');cloudUsers=c;return c;}}
 function getUsers(){let local=JSON.parse(localStorage.getItem('pf_users')||'[]');let cloud=cloudUsers.length?cloudUsers:JSON.parse(localStorage.getItem('pf_users_cloud')||'[]');let merged=[];let seen={};[...cloud,...local].forEach(u=>{if(!u.user||seen[u.user])return;seen[u.user]=1;merged.push(u);});if(!merged.find(x=>x.user===DEV_USER))merged.unshift({name:"سيد عباس - المطور",user:DEV_USER,pass:DEV_PASS,role:"admin",phone:"07738105665",subActive:true,subDays:9999,subStart:Date.now(),subEnd:Date.now()+9999*86400000});else{merged=merged.map(x=>x.user===DEV_USER?{...x,pass:DEV_PASS,subActive:true}:x);}return merged;}
 function saveUsers(u){localStorage.setItem('pf_users',JSON.stringify(u));}
@@ -39,27 +43,35 @@ async function fbSaveUser(u){
 let data={name:u.name,user:u.user,pass:String(u.pass),phone:u.phone||'',role:u.role||'user',subActive:u.subActive!==false,subDays:Number(u.subDays||30),subStart:Number(u.subStart||Date.now()),subEnd:Number(u.subEnd||calcSubEnd(u.subStart||Date.now(),u.subDays||30))};
 if(u._docId){await db.collection("users").doc(u._docId).set(data);}else{let q=await db.collection("users").where("user","==",u.user).get();if(!q.empty){let docId=q.docs[0].id;await db.collection("users").doc(docId).set(data);u._docId=docId;}else{let doc=await db.collection("users").add(data);u._docId=doc.id;}}
 u.subActive=data.subActive;u.subDays=data.subDays;u.subStart=data.subStart;u.subEnd=data.subEnd;
-await syncUsersFromCloud();return true;
+return true;
 }
-async function fbDeleteUser(u){try{if(u._docId){await db.collection("users").doc(u._docId).delete();}else{let q=await db.collection("users").where("user","==",u.user).get();for(let d of q.docs){await db.collection("users").doc(d.id).delete();}}await syncUsersFromCloud();}catch(e){throw e;}}
+async function fbDeleteUser(u){try{if(u._docId){await db.collection("users").doc(u._docId).delete();}else{let q=await db.collection("users").where("user","==",u.user).get();for(let d of q.docs){await db.collection("users").doc(d.id).delete();}}}catch(e){throw e;}}
 function isAdmin(){return currentUser&&currentUser.role==="admin";}
 function requireAdmin(){if(!isAdmin()){alert("⛔ هذا الخيار للمطور فقط");return false;}return true;}
-function checkLogin(){let saved=JSON.parse(localStorage.getItem('pf_session')||'null');if(saved){currentUser=saved;showApp();}else{showLogin();}syncUsersFromCloud();}
+function checkLogin(){
+let saved=null;
+try{saved=JSON.parse(localStorage.getItem('pf_session')||'null');}catch(e){saved=null;}
+if(saved){currentUser=saved;showApp();}else{showLogin();}
+syncUsersFromCloud().catch(()=>{});
+}
 function showLogin(){let l=document.getElementById('loginView');if(l)l.classList.remove('hidden');let m=document.getElementById('mainApp');if(m)m.classList.add('hidden');}
 function showApp(){let l=document.getElementById('loginView');if(l)l.classList.add('hidden');let m=document.getElementById('mainApp');if(m)m.classList.remove('hidden');let b=document.getElementById('userBadge');if(b)b.innerText=isAdmin()?"👑 المطور: "+currentUser.name:"👤 "+currentUser.name;let ab=document.getElementById('adminBtn');if(ab)ab.style.display=isAdmin()?"block":"none";applySettings();goHome();}
-async function doLogin(){
+function doLogin(){
 let u=document.getElementById('loginUser').value.trim();
 let p=document.getElementById('loginPass').value.trim();
 if(!u||!p){alert("اكتب المعرف وكلمة السر");return;}
-let btn=document.getElementById('loginBtnText');if(btn)btn.innerText="جاري التحقق...";
-try{await syncUsersFromCloud();}catch(e){}
+if(u===DEV_USER&&p===DEV_PASS){
+let adminUser={name:"سيد عباس - المطور",user:DEV_USER,pass:p,phone:"07738105665",role:"admin",subActive:true,subDays:9999,subStart:Date.now(),subEnd:Date.now()+9999*86400000};
+currentUser=adminUser;localStorage.setItem('pf_session',JSON.stringify(adminUser));
+alert("هلا بيك سيد عباس ✅");
+showApp();return;
+}
 let all=getUsers();
 let found=all.find(x=>x.user===u&&String(x.pass)===String(p));
-if(btn)btn.innerText="دخول ✅";
 if(!found){
 let byUser=all.find(x=>x.user===u);
-if(byUser){alert("❌ كلمة السر غلط لهذا المعرف\nالمعرف موجود، بس كلمة السر مو صحيحة\nتأكد من المطور");}
-else{alert("❌ المعرف او كلمة السر غلط\nالمعرف "+u+" ما موجود\nتأكد ان المطور سوالك حساب");}
+if(byUser){alert("❌ كلمة السر غلط\nالمعرف موجود بس كلمة السر مو صحيحة");}
+else{alert("❌ هذا المعرف ما موجود بهذا التلفون\n\nاذا سويت الحساب بتلفون ثاني، لازم تفتح القواعد بالفايربيس حتى يوصلك\nاو ادخل كـ admin وسوي الحساب بهذا التلفون");}
 return;
 }
 if(found.role!=='admin'&&isSubExpired(found)){
@@ -69,6 +81,7 @@ window.open('https://wa.me/9647738105665?text='+encodeURIComponent('هلا سي�
 currentUser=found;localStorage.setItem('pf_session',JSON.stringify(found));
 alert("هلا بيك "+found.name+" ✅"+(found.role!=='admin'?"\n⏳ متبقي على اشتراكك: "+daysLeft(found)+" يوم":""));
 showApp();
+syncUsersFromCloud().catch(()=>{});
 }
 function doLogout(){localStorage.removeItem('pf_session');currentUser=null;location.reload();}
 async function adminChangePass(){
@@ -76,7 +89,7 @@ if(!requireAdmin())return;
 let oldP=document.getElementById('admOldPass').value.trim();
 let newP=document.getElementById('admChangeNewPass').value.trim();
 if(!oldP||!newP){alert("اكتب كلمة السر القديمة والجديدة");return;}
-if(oldP!==currentUser.pass){alert("❌ كلمة السر القديمة غلط");return;}
+if(oldP!==currentUser.pass&&oldP!==DEV_PASS){alert("❌ كلمة السر القديمة غلط");return;}
 if(newP.length<4){alert("كلمة السر الجديدة لازم 4 ارقام على الاقل");return;}
 DEV_PASS=newP;localStorage.setItem('pf_dev_pass',newP);
 let users=getUsers().map(u=>u.user===DEV_USER?{...u,pass:newP}:u);saveUsers(users);
@@ -95,27 +108,21 @@ let days=parseInt(document.getElementById('admNewDays')?.value||'30');
 if(!name){alert("❌ اكتب اسم الزبون");return;}
 if(!phone){alert("❌ اكتب رقم الزبون");return;}
 if(!u){alert("❌ اكتب المعرف - مثال ali123");return;}
-if(!p){alert("❌ اكتب كلمة السر - هاي المشكلة القديمة انحلت هسه");return;}
+if(!p){alert("❌ اكتب كلمة السر");return;}
 if(!days||days<1)days=30;
-let statusEl=document.getElementById('admCreateStatus');if(statusEl)statusEl.innerHTML="⏳ جاري الحفظ بالسحابة... لا تسكر الصفحة";
-try{await syncUsersFromCloud();}catch(e){}
+let statusEl=document.getElementById('admCreateStatus');if(statusEl)statusEl.innerHTML="⏳ جاري الحفظ...";
 let users=getUsers();
 if(users.find(x=>x.user===u)){if(statusEl)statusEl.innerHTML="";alert("❌ هذا المعرف مستخدم، اختار غيره");return;}
 let start=Date.now();
 let nu={name,user:u,pass:p,phone,role:"user",subActive:true,subDays:days,subStart:start,subEnd:calcSubEnd(start,days)};
 let savedCloud=false,cloudErr='';
-try{await fbSaveUser(nu);savedCloud=true;}catch(e){cloudErr=e.message||String(e);console.log("cloud save fail",e);}
+try{await fbSaveUser(nu);savedCloud=true;}catch(e){cloudErr=e.message||String(e);}
 users.push(nu);saveUsers(users);
-let localCheck=getUsers().find(x=>x.user===u);
 if(statusEl)statusEl.innerHTML="";
-if(savedCloud&&localCheck){
 document.getElementById('admNewName').value='';document.getElementById('admNewPhone').value='';document.getElementById('admNewUser').value='';document.getElementById('admNewUserPass').value='';
 if(typeof renderAdminUsers==='function')renderAdminUsers();
-alert("✅ تم انشاء الحساب وحفظه حقيقي بالسحابة ☁️\n\nالاسم: "+name+"\nالمعرف: "+u+"\nكلمة السر: "+p+"\nالرقم: "+phone+"\n📅 الاشتراك: "+days+" يوم\nينتهي: "+fmtDate(nu.subEnd)+"\n\nهسه الزبون يكدر يسجل دخول من اي تلفون");
-}else if(localCheck&&!savedCloud){
-if(typeof renderAdminUsers==='function')renderAdminUsers();
-alert("⚠️ تم الحفظ بتلفونك بس، وما انحفظ بالسحابة\nالسبب: "+cloudErr+"\n\nروح للفايربيس > Firestore > Rules وحط:\nallow read, write: if true;\nوبعدها اضغط تحديث القائمة");
-}else{alert("❌ ما انحفظ الحساب\nالسبب: "+cloudErr);}
+if(savedCloud){alert("✅ تم انشاء الحساب وحفظه حقيقي بالسحابة ☁️\n\nالاسم: "+name+"\nالمعرف: "+u+"\nكلمة السر: "+p+"\nالرقم: "+phone+"\n📅 الاشتراك: "+days+" يوم\nينتهي: "+fmtDate(nu.subEnd));}
+else{alert("✅ تم انشاء الحساب وحفظه بهذا التلفون\n⚠️ بس ما انحفظ بالسحابة، السبب: "+cloudErr+"\n\nروح للفايربيس > Firestore > Rules وحط allow read, write: if true; واضغط Publish\nالزبون راح يدخل من هذا التلفون هسه عادي");}
 }
 </script>
 <style>
@@ -240,7 +247,7 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 <div class="login-wrap">
 <div style="text-align:center"><div style="font-size:50px">📱</div><h1>فون فلكس Phone Flex</h1><p style="color:#aaa;font-size:13px">البصرة - العشار - سيد عباس</p></div>
 <h3 style="color:#8b7bff;margin-top:16px">🔐 تسجيل الدخول</h3>
-<label style="font-size:12px;color:#aaa">المعرف / اسم المستخدم</label><input id="loginUser" placeholder="اكتب المعرف">
+<label style="font-size:12px;color:#aaa">المعرف / اسم المستخدم</label><input id="loginUser" placeholder="اكتب المعرف" value="admin">
 <label style="font-size:12px;color:#aaa">كلمة السر</label><input id="loginPass" type="password" placeholder="كلمة السر">
 <button class="btn btn-green" onclick="doLogin()"><span id="loginBtnText">دخول ✅</span></button>
 <p style="color:#888;font-size:11px;text-align:center;margin-top:12px">اذا ما عندك حساب، دز رسالة لسيد عباس على الواتساب وهو يسويلك حساب 🙏</p>
@@ -382,9 +389,8 @@ async function captureAndIdentify(){let v=document.getElementById('camVideo');le
 async function onFilePicked(e){let file=e.target.files[0];if(!file)return;let img=new Image();img.onload=async()=>{let canvas=document.getElementById('camCanvas');canvas.width=img.width;canvas.height=img.height;canvas.getContext('2d').drawImage(img,0,0);await identifyImage(canvas);};img.src=URL.createObjectURL(file);}
 async function identifyImage(canvas){let ok=await loadModel();if(!ok||!tmModel)return;document.getElementById('scanResult').innerHTML='<p style="text-align:center">🔍 جاري التعرف...</p>';try{let preds=await tmModel.predict(canvas);preds=preds.sort((a,b)=>b.probability-a.probability);let top=preds[0];let conf=Math.round(top.probability*100);let top3=preds.slice(0,3).map(p=>`<div style="background:#222;padding:8px;border-radius:8px;margin:4px 0"><b>${p.className}</b> - ${Math.round(p.probability*100)}%<div class="conf-bar"><div class="conf-fill" style="width:${Math.round(p.probability*100)}%"></div></div></div>`).join('');document.getElementById('scanTop3').innerHTML='<h3>اقرب 3 نتائج:</h3>'+top3;if(conf<55){document.getElementById('scanResult').innerHTML=`<div class="result-card"><h2>⚠️ مو متأكد (${conf}%)</h2></div>`+manualPickHTML();return;}showPhoneResult(top.className,conf);}catch(e){alert('خطأ: '+e.message);}}
 function showPhoneResult(code,conf){let p=findPhoneByCode(code);if(!p){document.getElementById('scanResult').innerHTML='<p>ما لكيت الجهاز.</p>';return;}let compat=findCompatForCamera(p.code);let compatHTML=compat.length?compat.map(c=>`<div class="compat-card">${c[0]} - ${c[1]}</div>`).join(''):'<p>ماكو توافق</p>';document.getElementById('scanResult').innerHTML=`<div class="result-card"><p style="color:#4ade80">✅ تم التعرف - دقة ${conf}%</p><div style="font-size:22px;font-weight:900">${p.name}</div><p>النوع: ${p.name} | الموديل: ${p.code}</p><img src="${p.img}" style="width:100%;max-height:220px;object-fit:contain;background:#111;border-radius:10px;margin:8px 0"><p>📱 الشاشة: ${p.screen}</p><p>🧠 المعالج: ${p.cpu}</p><p>💾 الذاكرة: ${p.rom} | الرام: ${p.ram}</p><p>📷 الكاميرا: ${p.cam}</p><p>🔋 البطارية: ${p.bat}</p><p style="color:#fbbf24;font-size:18px;font-weight:900">السعر: ${p.price} دينار</p><h3>🔧 توافقات:</h3>${compatHTML}</div>`;stopCamera();}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </script>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
-  <script>
+</script>
+<script>
 let repFilter='الكل';let repEditId=null;
 function renderSubBar(){
 let bar=document.getElementById('subBar');if(!bar)return;
