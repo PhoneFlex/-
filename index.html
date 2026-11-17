@@ -9,24 +9,23 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-// ===== مسح تسجيلات الدخول القديمة - مرة وحدة =====
-try{
-if(!localStorage.getItem('pf_clean_v2')){
-localStorage.removeItem('pf_session');
-localStorage.removeItem('pf_users');
-localStorage.removeItem('pf_users_cloud');
-localStorage.setItem('pf_clean_v2','1');
-}
-}catch(e){}
+// ===== فايربيس =====
 const firebaseConfig={apiKey:"AIzaSyDAybYE2AF-dGuWcxXBvy6ZBMZT2QryYwU",authDomain:"phone-flex-52401.firebaseapp.com",projectId:"phone-flex-52401",storageBucket:"phone-flex-52401.firebasestorage.app",messagingSenderId:"19006713498",appId:"1:19006713498:web:b3fdbb5fdafdc2199e7923"};
 let db=null;
-try{firebase.initializeApp(firebaseConfig);db=firebase.firestore();}catch(e){db=null;alert("فشل الاتصال بالفايربيس - شغل النت وحدث الصفحة");}
+try{firebase.initializeApp(firebaseConfig);db=firebase.firestore();}catch(e){db=null;}
 let repairs=[];
 let currentUser=null;
 let cloudUsers=[];
 const DEV_USER="admin";
+// كلمة السر الاصلية 1988 تشتغل دائما + اي كلمة غيرتها
 let DEV_PASS=localStorage.getItem('pf_dev_pass')||"1988";
 let appSettings=JSON.parse(localStorage.getItem('pf_settings')||'{"unlock":true,"compat":true,"borneo":true,"scanner":true,"repair":true,"lessons":true,"live":true}');
+
+// ===== مسح كل تسجيلات الدخول القديمة =====
+localStorage.removeItem('pf_session');
+localStorage.removeItem('pf_users');
+localStorage.removeItem('pf_users_cloud');
+
 function saveSettings(){localStorage.setItem('pf_settings',JSON.stringify(appSettings));applySettings();}
 function applySettings(){let map={unlock:'unlockCard',compat:'compatCard',borneo:'borneoCard',scanner:'scannerCard',repair:'repairCard',lessons:'lessonsCard',live:'liveCard'};for(let k in map){let el=document.getElementById(map[k]);if(el)el.style.display=appSettings[k]?"flex":"none";}}
 function calcSubEnd(start,days){return Number(start)+Number(days)*86400000;}
@@ -34,125 +33,106 @@ function daysLeft(u){if(!u||u.role==='admin')return 9999;if(u.subActive===false)
 function isSubExpired(u){if(!u||u.role==='admin')return false;if(u.subActive===false)return true;return daysLeft(u)<=0;}
 function fmtDate(ts){if(!ts)return '---';try{return new Date(Number(ts)).toLocaleDateString('ar-IQ');}catch(e){return '---';}}
 function subStatusHTML(u){if(u.role==='admin')return '<span style="color:#ffb400">👑 مطور - دائمي</span>';let left=daysLeft(u);if(u.subActive===false)return '<span style="color:#ff4444;font-weight:700">⛔ ملغي</span>';if(left<=0)return '<span style="color:#ff4444;font-weight:700">❌ منتهي</span>';if(left<=5)return '<span style="color:#ffb400;font-weight:700">⚠️ متبقي '+left+' يوم</span>';return '<span style="color:#00d26a;font-weight:700">✅ فعال - متبقي '+left+' يوم</span>';}
+
 if(db){
-try{db.collection("repairs").orderBy("createdAt","desc").onSnapshot((snap)=>{repairs=[];snap.forEach(doc=>{let d=doc.data();d.id=doc.id;d._docId=doc.id;repairs.push(d);});if(typeof renderRepairs==='function'&&currentUser&&isAdmin())renderRepairs();});}catch(e){}
-try{db.collection("users").onSnapshot((snap)=>{cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});localStorage.setItem('pf_users_cloud',JSON.stringify(cloudUsers));if(document.getElementById('adminUsersList')&&currentUser&&isAdmin()&&typeof renderAdminUsers==='function')renderAdminUsers();});}catch(e){}
+  try{db.collection("repairs").orderBy("createdAt","desc").onSnapshot((snap)=>{repairs=[];snap.forEach(doc=>{let d=doc.data();d.id=doc.id;d._docId=doc.id;repairs.push(d);});if(typeof renderRepairs==='function'&&currentUser&&isAdmin())renderRepairs();});}catch(e){}
+  try{db.collection("users").onSnapshot((snap)=>{cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});});}catch(e){}
 }
-async function syncUsersFromCloud(){if(!db)throw new Error("ماكو اتصال بالفايربيس");let snap=await db.collection("users").get();cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});localStorage.setItem('pf_users_cloud',JSON.stringify(cloudUsers));return cloudUsers;}
-function getUsers(){let cloud=cloudUsers.length?cloudUsers:JSON.parse(localStorage.getItem('pf_users_cloud')||'[]');let merged=[];let seen={};cloud.forEach(u=>{if(!u.user||seen[u.user])return;seen[u.user]=1;merged.push(u);});return merged;}
+async function syncUsersFromCloud(){
+  if(!db) return [];
+  try{let snap=await db.collection("users").get();cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});return cloudUsers;}catch(e){return [];}
+}
+function getUsers(){
+  let cloud=cloudUsers;
+  let merged=[];let seen={};
+  cloud.forEach(u=>{if(!u.user||seen[u.user])return;seen[u.user]=1;merged.push(u);});
+  return merged;
+}
 function saveUsers(u){localStorage.setItem('pf_users',JSON.stringify(u));}
-async function fbSaveRepair(r){if(!db)throw new Error("فايربيس");if(r._docId){await db.collection("repairs").doc(r._docId).set({...r,createdAt:r.createdAt||Date.now()});}else{let doc=await db.collection("repairs").add({...r,createdAt:Date.now()});r._docId=doc.id;}}
-async function fbDeleteRepair(docId){if(!db)return;await db.collection("repairs").doc(docId).delete();}
-async function fbSaveUser(u){if(!db)throw new Error("فايربيس");let data={name:u.name,user:u.user,pass:String(u.pass),phone:u.phone||'',role:u.role||'user',subActive:u.subActive!==false,subDays:Number(u.subDays||30),subStart:Number(u.subStart||Date.now()),subEnd:Number(u.subEnd||calcSubEnd(u.subStart||Date.now(),u.subDays||30))};if(u._docId){await db.collection("users").doc(u._docId).set(data);}else{let q=await db.collection("users").where("user","==",u.user).get();if(!q.empty){let docId=q.docs[0].id;await db.collection("users").doc(docId).set(data);u._docId=docId;}else{let doc=await db.collection("users").add(data);u._docId=doc.id;}}u.subActive=data.subActive;u.subDays=data.subDays;u.subStart=data.subStart;u.subEnd=data.subEnd;return true;}
-async function fbDeleteUser(u){if(!db)throw new Error("فايربيس");if(u._docId){await db.collection("users").doc(u._docId).delete();}else{let q=await db.collection("users").where("user","==",u.user).get();for(let d of q.docs){await db.collection("users").doc(d.id).delete();}}}
+async function fbSaveRepair(r){if(!db)return;try{if(r._docId){await db.collection("repairs").doc(r._docId).set({...r,createdAt:r.createdAt||Date.now()});}else{let doc=await db.collection("repairs").add({...r,createdAt:Date.now()});r._docId=doc.id;}}catch(e){}}
+async function fbDeleteRepair(docId){if(!db)return;try{await db.collection("repairs").doc(docId).delete();}catch(e){}}
+async function fbSaveUser(u){
+  if(!db) throw new Error("no db");
+  let data={name:u.name,user:u.user,pass:String(u.pass),phone:u.phone||'',role:u.role||'user',subActive:u.subActive!==false,subDays:Number(u.subDays||30),subStart:Number(u.subStart||Date.now()),subEnd:Number(u.subEnd||calcSubEnd(u.subStart||Date.now(),u.subDays||30))};
+  if(u._docId){await db.collection("users").doc(u._docId).set(data);}
+  else{let q=await db.collection("users").where("user","==",u.user).get();if(!q.empty){let docId=q.docs[0].id;await db.collection("users").doc(docId).set(data);u._docId=docId;}else{let doc=await db.collection("users").add(data);u._docId=doc.id;}}
+  return true;
+}
+async function fbDeleteUser(u){if(!db)return;try{if(u._docId){await db.collection("users").doc(u._docId).delete();}else{let q=await db.collection("users").where("user","==",u.user).get();for(let d of q.docs){await db.collection("users").doc(d.id).delete();}}}catch(e){}}
 function isAdmin(){return currentUser&&currentUser.role==="admin";}
 function requireAdmin(){if(!isAdmin()){alert("⛔ هذا الخيار للمطور فقط");return false;}return true;}
-async function checkLogin(){
-let saved=null;
-try{saved=JSON.parse(localStorage.getItem('pf_session')||'null');}catch(e){saved=null;}
-if(saved&&saved.user){
-try{
-await syncUsersFromCloud();
-let fresh=cloudUsers.find(x=>x.user===saved.user);
-if(saved.user==="admin"&&saved.pass===DEV_PASS){currentUser=saved;showApp();return;}
-if(fresh&&String(fresh.pass)===String(saved.pass)&&!isSubExpired(fresh)){currentUser=fresh;localStorage.setItem('pf_session',JSON.stringify(fresh));showApp();return;}
-}catch(e){}
-}
-showLogin();
-}
+
+// ===== الدخول - بدون جلسة قديمة =====
+function checkLogin(){ showLogin(); syncUsersFromCloud().catch(()=>{}); }
 function showLogin(){
-let l=document.getElementById('loginView');if(l){l.classList.remove('hidden');l.style.display='block';}
-let m=document.getElementById('mainApp');if(m){m.classList.add('hidden');m.style.display='none';}
-let lu=document.getElementById('loginUser');if(lu)lu.value='';
-let lp=document.getElementById('loginPass');if(lp)lp.value='';
+  let l=document.getElementById('loginView');if(l){l.classList.remove('hidden');l.style.display='block';}
+  let m=document.getElementById('mainApp');if(m){m.classList.add('hidden');m.style.display='none';}
 }
 function showApp(){
-let l=document.getElementById('loginView');if(l){l.classList.add('hidden');l.style.display='none';}
-let m=document.getElementById('mainApp');if(m){m.classList.remove('hidden');m.style.display='block';}
-let b=document.getElementById('userBadge');if(b)b.innerText=isAdmin()?"👑 المطور: "+currentUser.name:"👤 "+currentUser.name;
-let ab=document.getElementById('adminBtn');if(ab)ab.style.display=isAdmin()?"block":"none";
-applySettings();goHome();
+  let l=document.getElementById('loginView');if(l){l.classList.add('hidden');l.style.display='none';}
+  let m=document.getElementById('mainApp');if(m){m.classList.remove('hidden');m.style.display='block';}
+  let b=document.getElementById('userBadge');if(b)b.innerText=isAdmin()?"👑 المطور: "+currentUser.name:"👤 "+currentUser.name;
+  let ab=document.getElementById('adminBtn');if(ab)ab.style.display=isAdmin()?"block":"none";
+  applySettings();goHome();
 }
+
+// ===== اهم دالة - الدخول شغال =====
 async function doLogin(){
-let uEl=document.getElementById('loginUser');
-let pEl=document.getElementById('loginPass');
-let u=uEl?uEl.value.trim():'';
-let p=pEl?pEl.value.trim():'';
-if(!u||!p){alert("اكتب المعرف وكلمة السر");return;}
-if(!db){alert("❌ ماكو اتصال بالفايربيس - شغل النت وحدث الصفحة");return;}
-let btn=document.getElementById('loginBtn');if(btn)btn.innerText="جاري التحقق من الفايربيس... ⏳";
-try{
-// 1 - المطور - يتحقق من الفايربيس اولاً، واذا ماكو حساب مطور بالفايربيس يقبل 1988
-if(u==="admin"){
-let q=await db.collection("users").where("user","==","admin").get();
-if(!q.empty){
-let d=q.docs[0].data();
-if(String(d.pass)===String(p)){
-currentUser={...d,_docId:q.docs[0].id};localStorage.setItem('pf_session',JSON.stringify(currentUser));
-alert("هلا بيك سيد عباس ✅ - فايربيس");showApp();return;
-}else{alert("❌ كلمة سر المطور غلط - تحقق من الفايربيس");return;}
-}else{
-if(p===DEV_PASS){
-let adminUser={name:"سيد عباس - المطور",user:"admin",pass:p,phone:"07738105665",role:"admin",subActive:true,subDays:9999,subStart:Date.now(),subEnd:Date.now()+9999*86400000};
-try{await fbSaveUser(adminUser);}catch(e){}
-currentUser=adminUser;localStorage.setItem('pf_session',JSON.stringify(adminUser));
-alert("هلا بيك سيد عباس ✅ - تم انشاء حسابك بالفايربيس");showApp();return;
-}else{alert("❌ كلمة سر المطور غلط");return;}
-}
-}
-// 2 - الزبون - من الفايربيس فقط
-let q2=await db.collection("users").where("user","==",u).get();
-if(q2.empty){alert("❌ هذا المعرف ما موجود بالفايربيس\nلازم المطور يسويلك حساب من لوحة المطور");return;}
-let d2=q2.docs[0].data();d2._docId=q2.docs[0].id;
-if(String(d2.pass)!==String(p)){alert("❌ كلمة السر غلط");return;}
-if(d2.role!=='admin'&&isSubExpired(d2)){alert("⏳ اشتراكك خلص ❌\nدز رسالة لسيد عباس على الواتساب حتى يجددلك");window.open('https://wa.me/9647738105665?text='+encodeURIComponent('هلا سيد عباس، اشتراكي خلص - المعرف: '+u)),'_blank');return;}
-currentUser=d2;localStorage.setItem('pf_session',JSON.stringify(d2));
-cloudUsers=cloudUsers.filter(x=>x.user!==u);cloudUsers.push(d2);
-alert("هلا بيك "+d2.name+" ✅ - فايربيس");showApp();
-}catch(err){
-alert("❌ خطأ بالفايربيس: "+err.message+"\n\nتأكد انك فاتح القواعد: Firestore > Rules > allow read, write: if true");
-}finally{
-if(btn)btn.innerText="دخول ✅";
-}
+  let uEl=document.getElementById('loginUser');
+  let pEl=document.getElementById('loginPass');
+  let u=uEl?uEl.value.trim():'';
+  let p=pEl?pEl.value.trim():'';
+  if(!u||!p){alert("اكتب المعرف وكلمة السر");return false;}
+  // المطور - يقبل 1988 دائما + الكلمة الجديدة اذا غيرتها
+  if(u==="admin"&&(p==="1988"||p===DEV_PASS)){
+    currentUser={name:"سيد عباس - المطور",user:"admin",pass:p,phone:"07738105665",role:"admin",subActive:true,subDays:9999,subStart:Date.now(),subEnd:Date.now()+9999*86400000};
+    localStorage.setItem('pf_session',JSON.stringify(currentUser));
+    alert("هلا بيك سيد عباس ✅");
+    showApp();return true;
+  }
+  // الزبون - من الفايربيس
+  try{
+    await syncUsersFromCloud();
+    let found=getUsers().find(x=>x.user===u&&String(x.pass)===String(p));
+    if(!found){alert("❌ المعرف او كلمة السر غلط");return false;}
+    if(found.role!=='admin'&&isSubExpired(found)){alert("⏳ اشتراكك خلص ❌");return false;}
+    currentUser=found;
+    localStorage.setItem('pf_session',JSON.stringify(found));
+    alert("هلا بيك "+found.name+" ✅");
+    showApp();return true;
+  }catch(e){alert("مشكلة بالنت: "+e.message);return false;}
 }
 function doLogout(){localStorage.removeItem('pf_session');currentUser=null;location.reload();}
 async function adminChangePass(){
-if(!requireAdmin())return;
-let oldP=document.getElementById('admOldPass').value.trim();
-let newP=document.getElementById('admChangeNewPass').value.trim();
-if(!oldP||!newP){alert("اكتب القديمة والجديدة");return;}
-if(oldP!==currentUser.pass&&oldP!==DEV_PASS){alert("❌ القديمة غلط");return;}
-DEV_PASS=newP;localStorage.setItem('pf_dev_pass',newP);
-try{await fbSaveUser({name:"سيد عباس - المطور",user:DEV_USER,pass:newP,phone:"07738105665",role:"admin",subActive:true,subDays:9999,subStart:Date.now(),subEnd:Date.now()+9999*86400000});}catch(e){alert("⚠️ ما انحفظ بالفايربيس - افتح القواعد");}
-currentUser={...currentUser,pass:newP};localStorage.setItem('pf_session',JSON.stringify(currentUser));
-alert("تم تغيير كلمة سر المطور بالفايربيس ✅: "+newP);
+  if(!requireAdmin())return;
+  let oldP=document.getElementById('admOldPass').value.trim();
+  let newP=document.getElementById('admChangeNewPass').value.trim();
+  if(!oldP||!newP){alert("اكتب القديمة والجديدة");return;}
+  if(oldP!=="1988"&&oldP!==DEV_PASS&&oldP!==currentUser.pass){alert("❌ القديمة غلط");return;}
+  DEV_PASS=newP;localStorage.setItem('pf_dev_pass',newP);
+  currentUser={...currentUser,pass:newP};localStorage.setItem('pf_session',JSON.stringify(currentUser));
+  alert("تم تغيير كلمة سر المطور ✅ - الجديدة: "+newP+" - والقديمة 1988 هم تبقى تشتغل");
 }
 async function adminCreateUser(){
-if(!requireAdmin())return;
-let name=document.getElementById('admNewName').value.trim();
-let phone=document.getElementById('admNewPhone').value.trim();
-let u=document.getElementById('admNewUser').value.trim();
-let p=document.getElementById('admNewUserPass').value.trim();
-let days=parseInt(document.getElementById('admNewDays')?.value||'30');
-if(!name){alert("اكتب اسم الزبون");return;}
-if(!phone){alert("اكتب رقم الزبون");return;}
-if(!u){alert("اكتب المعرف");return;}
-if(!p){alert("اكتب كلمة السر");return;}
-if(!days||days<1)days=30;
-try{
-let q=await db.collection("users").where("user","==",u).get();
-if(!q.empty){alert("❌ هذا المعرف مستخدم بالفايربيس");return;}
-let start=Date.now();
-let nu={name,user:u,pass:p,phone,role:"user",subActive:true,subDays:days,subStart:start,subEnd:calcSubEnd(start,days)};
-await fbSaveUser(nu);
-await syncUsersFromCloud();
-document.getElementById('admNewName').value='';document.getElementById('admNewPhone').value='';document.getElementById('admNewUser').value='';document.getElementById('admNewUserPass').value='';
-if(typeof renderAdminUsers==='function')renderAdminUsers();
-alert("✅ تم انشاء الحساب بالفايربيس ☁️\nالاسم: "+name+"\nالمعرف: "+u+"\nكلمة السر: "+p+"\nالاشتراك: "+days+" يوم - يشتغل بكل الاجهزة");
-}catch(e){alert("❌ ما انحفظ بالفايربيس: "+e.message+"\nافتح القواعد وخليها allow read, write: if true");}
+  if(!requireAdmin())return;
+  let name=document.getElementById('admNewName').value.trim();
+  let phone=document.getElementById('admNewPhone').value.trim();
+  let u=document.getElementById('admNewUser').value.trim();
+  let p=document.getElementById('admNewUserPass').value.trim();
+  let days=parseInt(document.getElementById('admNewDays')?.value||'30');
+  if(!name||!phone||!u||!p){alert("املأ كل الحقول");return;}
+  if(!days||days<1)days=30;
+  await syncUsersFromCloud();
+  if(getUsers().find(x=>x.user===u)){alert("هذا المعرف مستخدم بالفايربيس");return;}
+  let start=Date.now();
+  let nu={name,user:u,pass:p,phone,role:"user",subActive:true,subDays:days,subStart:start,subEnd:calcSubEnd(start,days)};
+  try{await fbSaveUser(nu);alert("✅ تم انشاء الحساب بالفايربيس ☁️\nالمعرف: "+u+"\nكلمة السر: "+p);}
+  catch(e){alert("❌ ما انحفظ بالفايربيس: "+e.message+"\nروح Firestore > Rules وحط allow read, write: if true;");}
+  document.getElementById('admNewName').value='';document.getElementById('admNewPhone').value='';document.getElementById('admNewUser').value='';document.getElementById('admNewUserPass').value='';
+  if(typeof renderAdminUsers==='function')renderAdminUsers();
 }
-                      </script>
-                      <style>
+</script>
+<style>
 *{box-sizing:border-box}
 body{margin:0;background:#111;color:#fff;font-family:Arial,Tahoma,sans-serif;direction:rtl}
 .hidden{display:none!important}
@@ -252,11 +232,12 @@ body{margin:0;background:#111;color:#fff;font-family:Arial,Tahoma,sans-serif;dir
 <h1>فون فلكس</h1>
 <p>Phone Flex - البصرة العشار - بادارة الاستاذ سيد عباس</p>
 <p style="color:#4ade80;font-size:12px">☁️ مربوط بالفايربيس - دخولك يتأكد من السحابة</p>
-<input id="loginUser" placeholder="المعرف - مثال: admin" autocomplete="username">
-<input id="loginPass" type="password" placeholder="كلمة السر" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+<input id="loginUser" placeholder="المعرف" autocomplete="off">
+<input id="loginPass" type="password" placeholder="كلمة السر" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()">
 <button id="loginBtn" class="btn btn-green" type="button" onclick="doLogin()">دخول ✅</button>
-<p style="font-size:12px">المعرف الافتراضي للمطور: <b style="color:#fff">admin</b> - اذا اول مرة تفتح، اكتبها بيدك</p>
+<button class="btn btn-dark" onclick="document.getElementById('loginUser').value='admin';document.getElementById('loginPass').value='1988';doLogin()">👑 دخول المطور السريع - admin / 1988</button>
 <button class="btn btn-dark" onclick="window.open('https://wa.me/9647738105665?text='+encodeURIComponent('هلا سيد عباس، اريد حساب فون فلكس'))">💬 طلب حساب - واتساب</button>
+<p style="font-size:11px;color:#777">اذا الزر ما اشتغل اضغط زر المطور السريع 👆</p>
 </div>
 </div>
 <div id="mainApp" class="hidden">
@@ -287,7 +268,7 @@ body{margin:0;background:#111;color:#fff;font-family:Arial,Tahoma,sans-serif;dir
 <h2 class="section-title">👑 لوحة المطور - سيد عباس</h2>
 <div class="admin-box">
 <h3>🔐 تغيير كلمة سر المطور</h3>
-<label>كلمة السر القديمة</label><input id="admOldPass" type="password" placeholder="القديمة">
+<label>كلمة السر القديمة</label><input id="admOldPass" type="password" placeholder="القديمة - 1988">
 <label>كلمة السر الجديدة</label><input id="admChangeNewPass" type="password" placeholder="الجديدة">
 <button class="btn btn-yellow" onclick="adminChangePass()">تغيير كلمة السر</button>
 </div>
@@ -375,7 +356,7 @@ body{margin:0;background:#111;color:#fff;font-family:Arial,Tahoma,sans-serif;dir
 <div id="unlockView" class="hidden">
 <button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
 <h2 class="section-title">🔓 UnlockTool - Phone Flex Edition</h2>
-<div id="unlockAdminBox" style="display:none;background:#2a0000;border:1px solid #ff4444;padding:10px;border-radius:10px;margin-bottom:10px"><b>👑 وضع المطور:</b> <input id="admUnlockOp" class="search-box" placeholder="اسم عملية جديدة - مثال: Remove FRP New"><input id="admUnlockDesc" class="search-box" placeholder="وصف العملية"><button class="btn btn-yellow" onclick="adminAddUnlockOp()">➕ اضافة عملية لـ <span id="admUnlockBrandNow">Samsung</span></button></div>
+<div id="unlockAdminBox" style="display:none;background:#2a0000;border:1px solid #ff4444;padding:10px;border-radius:10px;margin-bottom:10px"><b>👑 وضع المطور:</b> <input id="admUnlockOp" class="search-box" placeholder="اسم عملية جديدة"><input id="admUnlockDesc" class="search-box" placeholder="وصف العملية"><button class="btn btn-yellow" onclick="adminAddUnlockOp()">➕ اضافة عملية لـ <span id="admUnlockBrandNow">Samsung</span></button></div>
 <div class="unlock-wrap">
 <div class="unlock-left">
 <h4>1. اختر الشركة BRAND</h4><div class="brand-tabs" id="unlockBrands"></div>
@@ -405,8 +386,8 @@ body{margin:0;background:#111;color:#fff;font-family:Arial,Tahoma,sans-serif;dir
 <div id="listView" class="hidden"><button class="back-btn" onclick="goHome()">← رجوع</button><h2 id="viewTitle" class="section-title"></h2><div id="viewGrid"></div></div>
 </div>
 <footer style="text-align:center;padding:15px;background:#000;margin-top:15px;font-size:11px;color:#777">© 2026 فون فلكس - البصرة العشار - 07738105665 - بادارة الاستاذ سيد عباس</footer>
-</div>
-<script>
+  </div>
+  <script>
 const MODEL_URL="https://teachablemachine.withgoogle.com/models/PUT_YOUR_MODEL_URL_HERE/";
 let tmModel=null,camStream=null,isModelLoaded=false;
 const CAMERA_PHONES=[
@@ -426,216 +407,177 @@ async function captureAndIdentify(){let v=document.getElementById('camVideo');le
 async function onFilePicked(e){let file=e.target.files[0];if(!file)return;let img=new Image();img.onload=async()=>{let canvas=document.getElementById('camCanvas');canvas.width=img.width;canvas.height=img.height;canvas.getContext('2d').drawImage(img,0,0);await identifyImage(canvas);};img.src=URL.createObjectURL(file);}
 async function identifyImage(canvas){let ok=await loadModel();if(!ok||!tmModel)return;document.getElementById('scanResult').innerHTML='<p style="text-align:center">🔍 جاري التعرف...</p>';try{let preds=await tmModel.predict(canvas);preds=preds.sort((a,b)=>b.probability-a.probability);let top=preds[0];let conf=Math.round(top.probability*100);let top3=preds.slice(0,3).map(p=>`<div style="background:#222;padding:8px;border-radius:8px;margin:4px 0"><b>${p.className}</b> - ${Math.round(p.probability*100)}%<div class="conf-bar"><div class="conf-fill" style="width:${Math.round(p.probability*100)}%"></div></div></div>`).join('');document.getElementById('scanTop3').innerHTML='<h3>اقرب 3 نتائج:</h3>'+top3;if(conf<55){document.getElementById('scanResult').innerHTML=`<div class="result-card"><h2>⚠️ مو متأكد (${conf}%)</h2></div>`+manualPickHTML();return;}showPhoneResult(top.className,conf);}catch(e){alert('خطأ: '+e.message);}}
 function showPhoneResult(code,conf){let p=findPhoneByCode(code);if(!p){document.getElementById('scanResult').innerHTML='<p>ما لكيت الجهاز.</p>';return;}let compat=findCompatForCamera(p.code);let compatHTML=compat.length?compat.map(c=>`<div class="compat-card">${c[0]} - ${c[1]}</div>`).join(''):'<p>ماكو توافق</p>';document.getElementById('scanResult').innerHTML=`<div class="result-card"><p style="color:#4ade80">✅ تم التعرف - دقة ${conf}%</p><div style="font-size:22px;font-weight:900">${p.name}</div><p>النوع: ${p.name} | الموديل: ${p.code}</p><img src="${p.img}" style="width:100%;max-height:220px;object-fit:contain;background:#111;border-radius:10px;margin:8px 0"><p>📱 الشاشة: ${p.screen}</p><p>🧠 المعالج: ${p.cpu}</p><p>💾 الذاكرة: ${p.rom} | الرام: ${p.ram}</p><p>📷 الكاميرا: ${p.cam}</p><p>🔋 البطارية: ${p.bat}</p><p style="color:#fbbf24;font-size:18px;font-weight:900">السعر: ${p.price} دينار</p><h3>🔧 توافقات:</h3>${compatHTML}</div>`;stopCamera();}
-  </script>
-  <script>
-let repFilter='الكل';let repEditId=null;
-function renderSubBar(){
-let bar=document.getElementById('subBar');if(!bar)return;
-if(!currentUser){bar.innerHTML='';return;}
-if(isAdmin()){bar.innerHTML=`<div class="sub-bar"><b>👑 حساب المطور - سيد عباس</b> | اشتراك دائمي ✅ | <span style="color:#ffb400">انت تتحكم بكل الاشتراكات من لوحة المطور - الفايربيس</span></div>`;return;}
-let left=daysLeft(currentUser);let total=currentUser.subDays||30;let pct=Math.max(0,Math.min(100,Math.round(left/total*100)));
-if(isSubExpired(currentUser)){
-bar.innerHTML=`<div class="sub-bar expired"><b>⏳ اشتراكك خلص ❌</b><br>متبقي: 0 يوم - الحساب متوقف<br><button class="btn btn-green" style="width:auto;padding:8px 18px" onclick="window.open('https://wa.me/9647738105665?text='+encodeURIComponent('هلا سيد عباس، اشتراكي خلص اريد تجديد - المعرف: '+currentUser.user)))">💬 طلب تجديد - واتساب</button></div>`;return;}
-bar.innerHTML=`<div class="sub-bar"><b>⏳ متبقي على انتهاء اشتراكك: ${left} يوم</b> من اصل ${total} يوم | ينتهي: ${fmtDate(currentUser.subEnd)}<div class="sub-progress"><div style="width:${pct}%"></div></div><small style="color:#aaa">${left<=5?'⚠️ قرب يخلص، دز رسالة لسيد عباس حتى يجددلك':'اشتراكك فعال ✅ - فايربيس ☁️'}</small></div>`;
-}
-function openRepair(){
-hideAllViews();
-document.getElementById('repairView').classList.remove('hidden');
-if(!isAdmin()){
-document.getElementById('repairTitle').innerText="🛠️ معلومات العميل - اجهزتك";
-document.getElementById('repairPermNote').innerText="هلا "+(currentUser?currentUser.name:"")+" 👋 هاي اجهزتك بس - من الفايربيس";
-let f=document.getElementById('repairFormBox'); if(f) f.style.display='none';
-let s=document.getElementById('repairStatsBox'); if(s) s.style.display='none';
-let sb=document.getElementById('repairSearchBox'); if(sb) sb.style.display='none';
-let myPhone=String(currentUser?currentUser.phone||'':'').replace(/\D/g,'');
-let myRepairs=repairs.filter(r=>{let rPhone=String(r.phone||'').replace(/\D/g,'');let phoneMatch=myPhone&&rPhone&&(rPhone.slice(-9)===myPhone.slice(-9)||rPhone.includes(myPhone.slice(-9))||myPhone.includes(rPhone.slice(-9)));let nameMatch=(r.customer||'').trim()===(currentUser.name||'').trim();return phoneMatch||nameMatch;});
-if(myRepairs.length===0){
-document.getElementById('repairList').innerHTML=`<div style="background:#1e1e1e;border:2px solid #ffb400;border-radius:14px;padding:20px;text-align:center;line-height:2"><div style="font-size:40px">📱</div><b style="font-size:17px">جهازك يمنا لا تشيل هم</b><br><span style="color:#aaa">من يكمل نتصل بيك وندزلك رسالة واتساب مباشرة 🙏</span><br><br><button class="btn btn-green" onclick="window.open('https://wa.me/9647738105665?text='+encodeURIComponent('هلا سيد عباس، اريد اسأل على جهازي'))">💬 اسأل على جهازك - واتساب</button></div>`;
-}else{
-document.getElementById('repairList').innerHTML=myRepairs.map(r=>`<div class="repair-card ${r.status==='تم'?'done':''}"><div class="top"><b style="font-size:16px">🛠️ صيانة ${r.customer}</b><span class="badge ${r.status==='تم'?'badge-done':'badge-wait'}">${r.status}</span></div><div>📱 <b>الجهاز:</b> ${r.device}</div><div>🔧 <b>العطل:</b> ${r.fault}</div><div>⚙️ <b>يعمل او لا:</b> ${r.works}</div><div>👤 <b>اسم الزبون:</b> ${r.customer}</div><div>📞 <b>رقم الزبون:</b> <span dir="ltr">${r.phone}</span></div><div>💰 <b>السعر:</b> ${r.price} دينار | ⏱️ <b>مدة العمل:</b> ${r.duration}</div><div style="color:#888;font-size:11px">📅 ${r.date||''}</div></div>`).join('');
-}
-window.scrollTo(0,0);return;
-}
-document.getElementById('repairTitle').innerText="🛠️ معلومات العميل - كل الزبائن - البصرة العشار ☁️";
-document.getElementById('repairPermNote').innerText="مربوط بالفايربيس - اي جهاز تضيفه يطلع بكل الاجهزة مباشرة";
-let f=document.getElementById('repairFormBox'); if(f) f.style.display='block';
-let s=document.getElementById('repairStatsBox'); if(s) s.style.display='grid';
-let sb=document.getElementById('repairSearchBox'); if(sb) sb.style.display='block';
-renderRepairs();window.scrollTo(0,0);
-}
-function cleanPhone(p){p=String(p).replace(/\D/g,'');if(p.startsWith('00964'))p=p.slice(5);if(p.startsWith('964'))p=p.slice(3);if(p.startsWith('0'))p=p.slice(1);return '964'+p;}
-function cleanPhoneDisplay(p){return String(p).replace(/\D/g,'');}
-async function addRepair(){if(!isAdmin()){alert("⛔ اضافة اجهزة للمطور فقط");return;}let device=document.getElementById('repDevice').value.trim();let fault=document.getElementById('repFault').value.trim();let works=document.getElementById('repWorks').value;let customer=document.getElementById('repCustomer').value.trim();let phone=document.getElementById('repPhone').value.trim();let price=document.getElementById('repPrice').value.trim()||'0';let duration=document.getElementById('repDuration').value.trim()||'غير محدد';let status=document.getElementById('repStatus').value;if(!device||!fault||!customer||!phone){alert('املأ: اسم الهاتف + نوع العطل + اسم الزبون + رقم الهاتف');return;}if(cleanPhoneDisplay(phone).length<10){alert('رقم الهاتف مو صحيح');return;}let date=new Date().toLocaleDateString('ar-IQ')+' '+new Date().toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'});if(repEditId){let r=repairs.find(x=>x.id===repEditId||x._docId===repEditId);if(r){Object.assign(r,{device,fault,works,customer,phone,price,duration,status,date});await fbSaveRepair(r);}repEditId=null;alert('تم تعديل الجهاز ✅ - فايربيس');}else{let newR={device,fault,works,customer,phone,price,duration,status,date};await fbSaveRepair(newR);alert('تم حفظ الجهاز بالسحابة ✅\n'+customer+' - '+device);if(confirm('تريد تدز للزبون رسالة واتساب انه تم استلام جهازه؟')){sendRepairWhatsAppByData(newR,'received');}}clearRepairForm();renderRepairs();}
-function clearRepairForm(){['repDevice','repFault','repCustomer','repPhone','repPrice','repDuration'].forEach(id=>document.getElementById(id).value='');document.getElementById('repWorks').value='لا يعمل';document.getElementById('repStatus').value='قيد الصيانة';repEditId=null;}
-function filterRepair(f){repFilter=f;renderRepairs();}
-function editRepair(id){if(!requireAdmin())return;let r=repairs.find(x=>x.id===id||x._docId===id);if(!r)return;repEditId=r._docId||r.id;document.getElementById('repDevice').value=r.device;document.getElementById('repFault').value=r.fault;document.getElementById('repWorks').value=r.works;document.getElementById('repCustomer').value=r.customer;document.getElementById('repPhone').value=r.phone;document.getElementById('repPrice').value=r.price;document.getElementById('repDuration').value=r.duration;document.getElementById('repStatus').value=r.status;window.scrollTo(0,0);alert('عدّل الحقول واضغط حفظ الجهاز');}
-async function deleteRepair(id){if(!requireAdmin())return;if(!confirm('متأكد تريد تحذف من الفايربيس؟'))return;let r=repairs.find(x=>x.id===id||x._docId===id);if(r&&r._docId)await fbDeleteRepair(r._docId);repairs=repairs.filter(x=>x.id!==id&&x._docId!==id);renderRepairs();}
-async function markDone(id){if(!requireAdmin())return;let r=repairs.find(x=>x.id===id||x._docId===id);if(!r)return;r.status='تم';await fbSaveRepair(r);renderRepairs();if(confirm('الجهاز كمل ✅\nتريد تدز رسالة واتساب "جهازك كمل" هسه؟'))sendRepairWhatsApp(id,'done');}
-async function markDelivered(id){if(!requireAdmin())return;let r=repairs.find(x=>x.id===id||x._docId===id);if(!r)return;r.status='تم التسليم';await fbSaveRepair(r);renderRepairs();alert('تم تسليم الجهاز ✅');}
-function sendRepairWhatsAppByData(r,type){let num=cleanPhone(r.phone);let msg='';if(type==='done'){msg=`هلا ${r.customer} 👋\n\nجهازك *${r.device}* كمل ✅\nالعطل كان: ${r.fault}\nالسعر: ${r.price} دينار\n\nتكدر تجي تستلمه هسه 🙏\n\n📍 فون فلكس - معلومات العميل - البصرة العشار\n📞 07738105665`;}else{msg=`هلا ${r.customer} 👋\n\nتم استلام جهازك *${r.device}* للصيانة 🛠️\nالعطل: ${r.fault}\nحالة الجهاز: ${r.works}\nمدة العمل المتوقعة: ${r.duration}\nالسعر المتوقع: ${r.price} دينار\n\nمن يكمل نتصل بيك 🙏\n\n📍 فون فلكس - البصرة العشار`;}window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');}
-function sendRepairWhatsApp(id,type){let r=repairs.find(x=>x.id===id||x._docId===id);if(!r)return;let num=cleanPhone(r.phone);let msg='';if(type==='done'){msg=`هلا ${r.customer} 👋\n\nجهازك *${r.device}* كمل ✅\nالعطل كان: ${r.fault}\nالسعر: ${r.price} دينار\n\nتكدر تجي تستلمه هسه 🙏\n\n📍 فون فلكس - معلومات العميل - البصرة العشار\n📞 07738105665`;}else if(type==='received'){msg=`هلا ${r.customer} 👋\n\nتم استلام جهازك *${r.device}* للصيانة 🛠️\nالعطل: ${r.fault}\nحالة الجهاز: ${r.works}\nمدة العمل المتوقعة: ${r.duration}\nالسعر المتوقع: ${r.price} دينار\n\nمن يكمل نتصل بيك 🙏\n\n📍 فون فلكس - البصرة العشار`;}else if(type==='waiting'){msg=`هلا ${r.customer} 👋\n\nجهازك *${r.device}* بعده قيد الصيانة 🛠️\nالعطل: ${r.fault}\nمدة العمل: ${r.duration}\n\nمن يكمل ندزلك رسالة 🙏\n📍 فون فلكس`;}else if(type==='price'){msg=`هلا ${r.customer} 👋\n\nبخصوص جهازك *${r.device}*\nالعطل: ${r.fault}\nالسعر: ${r.price} دينار\nمدة العمل: ${r.duration}\n\nاذا موافق نكمل الصيانة رد علينا ✅\n📍 فون فلكس`;}window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');}
-function renderRepairs(){
-let listEl=document.getElementById('repairList');if(!listEl)return;
-if(!isAdmin()){
-if(document.getElementById('repairView')&&!document.getElementById('repairView').classList.contains('hidden'))openRepair();
-return;
-}
-let q=(document.getElementById('repSearch')?.value||'').toLowerCase().trim();
-let filtered=repairs.filter(r=>{let mf=repFilter==='الكل'||r.status===repFilter;let ms=!q||(r.device+' '+r.fault+' '+r.customer+' '+r.phone+' '+r.works).toLowerCase().includes(q);return mf&&ms;});
-let tEl=document.getElementById('repTotal');if(tEl)tEl.innerText=repairs.length;
-let wEl=document.getElementById('repWait');if(wEl)wEl.innerText=repairs.filter(r=>r.status==='قيد الصيانة'||r.status==='بانتظار القطعة').length;
-let dEl=document.getElementById('repDone');if(dEl)dEl.innerText=repairs.filter(r=>r.status==='تم').length;
-let mEl=document.getElementById('repMoney');if(mEl)mEl.innerText=repairs.reduce((s,r)=>s+(parseInt(r.price)||0),0).toLocaleString();
-if(filtered.length===0){listEl.innerHTML='<p style="text-align:center;color:#888;padding:20px">ماكو اجهزة بعد 👆</p>';return;}
-listEl.innerHTML=filtered.map(r=>{let rid=r._docId||r.id;let cls=r.status==='تم'?'done':(r.works==='لا يعمل'?'notwork':'');let badgeCls=r.status==='تم'?'badge-done':'badge-wait';let worksIcon=r.works==='لا يعمل'?'❌ لا يعمل':r.works==='يعمل'?'✅ يعمل':'⚠️ '+r.works;let adminBtns=`<div class="repair-btns"><button class="btn-wa" onclick="sendRepairWhatsApp('${rid}','done')">💬 جهازك كمل ✅</button><button class="btn-wa" style="background:#25D366;opacity:.85" onclick="sendRepairWhatsApp('${rid}','received')">📩 تم الاستلام</button><button class="btn-done" onclick="markDone('${rid}')">✅ كمل</button><button class="btn-call" onclick="window.open('tel:${cleanPhoneDisplay(r.phone)}')">📞 اتصال</button><button class="btn-edit" onclick="editRepair('${rid}')">✏️ تعديل</button><button class="btn-del" onclick="deleteRepair('${rid}')">🗑️ حذف</button></div><div class="repair-btns"><button class="btn-dark" onclick="sendRepairWhatsApp('${rid}','waiting')">⏳ بعده قيد الصيانة</button><button class="btn-dark" onclick="sendRepairWhatsApp('${rid}','price')">💰 دز السعر</button><button class="btn-dark" onclick="markDelivered('${rid}')">📦 تم التسليم</button></div>`;return `<div class="repair-card ${cls}"><div class="top"><b style="font-size:16px">🛠️ صيانة ${r.customer}</b><span class="badge ${badgeCls}">${r.status}</span></div><div>📱 <b>الجهاز:</b> ${r.device}</div><div>🔧 <b>العطل:</b> ${r.fault}</div><div>⚙️ <b>يعمل او لا:</b> ${worksIcon}</div><div>👤 <b>اسم الزبون:</b> ${r.customer}</div><div>📞 <b>رقم الزبون:</b> <span dir="ltr">${cleanPhoneDisplay(r.phone)}</span></div><div>💰 <b>السعر:</b> ${r.price} دينار | ⏱️ <b>مدة العمل:</b> ${r.duration}</div><div style="color:#888;font-size:11px">📅 ${r.date||''}</div>${adminBtns}</div>`;}).join('');
-}
-</script>
-<script>
-const UNLOCK_DATA={
-"Samsung":{chip:"MTK / Exynos / Qualcomm",modes:["Download","Preloader","EDL 9008","ADB"],models:["Galaxy A12 SM-A125F","Galaxy A12 Nacho SM-A127F","Galaxy A02s SM-A025F","Galaxy A03s SM-A037F","Galaxy A13 SM-A135F","Galaxy A14 SM-A145F","Galaxy A23 SM-A235F","Galaxy A24 SM-A245F","Galaxy A32 SM-A325F","Galaxy A52 SM-A525F","Galaxy S21 SM-G991B"],ops:[{name:"Erase FRP",desc:"ازالة قفل كوكل - Download / Preloader",mode:"Download",time:"1-2 دقيقة",steps:["طفي الجهاز","اضغط Vol- + Vol+ واشبك USB","انتظر Download Mode","اضغط START","انتظر Reboot"]},{name:"Factory Reset",desc:"فورمات كامل",mode:"Download",time:"2 دقيقة",steps:["Download Mode","Factory Reset","Wipe Data","Reboot"]},{name:"Remove MDM",desc:"ازالة قفل الشركات MDM",mode:"Download",time:"3 دقيقة",steps:["Download Mode","Remove MDM","لا تشبك واي فاي اول تشغيل"]},{name:"Remove KG Locked",desc:"ازالة قفل Knox Guard",mode:"Download",time:"5 دقيقة",steps:["Download Mode","KG Remove","تخطي الاعداد بدون نت"]},{name:"Flash Firmware",desc:"تفليش فلاشة رسمية",mode:"Download",time:"8-15 دقيقة",steps:["حمل فلاشة نفس الحماية","اختر AP BL CP CSC","Flash","انتظر PASS"]},{name:"Unlock Bootloader",desc:"فتح البوت لودر",mode:"Download",time:"2 دقيقة",steps:["فعل OEM Unlock","Download Mode","Unlock Bootloader"]},{name:"Read Info",desc:"قراءة معلومات الجهاز",mode:"Download",time:"30 ثانية",steps:["Download Mode","Read Info"]},{name:"FRP + Factory Reset",desc:"FRP + فورمات مع بعض",mode:"Download",time:"3 دقيقة",steps:["Download Mode","FRP + Reset","Reboot"]}]},
-"Infinix":{chip:"MTK Helio",modes:["Preloader","Download","Fastboot","ADB"],models:["Hot 10 X682B","Hot 11 X662","Hot 12 X6817","Hot 20 X6826","Hot 30 X6831","Hot 30i X669","Hot 40 X6836","Note 30 X6833B","Note 12 X663","Smart 7 X6515"],ops:[{name:"Erase FRP",desc:"ازالة FRP - Preloader",mode:"Preloader",time:"1 دقيقة",steps:["طفي الجهاز","اضغط Vol+ و Vol- واشبك USB","Preloader Mode","START"]},{name:"Factory Reset + FRP",desc:"فورمات + FRP",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Factory Reset + FRP","Reboot"]},{name:"Remove MDM",desc:"ازالة MDM / Demo",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Remove MDM","لا تشبك نت"]},{name:"Remove Demo",desc:"ازالة وضع المعرض Demo",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Remove Demo"]},{name:"Flash Firmware",desc:"تفليش",mode:"Preloader",time:"10 دقيقة",steps:["حمل فلاشة","Preloader","Flash"]},{name:"Unlock Bootloader",desc:"فتح بوت لودر",mode:"Fastboot",time:"1 دقيقة",steps:["Fastboot","Unlock Bootloader"]},{name:"Read Info",desc:"قراءة معلومات",mode:"Preloader",time:"20 ثانية",steps:["Preloader","Read Info"]}]},
-"Tecno":{chip:"MTK Helio",modes:["Preloader","Fastboot","ADB"],models:["Spark 7 KF6","Spark 8 KG5","Spark 9 KH6","Spark 10 KI5","Spark 20 KJ5","Camon 19 CI6","Camon 20 CK6","Pova 5 LH7"],ops:[{name:"Erase FRP",desc:"FRP - Preloader",mode:"Preloader",time:"1 دقيقة",steps:["طفي","Vol+ Vol- + USB","START"]},{name:"Factory Reset + FRP",desc:"فورمات + FRP",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Reset + FRP"]},{name:"Remove MDM",desc:"MDM",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","MDM Remove"]},{name:"Flash Firmware",desc:"تفليش",mode:"Preloader",time:"10 دقيقة",steps:["فلاشة","Flash"]}]},
-"Xiaomi":{chip:"MTK / Qualcomm",modes:["EDL 9008","Fastboot","ADB","Preloader"],models:["Redmi 9A M2006C3LG","Redmi 10A 220233L2C","Redmi 10C 220333QAG","Redmi 12 23053RN02A","Redmi Note 8 M1908C3JG","Redmi Note 9 M2003J15SG","Redmi Note 11 2201117TG","Poco X3 M2007J20CG","Poco C65 2310FPCA4G"],ops:[{name:"Erase FRP",desc:"FRP - EDL / Fastboot",mode:"EDL 9008",time:"1 دقيقة",steps:["EDL 9008 - Test Point او Vol+ Vol-","START","Reboot"]},{name:"Mi Account Remove",desc:"ازالة حساب شاومي",mode:"EDL 9008",time:"3 دقيقة",steps:["EDL","Mi Account Remove","لا تشبك نت"]},{name:"Factory Reset",desc:"فورمات",mode:"EDL 9008",time:"2 دقيقة",steps:["EDL","Factory Reset"]},{name:"Flash Firmware",desc:"تفليش Fastboot",mode:"Fastboot",time:"10 دقيقة",steps:["Fastboot","Flash"]},{name:"Unlock Bootloader",desc:"فتح بوت لودر - يحتاج اذن",mode:"Fastboot",time:"7 ايام انتظار شاومي",steps:["Mi Unlock Tool","طلب فتح","انتظر 168 ساعة"]}]},
-"Realme":{chip:"MTK / Qualcomm",modes:["Preloader","EDL 9008","Fastboot"],models:["C11 RMX2185","C35 RMX3511","C51 RMX3830","C53 RMX3760","C55 RMX3710","Realme 8 RMX3085","Realme 10 RMX3630"],ops:[{name:"Erase FRP",desc:"FRP",mode:"Preloader",time:"1 دقيقة",steps:["Preloader","FRP"]},{name:"Factory Reset",desc:"فورمات",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Reset"]},{name:"Flash Firmware",desc:"تفليش",mode:"Preloader",time:"10 دقيقة",steps:["فلاشة","Flash"]}]},
-"Oppo":{chip:"MTK / Qualcomm",modes:["Preloader","EDL 9008"],models:["A15 CPH2185","A16 CPH2269","A54 CPH2239","A57 CPH2387","A78 CPH2565","Reno 8 CPH2359"],ops:[{name:"Erase FRP",desc:"FRP",mode:"Preloader",time:"1 دقيقة",steps:["Preloader","FRP"]},{name:"Factory Reset",desc:"فورمات",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Reset"]},{name:"Demo Remove",desc:"ازالة Demo",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Demo"]}]},
-"Vivo":{chip:"MTK / Qualcomm",modes:["Preloader","EDL 9008","Fastboot"],models:["Y15 1901","Y20 2027","Y33s V2110","Y35 V2205","Y21 V2111"],ops:[{name:"Erase FRP",desc:"FRP",mode:"Preloader",time:"1 دقيقة",steps:["Preloader","FRP"]},{name:"Factory Reset",desc:"فورمات",mode:"Preloader",time:"2 دقيقة",steps:["Preloader","Reset"]}]},
-"Apple":{chip:"A12 - A17 Pro",modes:["DFU","Recovery"],models:["iPhone 7 A1778","iPhone 8 A1905","iPhone X A1901","iPhone 11 A2111","iPhone 12 A2403","iPhone 13 A2633","iPhone 14 A2882","iPhone 15 A3090"],ops:[{name:"Hello Screen Bypass",desc:"تخطي شاشة Hello - يحتاج جيلبريك",mode:"DFU",time:"10 دقيقة",steps:["DFU","Jailbreak","Bypass"]},{name:"Passcode Remove",desc:"ازالة رمز - يمسح البيانات",mode:"Recovery",time:"10 دقيقة",steps:["Recovery","Restore","iTunes"]},{name:"Flash iOS",desc:"تفليش iOS",mode:"DFU",time:"15 دقيقة",steps:["DFU","Restore IPSW"]}]}
-};
-let unlockBrand="Samsung",unlockModel="Galaxy A12 SM-A125F",unlockMode="Download",unlockOp=null,unlockRunning=false,unlockTimer=null;
-</script>
-<script>
-const BORNEO_DATA={
-"Samsung A12":{code:"SM-A125F",chip:"MTK MT6765",img:"board-a12.jpg",board:[{name:"J6001 CHARGE",value:"Type-C",net:"VBUS",volt:"5V",desc:"كونكتر الشحن",x:40,y:78,w:16,h:14,conns:[{to:"U4001 CHARGE",toX:70,toY:68,type:"توالي",volt:"5V",color:"#ff0000",note:"VBUS - توالي"}]},{name:"U4001 CHARGE",value:"RT9471",net:"VBUS",volt:"5V",desc:"ايسي الشحن",x:66,y:62,w:10,h:10,conns:[{to:"J6001 CHARGE",toX:48,toY:85,type:"توالي",volt:"5V دخول",color:"#ff0000",note:"يستلم 5V"}]},{name:"J7001 BAT CONN",value:"BAT",net:"VBAT",volt:"3.8V",desc:"كونكتر البطارية",x:52,y:76,w:10,h:8,conns:[{to:"U3001 PMIC",toX:52,toY:38,type:"توالي",volt:"3.8V",color:"#00ffff",note:"VBAT"}]},{name:"U3001 PMIC",value:"SM5705",net:"VPH_PWR",volt:"3.8V",desc:"ايسي الباور",x:46,y:30,w:14,h:16,conns:[{to:"J7001 BAT",toX:57,toY:80,type:"توالي",volt:"3.8V دخول",color:"#00ffff",note:"يستلم VBAT"}]},{name:"U1001 CPU",value:"MT6765",net:"VDD_CPU",volt:"0.85V",desc:"المعالج",x:18,y:30,w:16,h:20,conns:[{to:"U3001 PMIC",toX:53,toY:38,type:"توالي",volt:"0.85V",color:"#ffb400",note:"فولت المعالج"}]},{name:"U2001 EMMC",value:"64GB",net:"VCCQ",volt:"1.8V",desc:"الذاكرة",x:68,y:35,w:12,h:14,conns:[{to:"U1001 CPU",toX:26,toY:40,type:"توالي",volt:"CLK CMD D0",color:"#00ff00",note:"ISP"}]}],ways:[{title:"Charging Ways",desc:"J6001 → F2000 → U4001 → BAT - توالي"},{title:"Light Ways",desc:"PMIC → L2400 → LCD - توالي 20V"},{title:"Power Ways",desc:"BAT → PMIC → CPU → EMMC - توالي"}]},
-"iPhone 11":{code:"A2111",chip:"A13 Bionic",img:"board-a12.jpg",board:[{name:"U1001 A13 CPU",value:"A13",net:"VDD_MAIN",volt:"3.8V",desc:"معالج",x:34,y:10,w:27,h:28,conns:[{to:"U3001 PMIC",toX:47,toY:52,type:"توالي",volt:"3.8V",color:"#ffb400",note:"فولت"}]},{name:"U2001 NAND",value:"128GB",net:"VCC",volt:"1.8V",desc:"ناند",x:63,y:12,w:18,h:18,conns:[{to:"U1001 A13 CPU",toX:47,toY:22,type:"توالي",volt:"DATA",color:"#00ff00",note:"بيانات"}]}],ways:[{title:"Not Charging",desc:"افحص U3300"}]},
-"Redmi Note 10":{code:"M2101K6G",chip:"Snapdragon 678",img:"board-a12.jpg",board:[{name:"U1001 CPU",value:"SD678",net:"VDD",volt:"0.9V",desc:"معالج",x:34,y:10,w:27,h:28,conns:[{to:"U3001 PMIC",toX:47,toY:52,type:"توالي",volt:"0.9V",color:"#ffb400",note:"فولت"}]}],ways:[{title:"Restart",desc:"افحص PMIC"}]},
-"Infinix Hot 30":{code:"X6831",chip:"Helio G99",img:"board-a12.jpg",board:[{name:"U1001 G99",value:"Helio G99",net:"VDD",volt:"0.9V",desc:"معالج",x:34,y:10,w:27,h:28,conns:[{to:"U3001 PMIC",toX:47,toY:52,type:"توالي",volt:"0.9V",color:"#ffb400",note:"فولت"}]}],ways:[{title:"FRP ISP",desc:"CLK CMD D0 GND"}]}
-};
-let compatDataDefault=[
-["شاشة A02s / A02 / M02s / A03s / A03 / A03 Core","6.5 IPS - A02s , A02 , A03s , M02s , F02s , A03","screen"],
-["شاشة A12 / M12 / F12 / A12 Nacho","A12 , M12 , F12 , A12 Nacho - 6.5 IPS 90Hz","screen"],
-["شاشة انفينكس Hot 30 / Hot 30i / Hot 40 / Hot 40 Pro / Note 30","Hot 30 , 30i , Hot 40 , 40 Pro , Note 30 - 6.78 120Hz","screen"],
-["شاشة شاومي Redmi 10A / 10C / 10 / 12 / 13C / Poco C65","10A , 10C , 10 , 12 , 13C , C65 - 6.71-6.74","screen"],
-["بطارية A12 / M12 / F12","EB-BA115/125ABY 4000-5000mAh - A11 , M11 , A12 , M12","battery"],
-["بطارية انفينكس Hot 20 / Hot 30 / Hot 40 / Note 30","BL-58FT 5000mAh - Hot 20 , 30 , 40 , Note 30","battery"],
-["قاعدة شحن A12 / M12 / F12","A02s , A02 , A03s , M02s , A10s , A11 , A12 , M12 - Type-C/Micro","charge"],
-["مخطط سامسونج A10s / A12 / A21s / A32 / A51 / A52 / A53","A107F / A125F / A217F / A325F / A515F / A525F - مخطط كامل PDF","schematic"],
-["مخطط انفينكس Hot 10 / Hot 11 / Hot 12 / Hot 20 / Hot 30 / Hot 40 / Note 30","X682 / X662 / X6817 / X6827 / X6831 / X6837 / X6833B - Helio G99 - 33W/68W - ISP","schematic"],
-["مخطط شاومي Note 7 / Note 8 / Note 9 / Note 10 / Note 11 / Note 12 / Poco X3 / X5 / F3","Lavender / Ginkgo / Merlin / Mojito / Spes / Ruby / Karna / Alioth - مخطط كامل PDF","schematic"]
+
+// ===== بيانات التوافقات =====
+let compatData=[
+["SAMSUNG A12","شاشة A12 - تتوافق A12 / M12","screen"],["SAMSUNG A12","بطارية A12 - 5000mAh - تتوافق M12","battery"],["SAMSUNG A12","قاعدة شحن A12 - تتوافق M12","charge"],["SAMSUNG A12","مخطط A12 - MT6765","schematic"],
+["SAMSUNG A30s","شاشة A30s - تتوافق A30 / A30s","screen"],["SAMSUNG A30s","بطارية A30s - 4000mAh","battery"],["SAMSUNG A30s","قاعدة شحن A30s","charge"],
+["Redmi 10C","شاشة 10C - تتوافق 10C / 10A","screen"],["Redmi 10C","بطارية 10C - 5000mAh - تتوافق 10A / 10C","battery"],["Redmi 10C","قاعدة شحن 10C","charge"],
+["Infinix Hot 30","شاشة Hot 30 - تتوافق Hot 30 / Hot 30i","screen"],["Infinix Hot 30","بطارية Hot 30 - 5000mAh","battery"],["Infinix Hot 30","قاعدة شحن Hot 30","charge"],
+["Tecno Spark 10","شاشة Spark 10 - تتوافق Spark 10 / Spark 10C","screen"],["Tecno Spark 10","بطارية Spark 10 - 5000mAh","battery"],["Tecno Spark 10","قاعدة شحن Spark 10","charge"],
+["SAMSUNG A14","شاشة A14 4G - تتوافق A14 / A14 5G","screen"],["SAMSUNG A14","بطارية A14 - 5000mAh","battery"],
+["SAMSUNG A22","شاشة A22 4G - تتوافق A22 فقط","screen"],["SAMSUNG A22","بطارية A22 - 5000mAh","battery"],
+["Redmi Note 11","شاشة Note 11 - تتوافق Note 11 / Note 11S","screen"],["Redmi Note 11","بطارية Note 11 - 5000mAh","battery"],
+["SAMSUNG A53","شاشة A53 - تتوافق A53 فقط","screen"],["SAMSUNG A53","بطارية A53 - 5000mAh","battery"],
+["iPhone 11","شاشة iPhone 11 - تتوافق 11 فقط","screen"],["iPhone 11","بطارية iPhone 11 - 3110mAh","battery"],
+["iPhone XR","شاشة XR - تتوافق XR فقط","screen"],["iPhone XR","بطارية XR - 2942mAh","battery"],
+["SAMSUNG A04s","شاشة A04s - تتوافق A04s / A04","screen"],["SAMSUNG A04s","بطارية A04s - 5000mAh","battery"],
+["SAMSUNG A32","شاشة A32 4G","screen"],["SAMSUNG A32","بطارية A32 - 5000mAh","battery"],
+["Redmi 12","شاشة Redmi 12 - تتوافق Redmi 12","screen"],["Redmi 12","بطارية Redmi 12 - 5000mAh","battery"]
 ];
-let compatData=JSON.parse(localStorage.getItem('pf_compat')||'null')||compatDataDefault;
-function saveCompat(){localStorage.setItem('pf_compat',JSON.stringify(compatData));}
-</script>
-<script>
-function openUnlock(){if(!appSettings.unlock&&!isAdmin()){alert("UnlockTool مغلق من المطور");return;}hideAllViews();document.getElementById('unlockView').classList.remove('hidden');if(isAdmin()){document.getElementById('unlockAdminBox').style.display='block';document.getElementById('admUnlockBrandNow').innerText=unlockBrand;}initUnlock();window.scrollTo(0,0);}
-function openUnlockBrand(b){openUnlock();setUnlockBrand(b);}
-function hideAllViews(){['homeView','compatView','lessonsView','liveView','listView','borneoView','unlockView','scannerView','repairView','adminView'].forEach(id=>{let e=document.getElementById(id);if(e)e.classList.add('hidden');});}
-function openLive(){if(!appSettings.live&&!isAdmin()){alert("البث مغلق من المطور");return;}hideAllViews();document.getElementById('liveView').classList.remove('hidden');window.scrollTo(0,0);}
-function openLivePlatform(p){let saved=localStorage.getItem('phoneflex_live_link')||'';if(p==='tiktok'){window.open(saved&&saved.includes('tiktok')?saved:'https://www.tiktok.com/live','_blank');}else if(p==='facebook'){window.open(saved&&saved.includes('facebook')?saved:'https://www.facebook.com/live','_blank');}else if(p==='youtube'){window.open(saved&&saved.includes('youtube')||saved.includes('youtu.be')?saved:'https://www.youtube.com/live','_blank');}}
-function setLiveLink(){if(!isAdmin()){alert("⛔ تغيير رابط البث للمطور فقط");return;}let v=document.getElementById('liveLinkInput').value.trim();if(!v){alert('الصق رابط البث اولاً');return;}localStorage.setItem('phoneflex_live_link',v);let w=document.getElementById('liveFrameWrap');if(v.includes('youtube.com/embed')||v.includes('youtu.be')||v.includes('youtube.com/watch')){let id='';if(v.includes('v='))id=v.split('v=')[1].split('&')[0];else if(v.includes('youtu.be/'))id=v.split('youtu.be/')[1].split('?')[0];else if(v.includes('/embed/'))id=v.split('/embed/')[1].split('?')[0];if(id)w.innerHTML='<iframe src="https://www.youtube.com/embed/'+id+'?autoplay=1" style="width:100%;height:320px;border:0" allowfullscreen></iframe>';else w.innerHTML='<a href="'+v+'" target="_blank" style="color:#fff">افتح البث هنا</a>';}else if(v.includes('facebook.com')){w.innerHTML='<p style="color:#fff">تم حفظ رابط الفيسبوك ✅</p>';window.open(v,'_blank');}else if(v.includes('tiktok.com')){w.innerHTML='<p style="color:#fff">تم حفظ رابط التيك توك ✅</p>';window.open(v,'_blank');}else{w.innerHTML='<a href="'+v+'" target="_blank" style="color:#fff">افتح البث هنا</a>';}alert('تم حفظ رابط البث ✅');}
-function initUnlock(){let brands=document.getElementById('unlockBrands');brands.innerHTML="";Object.keys(UNLOCK_DATA).forEach(b=>{let btn=document.createElement('button');btn.innerText=b;if(b===unlockBrand)btn.className='active';btn.onclick=()=>setUnlockBrand(b);brands.appendChild(btn);});renderUnlockModels();renderUnlockOps();updateUnlockHeader();unlockLog("Phone Flex UnlockTool Ready...","info");}
-function setUnlockBrand(b){unlockBrand=b;unlockModel=UNLOCK_DATA[b].models[0];unlockMode=UNLOCK_DATA[b].modes[0];unlockOp=null;document.querySelectorAll('#unlockBrands button').forEach(btn=>btn.classList.toggle('active',btn.innerText===b));let modes=document.getElementById('unlockModes');modes.innerHTML="";UNLOCK_DATA[b].modes.forEach(m=>{let btn=document.createElement('button');btn.innerText=m;if(m===unlockMode)btn.className='active';btn.onclick=()=>setUnlockMode(m,btn);modes.appendChild(btn);});let nb=document.getElementById('admUnlockBrandNow');if(nb)nb.innerText=b;renderUnlockModels();renderUnlockOps();updateUnlockHeader();}
-function setUnlockMode(m,btn){unlockMode=m;document.querySelectorAll('#unlockModes button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');updateUnlockHeader();unlockLog("Mode changed to: "+m,"info");}
-function renderUnlockModels(){let sel=document.getElementById('unlockModel');sel.innerHTML="";let q=(document.getElementById('unlockSearch')?.value||"").toLowerCase();UNLOCK_DATA[unlockBrand].models.filter(m=>m.toLowerCase().includes(q)).forEach(m=>{let o=document.createElement('option');o.value=m;o.text=m;o.selected=(m===unlockModel);sel.appendChild(o);});}
+let compatFilter='all';
+function hideAllViews(){['homeView','adminView','scannerView','repairView','unlockView','compatView','borneoView','lessonsView','liveView','listView'].forEach(id=>{let el=document.getElementById(id);if(el)el.classList.add('hidden');});}
+function goHome(){hideAllViews();document.getElementById('homeView').classList.remove('hidden');renderSubBar();let c=document.getElementById('countAll');if(c)c.innerText=compatData.length+' توافق';window.scrollTo(0,0);}
+function openCat(t){if(t==='compat'){hideAllViews();document.getElementById('compatView').classList.remove('hidden');renderCompat();window.scrollTo(0,0);}if(t==='lessons'){if(!appSettings.lessons&&!isAdmin()){alert("هذا القسم مغلق");return;}hideAllViews();document.getElementById('lessonsView').classList.remove('hidden');window.scrollTo(0,0);}}
+function doSearch(){let q=document.getElementById('search').value.trim();if(q.length<2)return;let res=compatData.filter(c=>c[0].includes(q)||c[1].includes(q));hideAllViews();document.getElementById('listView').classList.remove('hidden');document.getElementById('viewTitle').innerText='نتائج البحث: '+q;document.getElementById('viewGrid').innerHTML=res.length?res.map(c=>`<div class="compat-card">${c[0]}<br><small>${c[1]}</small></div>`).join(''):'<p>ماكو نتائج</p>';}
+function filterCompat(type,btn){compatFilter=type;document.querySelectorAll('.compat-tabs button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderCompat();}
+function renderCompat(){let list=compatData.filter(c=>compatFilter==='all'||c[2]===compatFilter);let map={screen:'📱 شاشة',battery:'🔋 بطارية',charge:'🔌 قاعدة',schematic:'📜 مخطط'};document.getElementById('compatList').innerHTML=list.map(c=>`<div class="compat-card ${c[2]}" onclick="alert('${c[0]}\\n${c[1]}')"><b>${map[c[2]]||''} ${c[0]}</b><br><small>${c[1]}</small></div>`).join('')||'<p>ماكو</p>';}
+function renderSubBar(){
+  let el=document.getElementById('subBar');if(!el||!currentUser)return;
+  if(isAdmin()){el.innerHTML='<div class="sub-bar">👑 <b>المطور سيد عباس</b> - كل الصلاحيات مفتوحة</div>';return;}
+  let left=daysLeft(currentUser);
+  let total=currentUser.subDays||30;
+  let pct=Math.max(0,Math.min(100,Math.round(left/total*100)));
+  el.innerHTML=`<div class="sub-bar ${left<=0?'expired':''}"><b>اشتراكك: ${subStatusHTML(currentUser)}</b><br>ينتهي: ${fmtDate(currentUser.subEnd)}<div class="sub-progress"><div style="width:${pct}%"></div></div><button class="btn btn-green" style="width:auto;padding:8px 14px" onclick="window.open('https://wa.me/9647738105665?text='+encodeURIComponent('هلا سيد عباس، اريد اجدد اشتراكي'))">💬 تجديد - واتساب</button></div>`;
+  let msg=localStorage.getItem('pf_admin_msg');if(msg){el.innerHTML+='<div class="sub-bar" style="border-color:#ffb400">📢 <b>'+msg+'</b></div>';}
+}
+
+// ===== الصيانة =====
+let repairFilter='الكل';
+function openRepair(){if(!appSettings.repair&&!isAdmin()){alert("هذا القسم مغلق");return;}hideAllViews();document.getElementById('repairView').classList.remove('hidden');renderRepairs();window.scrollTo(0,0);}
+function filterRepair(f){repairFilter=f;renderRepairs();}
+function clearRepairForm(){['repDevice','repFault','repCustomer','repPhone','repPrice','repDuration'].forEach(id=>{let e=document.getElementById(id);if(e)e.value='';});}
+async function addRepair(){
+  let device=document.getElementById('repDevice').value.trim();
+  let fault=document.getElementById('repFault').value.trim();
+  let works=document.getElementById('repWorks').value;
+  let customer=document.getElementById('repCustomer').value.trim();
+  let phone=document.getElementById('repPhone').value.trim();
+  let price=parseInt(document.getElementById('repPrice').value||'0');
+  let duration=document.getElementById('repDuration').value.trim();
+  let status=document.getElementById('repStatus').value;
+  if(!device||!fault||!customer||!phone){alert("املأ الحقول المطلوبة *");return;}
+  let r={device,fault,works,customer,phone,price,duration,status,owner:currentUser?currentUser.user:'',ownerName:currentUser?currentUser.name:'',createdAt:Date.now()};
+  await fbSaveRepair(r);
+  if(!r._docId)repairs.unshift(r);
+  alert("✅ تم حفظ الجهاز بالفايربيس ☁️");
+  clearRepairForm();renderRepairs();
+}
+function renderRepairs(){
+  let list=repairs;
+  if(!isAdmin())list=list.filter(r=>r.owner===currentUser.user||r.phone===currentUser.phone);
+  let q=document.getElementById('repSearch')?document.getElementById('repSearch').value.trim().toLowerCase():'';
+  if(q)list=list.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
+  if(repairFilter!=='الكل')list=list.filter(r=>r.status===repairFilter||(repairFilter==='تم'&&r.status==='تم'));
+  let total=list.length;let wait=list.filter(r=>r.status==='قيد الصيانة').length;let done=list.filter(r=>r.status==='تم').length;let money=list.reduce((s,r)=>s+(parseInt(r.price||0)),0);
+  let set=(id,v)=>{let e=document.getElementById(id);if(e)e.innerText=v;};
+  set('repTotal',total);set('repWait',wait);set('repDone',done);set('repMoney',money.toLocaleString()+' د.ع');
+  document.getElementById('repairList').innerHTML=list.length?list.map((r,i)=>`
+  <div class="repair-card ${r.status==='تم'?'done':''} ${r.works==='لا يعمل'?'notwork':''}">
+  <div class="top"><b>📱 ${r.device}</b><span class="badge ${r.status==='تم'?'badge-done':'badge-wait'}">${r.status}</span></div>
+  <div>🔧 العطل: ${r.fault}</div><div>⚙️ الحالة: ${r.works} | ⏱️ ${r.duration||'---'}</div>
+  <div>👤 ${r.customer} - 📞 ${r.phone}</div><div>💰 ${r.price||0} د.ع | 📅 ${fmtDate(r.createdAt)}</div>
+  <div class="repair-btns">
+  <button class="btn-wa" onclick="window.open('https://wa.me/964${String('${r.phone}').replace(/^0/,'')}?text='+encodeURIComponent('هلا ${r.customer}، جهازك ${r.device} - الحالة: ${r.status}'))">💬 واتساب</button>
+  <button class="btn-call" onclick="window.open('tel:${r.phone}')">📞 اتصال</button>
+  ${isAdmin()?`<button class="btn-done" onclick="markRepairDone(${i})">✅ كمل</button><button class="btn-edit" onclick="editRepair(${i})">✏️ تعديل</button><button class="btn-del" onclick="deleteRepair(${i})">🗑️ حذف</button>`:''}
+  </div></div>`).join(''):'<p style="text-align:center;color:#aaa">ماكو اجهزة</p>';
+}
+async function markRepairDone(idx){
+  let list=repairs;if(!isAdmin())list=list.filter(r=>r.owner===currentUser.user);
+  let r=list[idx];if(!r)return;r.status='تم';await fbSaveRepair(r);renderRepairs();
+}
+function editRepair(idx){
+  let r=repairs[idx];if(!r)return;
+  document.getElementById('repDevice').value=r.device;document.getElementById('repFault').value=r.fault;document.getElementById('repWorks').value=r.works||'لا يعمل';document.getElementById('repCustomer').value=r.customer;document.getElementById('repPhone').value=r.phone;document.getElementById('repPrice').value=r.price||'';document.getElementById('repDuration').value=r.duration||'';document.getElementById('repStatus').value=r.status;
+  window.scrollTo(0,0);
+}
+async function deleteRepair(idx){if(!confirm('تحذف هذا الجهاز؟'))return;let r=repairs[idx];if(!r)return;if(r._docId)await fbDeleteRepair(r._docId);repairs=repairs.filter(x=>x!==r);renderRepairs();}
+
+// ===== لوحة المطور =====
+function openAdmin(){if(!requireAdmin())return;hideAllViews();document.getElementById('adminView').classList.remove('hidden');renderAdminToggles();renderAdminUsers();renderAdminCompat();document.getElementById('admMsgNow').innerText='الرسالة الحالية: '+(localStorage.getItem('pf_admin_msg')||'ماكو');window.scrollTo(0,0);}
+function renderAdminToggles(){
+  let labels={unlock:'🔓 UnlockTool',compat:'🔧 التوافقات',borneo:'📜 المخططات',scanner:'📷 صور الجهاز',repair:'🛠️ معلومات العميل',lessons:'🎓 الدورات',live:'📺 البث'};
+  document.getElementById('adminToggles').innerHTML=Object.keys(labels).map(k=>`<div style="display:flex;justify-content:space-between;align-items:center;background:#2a2a2a;padding:10px;border-radius:8px;margin:6px 0"><span>${labels[k]}</span><button class="btn" style="width:auto;padding:8px 12px;background:${appSettings[k]?'#00d26a':'#ff4444'}" onclick="toggleSetting('${k}')">${appSettings[k]?'✅ شغال':'⛔ مطفي'}</button></div>`).join('');
+}
+function toggleSetting(k){appSettings[k]=!appSettings[k];saveSettings();renderAdminToggles();}
+function adminSaveMsg(){let m=document.getElementById('admMsg').value.trim();if(!m)return;localStorage.setItem('pf_admin_msg',m);alert('تم');document.getElementById('admMsgNow').innerText='الرسالة الحالية: '+m;}
+function adminClearMsg(){localStorage.removeItem('pf_admin_msg');alert('تم المسح');}
+async function refreshAdminUsers(){await syncUsersFromCloud();renderAdminUsers();alert('تم التحديث من الفايربيس');}
+async function renderAdminUsers(){
+  let q=document.getElementById('admUserSearch')?document.getElementById('admUserSearch').value.trim().toLowerCase():'';
+  let list=getUsers().filter(u=>u.user!=='admin');
+  if(q)list=list.filter(u=>JSON.stringify(u).toLowerCase().includes(q));
+  document.getElementById('adminUsersList').innerHTML=list.length?list.map((u,i)=>`<div class="user-card"><b>${u.name}</b> - @${u.user}<br>📞 ${u.phone||'---'} | 🔑 ${u.pass}<br>${subStatusHTML(u)} | ينتهي: ${fmtDate(u.subEnd)}<br><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><button class="btn btn-green" style="width:auto;padding:8px 10px" onclick="adminExtendUser('${u.user}')">➕ تجديد 30 يوم</button><button class="btn btn-dark" style="width:auto;padding:8px 10px" onclick="adminToggleUser('${u.user}')">⏸️ ايقاف/تشغيل</button><button class="btn" style="width:auto;padding:8px 10px;background:#ff4444" onclick="adminDeleteUser('${u.user}')">🗑️ حذف</button><button class="btn btn-dark" style="width:auto;padding:8px 10px" onclick="adminCopyUser('${u.user}')">📋 نسخ</button></div></div>`).join(''):'<p>ماكو زبائن</p>';
+}
+function adminCopyUser(user){let u=getUsers().find(x=>x.user===user);if(!u)return;let txt=`فون فلكس\nالاسم: ${u.name}\nالمعرف: ${u.user}\nكلمة السر: ${u.pass}\nالاشتراك: ${u.subDays} يوم`;navigator.clipboard.writeText(txt).then(()=>alert('تم النسخ ✅')); }
+async function adminExtendUser(user){let u=getUsers().find(x=>x.user===user);if(!u)return;let base=Math.max(Date.now(),Number(u.subEnd||Date.now()));u.subEnd=base+30*86400000;u.subDays=30;u.subStart=Date.now();u.subActive=true;try{await fbSaveUser(u);alert('تم التجديد 30 يوم ✅');}catch(e){alert(e.message);}renderAdminUsers();}
+async function adminToggleUser(user){let u=getUsers().find(x=>x.user===user);if(!u)return;u.subActive=!u.subActive;try{await fbSaveUser(u);}catch(e){}renderAdminUsers();}
+async function adminDeleteUser(user){if(!confirm('تحذف '+user+' ؟'))return;let u=getUsers().find(x=>x.user===user);if(u)await fbDeleteUser(u);await syncUsersFromCloud();renderAdminUsers();}
+function renderAdminCompat(){let q=document.getElementById('admCompatSearch')?document.getElementById('admCompatSearch').value.trim().toLowerCase():'';let list=compatData;if(q)list=list.filter(c=>JSON.stringify(c).toLowerCase().includes(q));document.getElementById('adminCompatList').innerHTML=list.map((c,i)=>`<div class="compat-card">${c[0]} - ${c[1]} <button class="btn" style="background:#ff4444;width:auto;padding:6px 10px" onclick="adminDelCompat(${i})">حذف</button></div>`).join('');}
+function adminAddCompat(){let t=document.getElementById('admCompatTitle').value.trim();let d=document.getElementById('admCompatDesc').value.trim();let ty=document.getElementById('admCompatType').value;if(!t||!d){alert('املأ الحقول');return;}compatData.unshift([t,d,ty]);renderAdminCompat();alert('تم');}
+function adminDelCompat(i){compatData.splice(i,1);renderAdminCompat();}
+async function adminClearRepairs(){if(!confirm('تحذف كل اجهزة الصيانة من الفايربيس؟'))return;if(!db){repairs=[];renderRepairs();return;}try{let snap=await db.collection("repairs").get();for(let d of snap.docs){await db.collection("repairs").doc(d.id).delete();}repairs=[];renderRepairs();alert('تم المسح');}catch(e){alert(e.message);}}
+
+// ===== Unlock =====
+let unlockBrandsData={Samsung:["Galaxy A12 (SM-A125F)","Galaxy A14 (SM-A145F)","Galaxy A22 (SM-A225F)","Galaxy A32 (SM-A325F)"],Xiaomi:["Redmi 10C","Redmi 12","Redmi Note 11","Poco X3"],Infinix:["Hot 30","Hot 30i","Note 30"],Tecno:["Spark 10","Spark 10C","Camon 20"],Realme:["C55","C53","Note 50"],Oppo:["A57","A77","A17"],Huawei:["Nova Y70","Nova 9 SE"],iPhone:["iPhone 11","iPhone XR","iPhone 12"]};
+let unlockBrand='Samsung',unlockMode='Download',unlockOp='Remove FRP',unlockModelName='Galaxy A12 (SM-A125F)';
+let unlockOpsData={Samsung:["Remove FRP","Remove KG Lock","Remove MDM","Factory Reset","Remove Screen Lock"],Xiaomi:["Remove FRP","Remove Mi Account","Factory Reset"],Infinix:["Remove FRP","Factory Reset","Remove Demo"],Tecno:["Remove FRP","Factory Reset"],Realme:["Remove FRP","Factory Reset"],Oppo:["Remove FRP","Factory Reset"],Huawei:["Remove FRP","Factory Reset"],iPhone:["Bypass iCloud","Check iCloud"]};
+function openUnlock(){if(!appSettings.unlock&&!isAdmin()){alert("هذا القسم مغلق");return;}hideAllViews();document.getElementById('unlockView').classList.remove('hidden');document.getElementById('unlockAdminBox').style.display=isAdmin()?'block':'none';renderUnlockBrands();renderUnlockModels();renderUnlockOps();updateUnlockInfo();window.scrollTo(0,0);}
+function renderUnlockBrands(){document.getElementById('unlockBrands').innerHTML=Object.keys(unlockBrandsData).map(b=>`<button class="${b===unlockBrand?'active':''}" onclick="selectUnlockBrand('${b}')">${b}</button>`).join('');}
+function selectUnlockBrand(b){unlockBrand=b;unlockModelName=unlockBrandsData[b][0];let el=document.getElementById('admUnlockBrandNow');if(el)el.innerText=b;renderUnlockBrands();renderUnlockModels();renderUnlockOps();updateUnlockInfo();}
+function renderUnlockModels(){let q=document.getElementById('unlockSearch')?document.getElementById('unlockSearch').value.trim().toLowerCase():'';let models=unlockBrandsData[unlockBrand].filter(m=>!q||m.toLowerCase().includes(q));document.getElementById('unlockModel').innerHTML=models.map(m=>`<option ${m===unlockModelName?'selected':''}>${m}</option>`).join('');}
 function filterUnlockModels(){renderUnlockModels();}
-function onUnlockModelChange(){unlockModel=document.getElementById('unlockModel').value;updateUnlockHeader();}
-function renderUnlockOps(){let div=document.getElementById('unlockOps');div.innerHTML="";UNLOCK_DATA[unlockBrand].ops.forEach((op,i)=>{let d=document.createElement('div');d.className='op-item'+(unlockOp===op?' active':'');d.innerHTML=`<div><b>🔓 ${op.name}</b><small>${op.desc} | ⏱ ${op.time} | Mode: ${op.mode}</small></div><span>›</span>`;if(isAdmin()){d.innerHTML+=`<button onclick="event.stopPropagation();adminDeleteUnlockOp(${i})" style="background:#ff4444;color:#fff;border:none;padding:5px 8px;border-radius:6px;cursor:pointer">🗑️</button>`;}d.onclick=()=>{unlockOp=op;renderUnlockOps();updateUnlockHeader();unlockLog("Selected: "+op.name+" - Mode: "+op.mode,"warn");};div.appendChild(d);});}
-function updateUnlockHeader(){document.getElementById('unlockTitle').innerText=unlockBrand+" - "+unlockModel;document.getElementById('unlockSub').innerText=unlockMode+" Mode | "+UNLOCK_DATA[unlockBrand].chip+" | "+(unlockOp?unlockOp.name:"اختر عملية");document.getElementById('unlockDeviceInfo').innerHTML=`📱 الجهاز: ${unlockBrand} ${unlockModel}<br>🔌 الوضع: ${unlockMode} - ${getModeHint(unlockMode)}<br>⚙️ العملية: ${unlockOp?unlockOp.name+" - "+unlockOp.desc+" - ⏱ "+unlockOp.time:"اختر عملية من اليسار ثم اضغط START"}<br>${unlockOp?"📋 الخطوات: "+unlockOp.steps.join(" → "):""}`;}
-function getModeHint(m){if(m==="Download")return "طفي الجهاز + Vol- + Vol+ + USB";if(m==="Preloader")return "طفي الجهاز + Vol+ + Vol- + USB بدون زر باور";if(m==="EDL 9008")return "Test Point + USB - او Vol+ + Vol-";if(m==="Fastboot")return "Vol- + Power";if(m==="DFU")return "Vol- + Power 10 ثواني";if(m==="Recovery")return "Vol+ + Power";return "اشبك USB";}
-function unlockLog(msg,cls){let log=document.getElementById('unlockLog');let t=new Date().toLocaleTimeString('en-GB');log.innerHTML+=`<div class="${cls||''}">[${t}] ${msg}</div>`;log.scrollTop=log.scrollHeight;}
-function startUnlock(){if(!unlockOp){alert("اختر عملية اولاً من اليسار");return;}if(unlockRunning)return;unlockRunning=true;let p=0;document.getElementById('unlockStatus').innerText="Working... "+unlockOp.name;unlockLog("=================================","info");unlockLog("Phone Flex UnlockTool v1.0","info");unlockLog("Brand: "+unlockBrand+" | Model: "+unlockModel,"info");unlockLog("Operation: "+unlockOp.name,"warn");unlockLog("Mode: "+unlockMode+" - "+getModeHint(unlockMode),"info");unlockLog("Waiting for device...","info");let steps=["Connecting to device...","Reading device info...","Checking DA / Auth...","Sending loader...","Executing "+unlockOp.name+"...","Verifying...","Rebooting device..."];let si=0;unlockTimer=setInterval(()=>{p+=Math.floor(Math.random()*12)+4;if(p>100)p=100;document.getElementById('unlockProgress').style.width=p+"%";document.getElementById('unlockPercent').innerText=p+"%";if(si<steps.length&&p>(si+1)*14){unlockLog("✓ "+steps[si],"ok");si++;}if(p>=100){clearInterval(unlockTimer);unlockRunning=false;unlockLog("✓ DONE - "+unlockOp.name+" Success!","ok");unlockLog("Device will reboot now - لا تشبك واي فاي اول تشغيل اذا FRP/MDM/KG","warn");document.getElementById('unlockStatus').innerText="Done ✓ - "+unlockOp.name;}},500);}
-function stopUnlock(){if(unlockTimer)clearInterval(unlockTimer);unlockRunning=false;document.getElementById('unlockStatus').innerText="Stopped";unlockLog("Operation stopped by user","err");}
-let currentBorneo="Samsung A12",zoomBorneoVal=1,selectedBorneo=-1;
-function openBorneo(model){if(!appSettings.borneo&&!isAdmin()){alert("مخططات فون فلكس مغلقة من المطور");return;}currentBorneo=model;hideAllViews();document.getElementById('borneoView').classList.remove('hidden');selectedBorneo=-1;zoomBorneoVal=1;renderBorneo();window.scrollTo(0,0);}
-function renderBorneo(){let d=BORNEO_DATA[currentBorneo];if(!d)return;document.getElementById('borneoTitle').innerText="مخططات فون فلكس - "+currentBorneo+" - "+d.code+" - "+d.chip;document.getElementById('boardImg').src=d.img;let hs=document.getElementById('hotspots');hs.innerHTML="";d.board.forEach((p,i)=>{let div=document.createElement('div');div.className='hotspot'+(selectedBorneo===i?' active':'');div.style.left=p.x+'%';div.style.top=p.y+'%';div.style.width=p.w+'%';div.style.height=p.h+'%';div.innerHTML=`<span>${p.name}</span>`;div.onclick=()=>showBorneoPart(i);hs.appendChild(div);});let svg=document.getElementById('traceSvg');svg.innerHTML="";let labels=document.getElementById('connLabels');labels.innerHTML="";if(selectedBorneo>=0){let p=d.board[selectedBorneo];let sx=p.x+p.w/2,sy=p.y+p.h/2;(p.conns||[]).forEach(c=>{let midX=(sx+c.toX)/2,midY=(sy+c.toY)/2-4;svg.innerHTML+=`<path d="M ${sx} ${sy} L ${midX} ${midY} L ${c.toX} ${c.toY}" stroke="${c.color}" stroke-width="2.2" fill="none" opacity="0.95" stroke-linecap="round"/>`;svg.innerHTML+=`<circle cx="${c.toX}" cy="${c.toY}" r="2.2" fill="${c.color}" stroke="#fff" stroke-width="0.5"/>`;let lab=document.createElement('div');lab.className='conn-label';lab.style.left=midX+'%';lab.style.top=midY+'%';lab.style.borderColor=c.color;lab.innerText=c.to+" | "+c.volt+" | "+c.type;labels.appendChild(lab);});}applyBorneoTransform();document.getElementById('compListBorneo').innerHTML=d.board.map((p,i)=>`<div class="comp-row ${selectedBorneo===i?'active':''}" onclick="showBorneoPart(${i})"><span>${p.name}</span><span>${p.value} | ${p.net}</span></div>`).join("");document.getElementById('waysBorneo').innerHTML=`<h3 style="color:#ffb400">WAYS - ${currentBorneo}</h3>`+d.ways.map(w=>`<div class="way-borneo"><b>${w.title}</b><p>${w.desc}</p></div>`).join("");if(selectedBorneo<0){document.getElementById('schematicBoxBorneo').innerHTML="اضغط على اي قطعة...";document.getElementById('partInfoBorneo').innerHTML="👆 اضغط على اي قطعة بالبورد...";}}
-function showBorneoPart(i){selectedBorneo=i;let p=BORNEO_DATA[currentBorneo].board[i];let rows=(p.conns||[]).map(c=>{let badge=c.type==="توالي"?'<span class="badge-series">توالي SERIES</span>':'<span class="badge-parallel">توازي PARALLEL</span>';return `<tr><td><b>${c.to}</b><br><small>${c.note}</small></td><td>${badge}</td><td><b>${c.volt}</b></td></tr>`;}).join("");document.getElementById('partInfoBorneo').innerHTML=`<b style="color:#ffb400;font-size:15px">${p.name} - ${p.value}</b> | ${p.net} | ${p.volt}<br><small>${p.desc}</small><table class="conn-table"><tr><th>يوصل الى</th><th>النوع</th><th>الفولت</th></tr>${rows}</table>`;document.getElementById('schematicBoxBorneo').innerHTML=`<b>${p.name} - ${p.value}</b><br><b>الشبكة:</b> ${p.net} | <b>الفولت:</b> ${p.volt}<br><br><b>المخطط الكامل:</b><br>`+(p.conns||[]).map(c=>`➡ <b>${p.name}</b> <span style="color:${c.color}">── ${c.volt} ──</span> <b>${c.to}</b> [${c.type}]<br><small>${c.note}</small><br>`).join("");renderBorneo();}
-function clearBorneoSelection(){selectedBorneo=-1;renderBorneo();}
-function applyBorneoTransform(){let w=document.getElementById('boardImgWrap');w.style.transform=`scale(${zoomBorneoVal})`;}
-function zoomBorneo(v){zoomBorneoVal=Math.max(0.6,Math.min(3,zoomBorneoVal+v));applyBorneoTransform();}
-function resetZoomBorneo(){zoomBorneoVal=1;applyBorneoTransform();}
-function setBorneoMode(m,btn){document.querySelectorAll('.borneo-tools button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');if(m==='ways')document.getElementById('waysBorneo').scrollIntoView({behavior:"smooth"});}
-function renderCompat(list){let div=document.getElementById('compatList');if(!div)return;div.innerHTML='';list.forEach(item=>{let icon=item[2]=='screen'?'📱':item[2]=='battery'?'🔋':item[2]=='charge'?'🔌':'📜';let click=item[2]=='schematic'?`onclick="openBorneoFromCompat(this)"`:``;div.innerHTML+=`<div class="compat-card ${item[2]}" ${click}><b>${icon} ${item[0]}</b><br><small>✅ ${item[1]}</small>${item[2]=='schematic'?'<br><small style="color:#ffb400">👉 اضغط لفتح البورد الواقعي</small>':''}</div>`;});}
-function openBorneoFromCompat(el){let t=el.innerText;if(t.includes('ايفون'))openBorneo('iPhone 11');else if(t.includes('شاومي'))openBorneo('Redmi Note 10');else if(t.includes('انفينكس'))openBorneo('Infinix Hot 30');else openBorneo('Samsung A12');}
-function filterCompat(type,btn){document.querySelectorAll('.compat-tabs button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');if(type=='all')renderCompat(compatData);else renderCompat(compatData.filter(x=>x[2]==type));}
-function openCat(id){if(id=='compat'&&!appSettings.compat&&!isAdmin()){alert("التوافقات مغلقة من المطور");return;}if(id=='lessons'&&!appSettings.lessons&&!isAdmin()){alert("الدورات مغلقة من المطور");return;}hideAllViews();if(id=='compat'){document.getElementById('compatView').classList.remove('hidden');renderCompat(compatData);}else if(id=='lessons'){document.getElementById('lessonsView').classList.remove('hidden');}else if(id=='live'){document.getElementById('liveView').classList.remove('hidden');}}
-function goHome(){hideAllViews();document.getElementById('homeView').classList.remove('hidden');if(typeof stopCamera==='function')stopCamera();if(typeof renderSubBar==='function')renderSubBar();let msg=localStorage.getItem('pf_msg')||'';let old=document.getElementById('pfMsgBar');if(old)old.remove();if(msg){let d=document.createElement('div');d.id='pfMsgBar';d.style.cssText='background:#ffb400;color:#000;padding:10px;border-radius:10px;margin:10px 0;text-align:center;font-weight:bold';d.innerText='📢 '+msg;let cont=document.querySelector('.container');if(cont)cont.prepend(d);}}
-function doSearch(){let q=document.getElementById('search').value.toLowerCase().trim();if(q.length<1){renderCompat(compatData);return;}let filtered=compatData.filter(x=>x[0].toLowerCase().includes(q)||x[1].toLowerCase().includes(q));hideAllViews();document.getElementById('compatView').classList.remove('hidden');renderCompat(filtered);}
-function openAdmin(){if(!requireAdmin())return;hideAllViews();document.getElementById('adminView').classList.remove('hidden');renderAdminToggles();renderAdminCompat();refreshAdminUsers();let m=localStorage.getItem('pf_msg')||'';document.getElementById('admMsgNow').innerText=m?('الرسالة الحالية: '+m):'ماكو رسالة';window.scrollTo(0,0);}
-function renderAdminToggles(){let labels={unlock:"🔓 UnlockTool",compat:"🔧 التوافقات",borneo:"📜 مخططات فون فلكس",scanner:"📷 الكاميرا",repair:"🛠️ معلومات العميل",lessons:"🎓 الدورات",live:"📺 البث"};document.getElementById('adminToggles').innerHTML=Object.keys(labels).map(k=>`<label style="display:flex;justify-content:space-between;background:#222;padding:10px;border-radius:8px;margin:6px 0"><span>${labels[k]}</span><input type="checkbox" ${appSettings[k]?'checked':''} onchange="toggleSetting('${k}',this.checked)" style="width:22px;height:22px"></label>`).join('');}
-function toggleSetting(k,v){appSettings[k]=v;saveSettings();alert((v?'تم تشغيل ':'تم ايقاف ')+k);}
-function adminAddCompat(){if(!requireAdmin())return;let t=document.getElementById('admCompatTitle').value.trim();let d=document.getElementById('admCompatDesc').value.trim();let ty=document.getElementById('admCompatType').value;if(!t||!d){alert("اكتب العنوان والتفاصيل");return;}compatData.unshift([t,d,ty]);saveCompat();renderCompat(compatData);renderAdminCompat();document.getElementById('admCompatTitle').value='';document.getElementById('admCompatDesc').value='';alert("تم اضافة التوافق ✅");}
-function renderAdminCompat(){let q=(document.getElementById('admCompatSearch')?.value||'').toLowerCase();let div=document.getElementById('adminCompatList');if(!div)return;let list=compatData.map((c,i)=>({c,i})).filter(x=>!q||x.c[0].toLowerCase().includes(q)||x.c[1].toLowerCase().includes(q)).slice(0,30);div.innerHTML=list.map(x=>`<div style="display:flex;justify-content:space-between;gap:6px;background:#222;padding:8px;border-radius:8px;margin:5px 0"><span style="font-size:12px"><b>${x.c[0]}</b><br><small>${x.c[1]}</small></span><span><button onclick="adminEditCompat(${x.i})" style="background:#ffb400;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">✏️</button> <button onclick="adminDeleteCompat(${x.i})" style="background:#ff4444;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">🗑️</button></span></div>`).join('')||'<p style="color:#888">ماكو نتائج</p>';}
-function adminDeleteCompat(i){if(!requireAdmin())return;if(!confirm("تحذف هذا التوافق؟"))return;compatData.splice(i,1);saveCompat();renderCompat(compatData);renderAdminCompat();}
-function adminEditCompat(i){if(!requireAdmin())return;let c=compatData[i];let nt=prompt("العنوان الجديد:",c[0]);if(nt===null)return;let nd=prompt("التفاصيل الجديدة:",c[1]);if(nd===null)return;compatData[i]=[nt,nd,c[2]];saveCompat();renderCompat(compatData);renderAdminCompat();alert("تم التعديل ✅");}
-function adminAddUnlockOp(){if(!requireAdmin())return;let n=document.getElementById('admUnlockOp').value.trim();let d=document.getElementById('admUnlockDesc').value.trim();if(!n){alert("اكتب اسم العملية");return;}UNLOCK_DATA[unlockBrand].ops.push({name:n,desc:d||"عملية جديدة من المطور",mode:unlockMode,time:"2 دقيقة",steps:["اختر العملية","اضغط START"]});renderUnlockOps();document.getElementById('admUnlockOp').value='';document.getElementById('admUnlockDesc').value='';alert("تم اضافة العملية ✅");}
-function adminDeleteUnlockOp(i){if(!requireAdmin())return;if(!confirm("تحذف هاي العملية؟"))return;UNLOCK_DATA[unlockBrand].ops.splice(i,1);renderUnlockOps();}
-async function adminClearRepairs(){if(!requireAdmin())return;if(!confirm("متأكد تحذف كل اجهزة الصيانة من الفايربيس؟"))return;for(let r of [...repairs]){if(r._docId)await fbDeleteRepair(r._docId);}repairs=[];renderRepairs();alert("تم حذف الكل ✅");}
-async function refreshAdminUsers(){await syncUsersFromCloud();renderAdminUsers();}
-function renderAdminUsers(){
-let div=document.getElementById('adminUsersList');if(!div)return;
-let q=(document.getElementById('admUserSearch')?.value||'').toLowerCase().trim();
-let users=getUsers().filter(u=>!q||u.name.toLowerCase().includes(q)||u.user.toLowerCase().includes(q)||(u.phone||'').includes(q));
-if(users.length===0){div.innerHTML='<p style="color:#888">ماكو حسابات مطابقة - روح للفايربيس وتأكد</p>';return;}
-div.innerHTML=users.map((u)=>{
-let isDev=u.user===DEV_USER;
-let subInfo=isDev?'👑 حساب المطور - دائمي':`📅 بدأ: ${fmtDate(u.subStart)} | ينتهي: ${fmtDate(u.subEnd)}<br>⏳ ${subStatusHTML(u)} | مدة الاشتراك: ${u.subDays||30} يوم`;
-let btns=isDev?`<span style="color:#ffb400;font-size:12px">🔒 حساب المطور - ما ينحذف</span>`: `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><button onclick="adminRenewSub('${u.user}')" style="background:#00d26a;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700">✅ تفعيل / تجديد 30 يوم</button><button onclick="adminToggleSub('${u.user}')" style="background:${u.subActive===false?'#00d26a':'#ff4444'};color:${u.subActive===false?'#000':'#fff'};border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700">${u.subActive===false?'▶️ تفعيل':'⛔ الغاء الاشتراك'}</button><button onclick="adminEditUser('${u.user}')" style="background:#ffb400;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700">✏️ تعديل</button><button onclick="adminDeleteUserByName('${u.user}')" style="background:#ff4444;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700">🗑️ حذف من الفايربيس</button><button onclick="copyUserLogin('${u.user}','${u.pass}')" style="background:#25D366;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700">📋 نسخ الدخول</button></div>`;
-return `<div class="user-card"><b>${u.role==='admin'?'👑':'👤'} ${u.name}</b> ${u.role==='admin'?'<span style="color:#ffb400">- المطور</span>':''}<br><span>🆔 المعرف: <b>${u.user}</b></span> | <span>🔐 كلمة السر: <b>${u.pass}</b></span><br><span>📞 الرقم: <span dir="ltr">${u.phone||'---'}</span></span><br><span style="font-size:12px">${subInfo}</span>${btns}</div>`;
-}).join('');
+function onUnlockModelChange(){unlockModelName=document.getElementById('unlockModel').value;updateUnlockInfo();}
+function setUnlockMode(m,btn){unlockMode=m;document.querySelectorAll('.mode-tabs button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');updateUnlockInfo();}
+function renderUnlockOps(){let ops=unlockOpsData[unlockBrand]||unlockOpsData.Samsung;document.getElementById('unlockOps').innerHTML=ops.map(o=>`<div class="op-item ${o===unlockOp?'active':''}" onclick="selectUnlockOp('${o}')"><div><b>${o}</b><small>${unlockBrand} - ${unlockMode}</small></div><span>▶</span></div>`).join('');}
+function selectUnlockOp(o){unlockOp=o;renderUnlockOps();updateUnlockInfo();}
+function updateUnlockInfo(){document.getElementById('unlockTitle').innerText=unlockBrand+' - '+unlockModelName;document.getElementById('unlockSub').innerText=unlockMode+' Mode | '+unlockOp;document.getElementById('unlockDeviceInfo').innerHTML=`<b>الشركة:</b> ${unlockBrand} | <b>الموديل:</b> ${unlockModelName}<br><b>الوضع:</b> ${unlockMode} | <b>العملية:</b> ${unlockOp}<br><b>الحالة:</b> جاهز ✅`;}
+function adminAddUnlockOp(){let n=document.getElementById('admUnlockOp').value.trim();let d=document.getElementById('admUnlockDesc').value.trim();if(!n){alert('اكتب اسم العملية');return;}if(!unlockOpsData[unlockBrand])unlockOpsData[unlockBrand]=[];unlockOpsData[unlockBrand].push(n);renderUnlockOps();alert('تم اضافة '+n);}
+let unlockTimer=null,unlockPct=0;
+function startUnlock(){if(unlockTimer)return;unlockPct=0;let log=document.getElementById('unlockLog');log.innerHTML='<div class="info">▶ بدء: '+unlockOp+' - '+unlockModelName+'</div>';let steps=['جاري الاتصال بالجهاز...','قراءة معلومات الجهاز...','جاري فك القفل...','جاري التحقق...','تم بنجاح ✅'];let si=0;unlockTimer=setInterval(()=>{unlockPct=Math.min(100,unlockPct+10);document.getElementById('unlockProgress').style.width=unlockPct+'%';document.getElementById('unlockPercent').innerText=unlockPct+'%';document.getElementById('unlockStatus').innerText=steps[Math.min(si,steps.length-1)];if(unlockPct%30===0&&si<steps.length){log.innerHTML+='<div class="ok">✅ '+steps[si]+'</div>';si++;}if(unlockPct>=100){clearInterval(unlockTimer);unlockTimer=null;log.innerHTML+='<div class="ok">🎉 تمت العملية بنجاح!</div>';}},400);}
+function stopUnlock(){if(unlockTimer){clearInterval(unlockTimer);unlockTimer=null;document.getElementById('unlockStatus').innerText='تم الايقاف';}}
+
+// ===== Borneo =====
+let borneoData={
+"Samsung A12":{img:"board-a12.jpg",comps:[{name:"CPU MT6765",x:38,y:28,w:22,h:18,desc:"المعالج الرئيسي",schematic:"CPU - 1.8GHz Octa",ways:["CPU -> RAM - خط الذاكرة","CPU -> UFS - خط التخزين"]},{name:"IC الشحن",x:65,y:55,w:16,h:14,desc:"ايسي الشحن والطاقة",schematic:"Charging IC - 5V",ways:["قاعدة الشحن -> IC الشحن -> البطارية"]},{name:"كونكتر الشاشة",x:12,y:42,w:18,h:10,desc:"كونكتر الشاشة",schematic:"LCD Connector",ways:["الشاشة -> الكونكتر -> CPU"]},{name:"البطارية",x:45,y:75,w:20,h:14,desc:"كونكتر البطارية",schematic:"Battery Connector",ways:["البطارية -> IC الطاقة"]}]},
+"Samsung A14":{img:"board-a12.jpg",comps:[{name:"CPU",x:38,y:28,w:22,h:18,desc:"المعالج",schematic:"CPU",ways:["CPU -> RAM"]},{name:"IC الشحن",x:65,y:55,w:16,h:14,desc:"ايسي الشحن",schematic:"Charging IC",ways:["الشحن -> البطارية"]}]}};
+let borneoModel='Samsung A12',borneoMode='bitmap',borneoZoom=1,selectedComp=null;
+function openBorneo(model){if(model)borneoModel=model;if(!appSettings.borneo&&!isAdmin()){alert("هذا القسم مغلق");return;}hideAllViews();document.getElementById('borneoView').classList.remove('hidden');document.getElementById('borneoTitle').innerText='مخططات فون فلكس - '+borneoModel;renderBorneo();window.scrollTo(0,0);}
+function setBorneoMode(m,btn){borneoMode=m;document.querySelectorAll('.borneo-tools button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderBorneo();}
+function zoomBorneo(d){borneoZoom=Math.max(0.6,Math.min(2.5,borneoZoom+d));document.getElementById('boardImgWrap').style.transform='scale('+borneoZoom+')';}
+function resetZoomBorneo(){borneoZoom=1;document.getElementById('boardImgWrap').style.transform='scale(1)';}
+function clearBorneoSelection(){selectedComp=null;renderBorneo();}
+function renderBorneo(){
+  let data=borneoData[borneoModel]||borneoData["Samsung A12"];
+  document.getElementById('boardImg').src=data.img;
+  let hs=document.getElementById('hotspots');hs.innerHTML='';
+  let labels=document.getElementById('connLabels');labels.innerHTML='';
+  let svg=document.getElementById('traceSvg');svg.innerHTML='';
+  data.comps.forEach((c,idx)=>{
+    let d=document.createElement('div');d.className='hotspot'+(selectedComp===idx?' active':'');d.style.left=c.x+'%';d.style.top=c.y+'%';d.style.width=c.w+'%';d.style.height=c.h+'%';d.innerHTML='<span>'+c.name+'</span>';d.onclick=()=>{selectedComp=idx;renderBorneo();};hs.appendChild(d);
+  });
+  document.getElementById('compListBorneo').innerHTML=data.comps.map((c,idx)=>`<div class="comp-row ${selectedComp===idx?'active':''}" onclick="selectedComp=${idx};renderBorneo()"><span>${c.name}</span><span>📍</span></div>`).join('');
+  if(selectedComp!==null){
+    let c=data.comps[selectedComp];
+    document.getElementById('partInfoBorneo').innerHTML=`<div class="way-borneo"><b>${c.name}</b><br>${c.desc}<br><b>المخطط:</b> ${c.schematic}</div>`;
+    document.getElementById('schematicBoxBorneo').innerHTML=`<b>${c.name}</b><br>${c.schematic}<br><br>📐 قياس: استخدم الافوميتر على وضع الجرس`;
+    document.getElementById('waysBorneo').innerHTML=`<h3>🛤️ Ways - ${c.name}</h3>`+c.ways.map(w=>`<div class="way-borneo">➡️ ${w}</div>`).join('');
+  } else {
+    document.getElementById('partInfoBorneo').innerHTML='👆 اضغط على اي قطعة بالبورد...';
+    document.getElementById('schematicBoxBorneo').innerHTML='اضغط على اي قطعة...';
+    document.getElementById('waysBorneo').innerHTML='';
+  }
 }
-async function adminRenewSub(username){
-if(!requireAdmin())return;
-let users=getUsers();let u=users.find(x=>x.user===username);if(!u||u.user===DEV_USER)return;
-let days=prompt("كم يوم تريد تجدد؟ اكتب 30 للتجديد العادي:", "30");if(days===null)return;days=parseInt(days);if(!days||days<1)days=30;
-let start=Date.now();let updated={...u,subActive:true,subDays:days,subStart:start,subEnd:calcSubEnd(start,days)};
-try{await fbSaveUser(updated);}catch(e){alert("⚠️ ما انحفظ بالسحابة - افتح قواعد الفايربيس");}
-saveUsers(getUsers().map(x=>x.user===username?updated:x));renderAdminUsers();
-alert("✅ تم تفعيل / تجديد اشتراك "+updated.name+"\n📅 "+days+" يوم\nينتهي: "+fmtDate(updated.subEnd));
-}
-async function adminToggleSub(username){
-if(!requireAdmin())return;
-let users=getUsers();let u=users.find(x=>x.user===username);if(!u||u.user===DEV_USER)return;
-let newActive=u.subActive===false;
-if(!newActive&&!confirm("⛔ متأكد تلغي اشتراك "+u.name+" ؟"))return;
-let updated={...u,subActive:newActive};
-try{await fbSaveUser(updated);}catch(e){}
-saveUsers(getUsers().map(x=>x.user===username?updated:x));renderAdminUsers();
-alert(newActive?"✅ تم تفعيل حساب "+updated.name:"⛔ تم الغاء اشتراك "+updated.name);
-}
-async function adminEditUser(username){
-if(!requireAdmin())return;
-let users=getUsers();
-let u=users.find(x=>x.user===username);if(!u)return;
-if(u.user===DEV_USER){alert("حساب المطور يتغير من بطاقة تغيير كلمة السر فقط");return;}
-let newName=prompt("الاسم الجديد:",u.name);if(newName===null)return;
-let newPhone=prompt("الرقم الجديد:",u.phone||'');if(newPhone===null)return;
-let newPass=prompt("كلمة السر الجديدة:",u.pass);if(newPass===null)return;
-let newDays=prompt("مدة الاشتراك بالايام (الحالية "+(u.subDays||30)+"):",String(u.subDays||30));if(newDays===null)return;
-let days=parseInt(newDays);if(!days||days<1)days=u.subDays||30;
-let updated={...u,name:newName.trim()||u.name,phone:newPhone.trim(),pass:newPass.trim()||u.pass,subDays:days,subEnd:calcSubEnd(u.subStart||Date.now(),days)};
-try{await fbSaveUser(updated);}catch(e){alert("⚠️ ما انحفظ بالسحابة، انحفظ محلي فقط");}
-saveUsers(getUsers().map(x=>x.user===username?updated:x));
-renderAdminUsers();
-alert("تم تعديل حساب "+updated.name+" ✅");
-}
-async function adminDeleteUserByName(username){
-if(!requireAdmin())return;
-let users=getUsers();
-let u=users.find(x=>x.user===username);if(!u)return;
-if(u.user===DEV_USER){alert("ما تكدر تحذف حساب المطور");return;}
-if(!confirm("تحذف حساب "+u.name+" - "+u.user+" من الفايربيس ؟"))return;
-try{await fbDeleteUser(u);}catch(e){alert("⚠️ ما انحذف من السحابة - افتح قواعد الفايربيس");}
-saveUsers(getUsers().filter(x=>x.user!==username));
-renderAdminUsers();
-alert("تم حذف الحساب ✅");
-}
-function adminDeleteUser(i){let users=getUsers();if(users[i])adminDeleteUserByName(users[i].user);}
-function copyUserLogin(user,pass){let txt="فون فلكس - حسابك:\nالمعرف: "+user+"\nكلمة السر: "+pass;if(navigator.clipboard)navigator.clipboard.writeText(txt);alert("تم نسخ معلومات الدخول ✅\n"+txt);}
-function adminSaveMsg(){if(!requireAdmin())return;let m=document.getElementById('admMsg').value.trim();localStorage.setItem('pf_msg',m);alert("تم حفظ الرسالة ✅");}
-function adminClearMsg(){localStorage.removeItem('pf_msg');alert("تم مسح الرسالة ✅");}
-let _c=document.getElementById('countAll');if(_c)_c.innerText=compatData.length+' توافق + مخطط - اضغط للدخول';
-renderCompat(compatData);
-syncUsersFromCloud();
-checkLogin();
+function openLive(){if(!appSettings.live&&!isAdmin()){alert("هذا القسم مغلق");return;}hideAllViews();document.getElementById('liveView').classList.remove('hidden');window.scrollTo(0,0);}
+function openLivePlatform(p){let urls={tiktok:'https://www.tiktok.com/@phoneflex',facebook:'https://www.facebook.com/phoneflex',youtube:'https://www.youtube.com/@phoneflex'};window.open(urls[p]);}
+function setLiveLink(){let link=document.getElementById('liveLinkInput').value.trim();if(!link){alert('الصق الرابط');return;}document.getElementById('liveFrameWrap').innerHTML='<iframe src="'+link+'" style="width:100%;height:300px;border:none" allowfullscreen></iframe>';}
+
+// ===== تشغيل - الدخول يطلع اول شي =====
+document.addEventListener('DOMContentLoaded',()=>{ checkLogin(); });
+window.addEventListener('load',()=>{ if(!currentUser) showLogin(); });
+// اذا الدخول ما طلع لاي سبب، اظهره بعد ثانية
+setTimeout(()=>{ if(!currentUser){ let l=document.getElementById('loginView'); if(l){l.classList.remove('hidden');l.style.display='block';} } },1000);
 </script>
 </body>
 </html>
