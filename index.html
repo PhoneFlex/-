@@ -15,23 +15,26 @@ const firebaseConfig={apiKey:"AIzaSyDAybYE2AF-dGuWcxXBvy6ZBMZT2QryYwU",authDomai
 firebase.initializeApp(firebaseConfig);
 const db=firebase.firestore();
 let repairs=[];
-db.collection("repairs").orderBy("createdAt","desc").onSnapshot((snap)=>{repairs=[];snap.forEach(doc=>{let d=doc.data();d.id=doc.id;d._docId=doc.id;repairs.push(d);});if(document.getElementById('repairList'))renderRepairs();if(currentUser&&!isAdmin()&&document.getElementById('repairView')&&!document.getElementById('repairView').classList.contains('hidden'))openRepair();});
-async function fbSaveRepair(r){try{if(r._docId){await db.collection("repairs").doc(r._docId).set({...r,createdAt:r.createdAt||Date.now()});}else{let doc=await db.collection("repairs").add({...r,createdAt:Date.now()});r._docId=doc.id;}}catch(e){alert("مشكلة بالنت");}}
-async function fbDeleteRepair(docId){try{await db.collection("repairs").doc(docId).delete();}catch(e){}}
-const DEV_USER="admin"; let DEV_PASS=localStorage.getItem('pf_dev_pass')||"1988";
 let currentUser=null;
 let cloudUsers=[];
 let usersLoaded=false;
-db.collection("users").onSnapshot((snap)=>{cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});usersLoaded=true;localStorage.setItem('pf_users_cloud',JSON.stringify(cloudUsers));if(document.getElementById('adminUsersList')&&isAdmin())renderAdminUsers();});
-async function syncUsersFromCloud(){try{let snap=await db.collection("users").get();cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});localStorage.setItem('pf_users_cloud',JSON.stringify(cloudUsers));usersLoaded=true;return cloudUsers;}catch(e){let c=JSON.parse(localStorage.getItem('pf_users_cloud')||'[]');cloudUsers=c;return c;}}
-function getUsers(){let local=JSON.parse(localStorage.getItem('pf_users')||'[]');let cloud=cloudUsers.length?cloudUsers:JSON.parse(localStorage.getItem('pf_users_cloud')||'[]');let merged=[];let seen={};[...cloud,...local].forEach(u=>{if(!u.user||seen[u.user])return;seen[u.user]=1;merged.push(u);});if(!merged.find(x=>x.user===DEV_USER))merged.unshift({name:"سيد عباس - المطور",user:DEV_USER,pass:DEV_PASS,role:"admin",phone:"07738105665",subActive:true,subDays:9999,subStart:Date.now(),subEnd:Date.now()+9999*86400000});else{merged=merged.map(x=>x.user===DEV_USER?{...x,pass:DEV_PASS,subActive:true}:x);}return merged;}
-function saveUsers(u){localStorage.setItem('pf_users',JSON.stringify(u));}
-// --- الاشتراك ---
+const DEV_USER="admin";
+let DEV_PASS=localStorage.getItem('pf_dev_pass')||"1988";
+let appSettings=JSON.parse(localStorage.getItem('pf_settings')||'{"unlock":true,"compat":true,"borneo":true,"scanner":true,"repair":true,"lessons":true,"live":true}');
+function saveSettings(){localStorage.setItem('pf_settings',JSON.stringify(appSettings));applySettings();}
+function applySettings(){let map={unlock:'unlockCard',compat:'compatCard',borneo:'borneoCard',scanner:'scannerCard',repair:'repairCard',lessons:'lessonsCard',live:'liveCard'};for(let k in map){let el=document.getElementById(map[k]);if(el)el.style.display=appSettings[k]?"flex":"none";}}
 function calcSubEnd(start,days){return Number(start)+Number(days)*86400000;}
 function daysLeft(u){if(!u||u.role==='admin')return 9999;if(u.subActive===false)return 0;if(!u.subEnd){if(u.subStart&&u.subDays)return Math.max(0,Math.ceil((calcSubEnd(u.subStart,u.subDays)-Date.now())/86400000));return 30;}return Math.max(0,Math.ceil((Number(u.subEnd)-Date.now())/86400000));}
 function isSubExpired(u){if(!u||u.role==='admin')return false;if(u.subActive===false)return true;return daysLeft(u)<=0;}
 function fmtDate(ts){if(!ts)return '---';try{return new Date(Number(ts)).toLocaleDateString('ar-IQ');}catch(e){return '---';}}
 function subStatusHTML(u){if(u.role==='admin')return '<span style="color:#ffb400">👑 مطور - دائمي</span>';let left=daysLeft(u);if(u.subActive===false)return '<span style="color:#ff4444;font-weight:700">⛔ ملغي من المطور</span>';if(left<=0)return '<span style="color:#ff4444;font-weight:700">❌ منتهي - 0 يوم</span>';if(left<=5)return '<span style="color:#ffb400;font-weight:700">⚠️ متبقي '+left+' يوم</span>';return '<span style="color:#00d26a;font-weight:700">✅ فعال - متبقي '+left+' يوم</span>';}
+db.collection("repairs").orderBy("createdAt","desc").onSnapshot((snap)=>{repairs=[];snap.forEach(doc=>{let d=doc.data();d.id=doc.id;d._docId=doc.id;repairs.push(d);});if(typeof renderRepairs==='function'&&document.getElementById('repairList')&&currentUser&&isAdmin())renderRepairs();if(currentUser&&!isAdmin()&&document.getElementById('repairView')&&!document.getElementById('repairView').classList.contains('hidden')&&typeof openRepair==='function')openRepair();});
+db.collection("users").onSnapshot((snap)=>{cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});usersLoaded=true;localStorage.setItem('pf_users_cloud',JSON.stringify(cloudUsers));if(document.getElementById('adminUsersList')&&currentUser&&isAdmin()&&typeof renderAdminUsers==='function')renderAdminUsers();});
+async function syncUsersFromCloud(){try{let snap=await db.collection("users").get();cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});localStorage.setItem('pf_users_cloud',JSON.stringify(cloudUsers));usersLoaded=true;return cloudUsers;}catch(e){let c=JSON.parse(localStorage.getItem('pf_users_cloud')||'[]');cloudUsers=c;return c;}}
+function getUsers(){let local=JSON.parse(localStorage.getItem('pf_users')||'[]');let cloud=cloudUsers.length?cloudUsers:JSON.parse(localStorage.getItem('pf_users_cloud')||'[]');let merged=[];let seen={};[...cloud,...local].forEach(u=>{if(!u.user||seen[u.user])return;seen[u.user]=1;merged.push(u);});if(!merged.find(x=>x.user===DEV_USER))merged.unshift({name:"سيد عباس - المطور",user:DEV_USER,pass:DEV_PASS,role:"admin",phone:"07738105665",subActive:true,subDays:9999,subStart:Date.now(),subEnd:Date.now()+9999*86400000});else{merged=merged.map(x=>x.user===DEV_USER?{...x,pass:DEV_PASS,subActive:true}:x);}return merged;}
+function saveUsers(u){localStorage.setItem('pf_users',JSON.stringify(u));}
+async function fbSaveRepair(r){try{if(r._docId){await db.collection("repairs").doc(r._docId).set({...r,createdAt:r.createdAt||Date.now()});}else{let doc=await db.collection("repairs").add({...r,createdAt:Date.now()});r._docId=doc.id;}}catch(e){alert("مشكلة بالنت");}}
+async function fbDeleteRepair(docId){try{await db.collection("repairs").doc(docId).delete();}catch(e){}}
 async function fbSaveUser(u){
 let data={name:u.name,user:u.user,pass:String(u.pass),phone:u.phone||'',role:u.role||'user',subActive:u.subActive!==false,subDays:Number(u.subDays||30),subStart:Number(u.subStart||Date.now()),subEnd:Number(u.subEnd||calcSubEnd(u.subStart||Date.now(),u.subDays||30))};
 if(u._docId){await db.collection("users").doc(u._docId).set(data);}else{let q=await db.collection("users").where("user","==",u.user).get();if(!q.empty){let docId=q.docs[0].id;await db.collection("users").doc(docId).set(data);u._docId=docId;}else{let doc=await db.collection("users").add(data);u._docId=doc.id;}}
@@ -42,49 +45,77 @@ async function fbDeleteUser(u){try{if(u._docId){await db.collection("users").doc
 function isAdmin(){return currentUser&&currentUser.role==="admin";}
 function requireAdmin(){if(!isAdmin()){alert("⛔ هذا الخيار للمطور فقط");return false;}return true;}
 function checkLogin(){let saved=JSON.parse(localStorage.getItem('pf_session')||'null');if(saved){currentUser=saved;showApp();}else{showLogin();}syncUsersFromCloud();}
-function showLogin(){document.getElementById('loginView').classList.remove('hidden');document.getElementById('mainApp').classList.add('hidden');}
-function showApp(){document.getElementById('loginView').classList.add('hidden');document.getElementById('mainApp').classList.remove('hidden');document.getElementById('userBadge').innerText=isAdmin()?"👑 المطور: "+currentUser.name:"👤 "+currentUser.name;document.getElementById('adminBtn').style.display=isAdmin()?"block":"none";applySettings();goHome();}
-async function doLogin(){let u=document.getElementById('loginUser').value.trim();let p=document.getElementById('loginPass').value.trim();if(!u||!p){alert("اكتب المعرف وكلمة السر");return;}let btn=document.getElementById('loginBtnText');if(btn)btn.innerText="جاري التحقق...";await syncUsersFromCloud();let found=getUsers().find(x=>x.user===u&&String(x.pass)===String(p));if(btn)btn.innerText="دخول ✅";if(!found){alert("❌ المعرف او كلمة السر غلط\nتأكد ان المطور سوالك حساب، واذا استمرت المشكلة دزله رسالة");return;}if(found.role!=='admin'&&isSubExpired(found)){alert("⏳ اشتراكك خلص ❌\nمتبقي: 0 يوم\nدز رسالة لسيد عباس على الواتساب حتى يجددلك الاشتراك 🙏");window.open('https://wa.me/9647738105665?text='+encodeURIComponent('هلا سيد عباس، اشتراكي خلص، اريد تجديد - المعرف: '+found.user)),'_blank');return;}currentUser=found;localStorage.setItem('pf_session',JSON.stringify(found));alert("هلا بيك "+found.name+" ✅"+(found.role!=='admin'?"\n⏳ متبقي على اشتراكك: "+daysLeft(found)+" يوم":""));showApp();}
+function showLogin(){let l=document.getElementById('loginView');if(l)l.classList.remove('hidden');let m=document.getElementById('mainApp');if(m)m.classList.add('hidden');}
+function showApp(){let l=document.getElementById('loginView');if(l)l.classList.add('hidden');let m=document.getElementById('mainApp');if(m)m.classList.remove('hidden');let b=document.getElementById('userBadge');if(b)b.innerText=isAdmin()?"👑 المطور: "+currentUser.name:"👤 "+currentUser.name;let ab=document.getElementById('adminBtn');if(ab)ab.style.display=isAdmin()?"block":"none";applySettings();goHome();}
+async function doLogin(){
+let u=document.getElementById('loginUser').value.trim();
+let p=document.getElementById('loginPass').value.trim();
+if(!u||!p){alert("اكتب المعرف وكلمة السر");return;}
+let btn=document.getElementById('loginBtnText');if(btn)btn.innerText="جاري التحقق...";
+try{await syncUsersFromCloud();}catch(e){}
+let all=getUsers();
+let found=all.find(x=>x.user===u&&String(x.pass)===String(p));
+if(btn)btn.innerText="دخول ✅";
+if(!found){
+let byUser=all.find(x=>x.user===u);
+if(byUser){alert("❌ كلمة السر غلط لهذا المعرف\nالمعرف موجود، بس كلمة السر مو صحيحة\nتأكد من المطور");}
+else{alert("❌ المعرف او كلمة السر غلط\nالمعرف "+u+" ما موجود\nتأكد ان المطور سوالك حساب");}
+return;
+}
+if(found.role!=='admin'&&isSubExpired(found)){
+alert("⏳ اشتراكك خلص ❌\nمتبقي: 0 يوم\nدز رسالة لسيد عباس على الواتساب حتى يجددلك الاشتراك 🙏");
+window.open('https://wa.me/9647738105665?text='+encodeURIComponent('هلا سيد عباس، اشتراكي خلص، اريد تجديد - المعرف: '+found.user)),'_blank');return;
+}
+currentUser=found;localStorage.setItem('pf_session',JSON.stringify(found));
+alert("هلا بيك "+found.name+" ✅"+(found.role!=='admin'?"\n⏳ متبقي على اشتراكك: "+daysLeft(found)+" يوم":""));
+showApp();
+}
 function doLogout(){localStorage.removeItem('pf_session');currentUser=null;location.reload();}
-let appSettings=JSON.parse(localStorage.getItem('pf_settings')||'{"unlock":true,"compat":true,"borneo":true,"scanner":true,"repair":true,"lessons":true,"live":true}');
-function saveSettings(){localStorage.setItem('pf_settings',JSON.stringify(appSettings));applySettings();}
-function applySettings(){let map={unlock:'unlockCard',compat:'compatCard',borneo:'borneoCard',scanner:'scannerCard',repair:'repairCard',lessons:'lessonsCard',live:'liveCard'};for(let k in map){let el=document.getElementById(map[k]);if(el)el.style.display=appSettings[k]?"flex":"none";}}
-async function adminChangePass(){if(!requireAdmin())return;let oldP=document.getElementById('admOldPass').value.trim();let newP=document.getElementById('admNewPass').value.trim();if(!oldP||!newP){alert("اكتب كلمة السر القديمة والجديدة");return;}if(oldP!==currentUser.pass){alert("❌ كلمة السر القديمة غلط");return;}if(newP.length<4){alert("كلمة السر الجديدة لازم 4 ارقام على الاقل");return;}DEV_PASS=newP;localStorage.setItem('pf_dev_pass',newP);let users=getUsers().map(u=>u.user===DEV_USER?{...u,pass:newP}:u);saveUsers(users);try{await fbSaveUser({name:"سيد عباس - المطور",user:DEV_USER,pass:newP,phone:"07738105665",role:"admin",subActive:true,subDays:9999,subStart:Date.now(),subEnd:Date.now()+9999*86400000});}catch(e){}currentUser={...currentUser,pass:newP};localStorage.setItem('pf_session',JSON.stringify(currentUser));document.getElementById('admOldPass').value='';document.getElementById('admNewPass').value='';alert("تم تغيير كلمة سر المطور ✅\nكلمة السر الجديدة: "+newP);}
-// --- انشاء حساب - حفظ حقيقي ---
+async function adminChangePass(){
+if(!requireAdmin())return;
+let oldP=document.getElementById('admOldPass').value.trim();
+let newP=document.getElementById('admChangeNewPass').value.trim();
+if(!oldP||!newP){alert("اكتب كلمة السر القديمة والجديدة");return;}
+if(oldP!==currentUser.pass){alert("❌ كلمة السر القديمة غلط");return;}
+if(newP.length<4){alert("كلمة السر الجديدة لازم 4 ارقام على الاقل");return;}
+DEV_PASS=newP;localStorage.setItem('pf_dev_pass',newP);
+let users=getUsers().map(u=>u.user===DEV_USER?{...u,pass:newP}:u);saveUsers(users);
+try{await fbSaveUser({name:"سيد عباس - المطور",user:DEV_USER,pass:newP,phone:"07738105665",role:"admin",subActive:true,subDays:9999,subStart:Date.now(),subEnd:Date.now()+9999*86400000});}catch(e){}
+currentUser={...currentUser,pass:newP};localStorage.setItem('pf_session',JSON.stringify(currentUser));
+document.getElementById('admOldPass').value='';document.getElementById('admChangeNewPass').value='';
+alert("تم تغيير كلمة سر المطور ✅\nكلمة السر الجديدة: "+newP);
+}
 async function adminCreateUser(){
 if(!requireAdmin())return;
 let name=document.getElementById('admNewName').value.trim();
 let phone=document.getElementById('admNewPhone').value.trim();
 let u=document.getElementById('admNewUser').value.trim();
-let p=document.getElementById('admNewPass').value.trim();
+let p=document.getElementById('admNewUserPass').value.trim();
 let days=parseInt(document.getElementById('admNewDays')?.value||'30');
 if(!name){alert("❌ اكتب اسم الزبون");return;}
 if(!phone){alert("❌ اكتب رقم الزبون");return;}
 if(!u){alert("❌ اكتب المعرف - مثال ali123");return;}
-if(!p){alert("❌ اكتب كلمة السر");return;}
+if(!p){alert("❌ اكتب كلمة السر - هاي المشكلة القديمة انحلت هسه");return;}
 if(!days||days<1)days=30;
 let statusEl=document.getElementById('admCreateStatus');if(statusEl)statusEl.innerHTML="⏳ جاري الحفظ بالسحابة... لا تسكر الصفحة";
-await syncUsersFromCloud();
+try{await syncUsersFromCloud();}catch(e){}
 let users=getUsers();
 if(users.find(x=>x.user===u)){if(statusEl)statusEl.innerHTML="";alert("❌ هذا المعرف مستخدم، اختار غيره");return;}
 let start=Date.now();
 let nu={name,user:u,pass:p,phone,role:"user",subActive:true,subDays:days,subStart:start,subEnd:calcSubEnd(start,days)};
 let savedCloud=false,cloudErr='';
 try{await fbSaveUser(nu);savedCloud=true;}catch(e){cloudErr=e.message||String(e);console.log("cloud save fail",e);}
-// حفظ محلي دائما حتى لو النت ضعيف
 users.push(nu);saveUsers(users);
 let localCheck=getUsers().find(x=>x.user===u);
 if(statusEl)statusEl.innerHTML="";
 if(savedCloud&&localCheck){
-document.getElementById('admNewName').value='';document.getElementById('admNewPhone').value='';document.getElementById('admNewUser').value='';document.getElementById('admNewPass').value='';
-renderAdminUsers();
+document.getElementById('admNewName').value='';document.getElementById('admNewPhone').value='';document.getElementById('admNewUser').value='';document.getElementById('admNewUserPass').value='';
+if(typeof renderAdminUsers==='function')renderAdminUsers();
 alert("✅ تم انشاء الحساب وحفظه حقيقي بالسحابة ☁️\n\nالاسم: "+name+"\nالمعرف: "+u+"\nكلمة السر: "+p+"\nالرقم: "+phone+"\n📅 الاشتراك: "+days+" يوم\nينتهي: "+fmtDate(nu.subEnd)+"\n\nهسه الزبون يكدر يسجل دخول من اي تلفون");
 }else if(localCheck&&!savedCloud){
-renderAdminUsers();
+if(typeof renderAdminUsers==='function')renderAdminUsers();
 alert("⚠️ تم الحفظ بتلفونك بس، وما انحفظ بالسحابة\nالسبب: "+cloudErr+"\n\nروح للفايربيس > Firestore > Rules وحط:\nallow read, write: if true;\nوبعدها اضغط تحديث القائمة");
-}else{
-alert("❌ ما انحفظ الحساب\nالسبب: "+cloudErr);
-}
+}else{alert("❌ ما انحفظ الحساب\nالسبب: "+cloudErr);}
 }
 </script>
 <style>
@@ -247,8 +278,8 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 <div id="adminView" class="hidden">
 <button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
 <h2 class="section-title">👑 لوحة المطور - سيد عباس فقط</h2>
-<div class="admin-card"><h3>🔐 تغيير كلمة سر المطور</h3><p style="color:#aaa;font-size:12px">هاي بس الك انت - الزبون ما يشوفها ولا يكدر يغيرها</p><input id="admOldPass" type="password" class="search-box" placeholder="كلمة السر القديمة"><input id="admNewPass" type="password" class="search-box" placeholder="كلمة السر الجديدة"><button class="btn btn-yellow" onclick="adminChangePass()">🔐 تغيير كلمة السر</button></div>
-<div class="admin-card"><h3>🆕 انشاء حساب زبون جديد - للمطور فقط - حفظ حقيقي ☁️</h3><p style="color:#aaa;font-size:12px">انت تسوي الحساب للزبون، وتدزله المعرف وكلمة السر على الواتساب - ينحفظ بالسحابة ويشتغل بكل الاجهزة + اشتراك 30 يوم تلقائي</p><input id="admNewName" class="search-box" placeholder="اسم الزبون الكامل - مثال: علي محمد"><input id="admNewPhone" class="search-box" placeholder="رقم تلفون الزبون 077XXXXXXXXX"><input id="admNewUser" class="search-box" placeholder="المعرف - مثال: ali123"><input id="admNewPass" class="search-box" placeholder="كلمة السر للزبون - مثال: 1234"><label style="font-size:12px;color:#aaa">⏳ مدة الاشتراك</label><select id="admNewDays" class="search-box"><option value="30" selected>30 يوم - الافتراضي</option><option value="7">7 ايام - تجريبي</option><option value="15">15 يوم</option><option value="60">60 يوم</option><option value="90">90 يوم</option><option value="365">سنة كاملة</option></select><p id="admCreateStatus" style="font-size:12px;color:#ffb400"></p><button class="btn btn-green" onclick="adminCreateUser()">➕ انشاء حساب الزبون - حفظ حقيقي ☁️</button></div>
+<div class="admin-card"><h3>🔐 تغيير كلمة سر المطور</h3><p style="color:#aaa;font-size:12px">هاي بس الك انت</p><input id="admOldPass" type="password" class="search-box" placeholder="كلمة السر القديمة"><input id="admChangeNewPass" type="password" class="search-box" placeholder="كلمة السر الجديدة"><button class="btn btn-yellow" onclick="adminChangePass()">🔐 تغيير كلمة السر</button></div>
+<div class="admin-card"><h3>🆕 انشاء حساب زبون جديد - للمطور فقط - حفظ حقيقي ☁️</h3><p style="color:#aaa;font-size:12px">انت تسوي الحساب للزبون، وتدزله المعرف وكلمة السر على الواتساب - ينحفظ بالسحابة ويشتغل بكل الاجهزة + اشتراك 30 يوم تلقائي</p><input id="admNewName" class="search-box" placeholder="اسم الزبون الكامل - مثال: علي محمد"><input id="admNewPhone" class="search-box" placeholder="رقم تلفون الزبون 077XXXXXXXXX"><input id="admNewUser" class="search-box" placeholder="المعرف - مثال: ali123"><input id="admNewUserPass" class="search-box" placeholder="كلمة السر للزبون - مثال: 1234"><label style="font-size:12px;color:#aaa">⏳ مدة الاشتراك</label><select id="admNewDays" class="search-box"><option value="30" selected>30 يوم - الافتراضي</option><option value="7">7 ايام - تجريبي</option><option value="15">15 يوم</option><option value="60">60 يوم</option><option value="90">90 يوم</option><option value="365">سنة كاملة</option></select><p id="admCreateStatus" style="font-size:12px;color:#ffb400"></p><button class="btn btn-green" onclick="adminCreateUser()">➕ انشاء حساب الزبون - حفظ حقيقي ☁️</button></div>
 <div class="admin-card"><h3>⚙️ تشغيل / ايقاف الاقسام</h3><p style="color:#aaa;font-size:12px">اذا طفيت قسم، راح يختفي عند كل الزباين</p><div id="adminToggles"></div></div>
 <div class="admin-card"><h3>🔧 اضافة توافق جديد</h3><input id="admCompatTitle" class="search-box" placeholder="عنوان التوافق - مثال: شاشة A15"><input id="admCompatDesc" class="search-box" placeholder="التفاصيل - مثال: A15 , A25 - 6.5 AMOLED"><select id="admCompatType" class="search-box"><option value="screen">📱 شاشة</option><option value="battery">🔋 بطارية</option><option value="charge">🔌 قاعدة</option><option value="schematic">📜 مخطط</option></select><button class="btn btn-green" onclick="adminAddCompat()">➕ اضافة توافق</button></div>
 <div class="admin-card"><h3>📱 ادارة التوافقات - حذف / تعديل</h3><input id="admCompatSearch" class="search-box" placeholder="ابحث بتوافق لحذفه..." oninput="renderAdminCompat()"><div id="adminCompatList"></div></div>
@@ -330,8 +361,8 @@ header{background:linear-gradient(90deg,#6a5cff,#a855f7);padding:18px;text-align
 <div id="listView" class="hidden"><button class="back-btn" onclick="goHome()">← رجوع</button><h2 id="viewTitle" class="section-title"></h2><div id="viewGrid"></div></div>
 </div>
 <footer style="text-align:center;padding:15px;background:#000;margin-top:15px;font-size:11px;color:#777">© 2026 فون فلكس - البصرة العشار - 07738105665 - بادارة الاستاذ سيد عباس</footer>
-  </div>
-  <script>
+</div>
+<script>
 const MODEL_URL="https://teachablemachine.withgoogle.com/models/PUT_YOUR_MODEL_URL_HERE/";
 let tmModel=null,camStream=null,isModelLoaded=false;
 const CAMERA_PHONES=[
@@ -341,7 +372,7 @@ const CAMERA_PHONES=[
 {name:"Infinix Hot 30",code:"Hot 30",ram:"8",rom:"128",cpu:"Helio G88",cam:"50MP",bat:"5000",screen:"6.78 90Hz",price:"180,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/infinix-hot-30/-1024x768w2/gsmarena_001.jpg"},
 {name:"Tecno Spark 10",code:"Spark 10",ram:"8",rom:"128",cpu:"Helio G37",cam:"50MP",bat:"5000",screen:"6.6 90Hz",price:"170,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/tecno-spark-10/-1024x768w2/gsmarena_001.jpg"}];
 function findPhoneByCode(code){code=String(code).toLowerCase().replace(/\s/g,'');for(let p of CAMERA_PHONES){let pc=p.code.toLowerCase().replace(/\s/g,'');if(pc===code||p.name.toLowerCase().replace(/\s/g,'').includes(code)||code.includes(pc))return p;}return null;}
-function findCompatForCamera(code){return compatData.filter(c=>c[0].includes(code)||c[1].includes(code));}
+function findCompatForCamera(code){return (typeof compatData!=='undefined'?compatData:[]).filter(c=>c[0].includes(code)||c[1].includes(code));}
 function manualPickHTML(){let opts=CAMERA_PHONES.map(p=>`<option value="${p.code}">${p.name}</option>`).join('');return `<div style="margin-top:10px"><select id="manualCode" style="width:100%;padding:12px;border-radius:10px;background:#1e1e1e;color:#fff;border:1px solid #444">${opts}</select><button class="btn btn-green" onclick="showPhoneResult(document.getElementById('manualCode').value,100)">عرض الجهاز</button></div>`;}
 async function loadModel(){if(isModelLoaded)return true;try{document.getElementById('scanResult').innerHTML='<p style="text-align:center">⏳ جاري تحميل الموديل...</p>';if(MODEL_URL.includes("PUT_YOUR_MODEL")){document.getElementById('scanResult').innerHTML='<p style="color:#fbbf24;text-align:center">⚠️ بعدك ما حاط رابط الموديل.</p>'+manualPickHTML();return false;}tmModel=await tmImage.load(MODEL_URL+"model.json",MODEL_URL+"metadata.json");isModelLoaded=true;return true;}catch(e){document.getElementById('scanResult').innerHTML='<p style="color:#f87171">❌ ما كدرت احمل الموديل.</p>'+manualPickHTML();return false;}}
 function openScanner(){if(!appSettings.scanner&&!isAdmin()){alert("هذا القسم مغلق من المطور");return;}hideAllViews();document.getElementById('scannerView').classList.remove('hidden');document.getElementById('scanResult').innerHTML='';document.getElementById('scanTop3').innerHTML='';loadModel();window.scrollTo(0,0);}
@@ -351,8 +382,9 @@ async function captureAndIdentify(){let v=document.getElementById('camVideo');le
 async function onFilePicked(e){let file=e.target.files[0];if(!file)return;let img=new Image();img.onload=async()=>{let canvas=document.getElementById('camCanvas');canvas.width=img.width;canvas.height=img.height;canvas.getContext('2d').drawImage(img,0,0);await identifyImage(canvas);};img.src=URL.createObjectURL(file);}
 async function identifyImage(canvas){let ok=await loadModel();if(!ok||!tmModel)return;document.getElementById('scanResult').innerHTML='<p style="text-align:center">🔍 جاري التعرف...</p>';try{let preds=await tmModel.predict(canvas);preds=preds.sort((a,b)=>b.probability-a.probability);let top=preds[0];let conf=Math.round(top.probability*100);let top3=preds.slice(0,3).map(p=>`<div style="background:#222;padding:8px;border-radius:8px;margin:4px 0"><b>${p.className}</b> - ${Math.round(p.probability*100)}%<div class="conf-bar"><div class="conf-fill" style="width:${Math.round(p.probability*100)}%"></div></div></div>`).join('');document.getElementById('scanTop3').innerHTML='<h3>اقرب 3 نتائج:</h3>'+top3;if(conf<55){document.getElementById('scanResult').innerHTML=`<div class="result-card"><h2>⚠️ مو متأكد (${conf}%)</h2></div>`+manualPickHTML();return;}showPhoneResult(top.className,conf);}catch(e){alert('خطأ: '+e.message);}}
 function showPhoneResult(code,conf){let p=findPhoneByCode(code);if(!p){document.getElementById('scanResult').innerHTML='<p>ما لكيت الجهاز.</p>';return;}let compat=findCompatForCamera(p.code);let compatHTML=compat.length?compat.map(c=>`<div class="compat-card">${c[0]} - ${c[1]}</div>`).join(''):'<p>ماكو توافق</p>';document.getElementById('scanResult').innerHTML=`<div class="result-card"><p style="color:#4ade80">✅ تم التعرف - دقة ${conf}%</p><div style="font-size:22px;font-weight:900">${p.name}</div><p>النوع: ${p.name} | الموديل: ${p.code}</p><img src="${p.img}" style="width:100%;max-height:220px;object-fit:contain;background:#111;border-radius:10px;margin:8px 0"><p>📱 الشاشة: ${p.screen}</p><p>🧠 المعالج: ${p.cpu}</p><p>💾 الذاكرة: ${p.rom} | الرام: ${p.ram}</p><p>📷 الكاميرا: ${p.cam}</p><p>🔋 البطارية: ${p.bat}</p><p style="color:#fbbf24;font-size:18px;font-weight:900">السعر: ${p.price} دينار</p><h3>🔧 توافقات:</h3>${compatHTML}</div>`;stopCamera();}
-</script>
-<script>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </script>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+  <script>
 let repFilter='الكل';let repEditId=null;
 function renderSubBar(){
 let bar=document.getElementById('subBar');if(!bar)return;
@@ -373,7 +405,7 @@ let f=document.getElementById('repairFormBox'); if(f) f.style.display='none';
 let s=document.getElementById('repairStatsBox'); if(s) s.style.display='none';
 let sb=document.getElementById('repairSearchBox'); if(sb) sb.style.display='none';
 let myPhone=String(currentUser?currentUser.phone||'':'').replace(/\D/g,'');
-let myRepairs=repairs.filter(r=>{let rPhone=String(r.phone||'').replace(/\D/g,'');let phoneMatch=myPhone&&rPhone&&(rPhone.slice(-9)===myPhone.slice(-9)||rPhone.includes(myPhone.slice(-9))||myPhone.includes(rPhone.slice(-9)));let nameMatch=r.customer.trim()===currentUser.name.trim();return phoneMatch||nameMatch;});
+let myRepairs=repairs.filter(r=>{let rPhone=String(r.phone||'').replace(/\D/g,'');let phoneMatch=myPhone&&rPhone&&(rPhone.slice(-9)===myPhone.slice(-9)||rPhone.includes(myPhone.slice(-9))||myPhone.includes(rPhone.slice(-9)));let nameMatch=(r.customer||'').trim()===(currentUser.name||'').trim();return phoneMatch||nameMatch;});
 if(myRepairs.length===0){
 document.getElementById('repairList').innerHTML=`<div style="background:#1e1e1e;border:2px solid #ffb400;border-radius:14px;padding:20px;text-align:center;line-height:2"><div style="font-size:40px">📱</div><b style="font-size:17px">جهازك يمنا لا تشيل هم</b><br><span style="color:#aaa">من يكمل نتصل بيك وندزلك رسالة واتساب مباشرة 🙏</span><br><br><button class="btn btn-green" onclick="window.open('https://wa.me/9647738105665?text='+encodeURIComponent('هلا سيد عباس، اريد اسأل على جهازي'))">💬 اسأل على جهازك - واتساب</button></div>`;
 }else{
@@ -483,7 +515,7 @@ function renderCompat(list){let div=document.getElementById('compatList');div.in
 function openBorneoFromCompat(el){let t=el.innerText;if(t.includes('ايفون'))openBorneo('iPhone 11');else if(t.includes('شاومي'))openBorneo('Redmi Note 10');else if(t.includes('انفينكس'))openBorneo('Infinix Hot 30');else openBorneo('Samsung A12');}
 function filterCompat(type,btn){document.querySelectorAll('.compat-tabs button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');if(type=='all')renderCompat(compatData);else renderCompat(compatData.filter(x=>x[2]==type));}
 function openCat(id){if(id=='compat'&&!appSettings.compat&&!isAdmin()){alert("التوافقات مغلقة من المطور");return;}if(id=='lessons'&&!appSettings.lessons&&!isAdmin()){alert("الدورات مغلقة من المطور");return;}hideAllViews();if(id=='compat'){document.getElementById('compatView').classList.remove('hidden');renderCompat(compatData);}else if(id=='lessons'){document.getElementById('lessonsView').classList.remove('hidden');}else if(id=='live'){document.getElementById('liveView').classList.remove('hidden');}}
-function goHome(){hideAllViews();document.getElementById('homeView').classList.remove('hidden');stopCamera();renderSubBar();let msg=localStorage.getItem('pf_msg')||'';let old=document.getElementById('pfMsgBar');if(old)old.remove();if(msg){let d=document.createElement('div');d.id='pfMsgBar';d.style.cssText='background:#ffb400;color:#000;padding:10px;border-radius:10px;margin:10px 0;text-align:center;font-weight:bold';d.innerText='📢 '+msg;document.querySelector('.container').prepend(d);}}
+function goHome(){hideAllViews();document.getElementById('homeView').classList.remove('hidden');stopCamera();if(typeof renderSubBar==='function')renderSubBar();let msg=localStorage.getItem('pf_msg')||'';let old=document.getElementById('pfMsgBar');if(old)old.remove();if(msg){let d=document.createElement('div');d.id='pfMsgBar';d.style.cssText='background:#ffb400;color:#000;padding:10px;border-radius:10px;margin:10px 0;text-align:center;font-weight:bold';d.innerText='📢 '+msg;document.querySelector('.container').prepend(d);}}
 function doSearch(){let q=document.getElementById('search').value.toLowerCase().trim();if(q.length<1){renderCompat(compatData);return;}let filtered=compatData.filter(x=>x[0].toLowerCase().includes(q)||x[1].toLowerCase().includes(q));hideAllViews();document.getElementById('compatView').classList.remove('hidden');renderCompat(filtered);}
 function openAdmin(){if(!requireAdmin())return;hideAllViews();document.getElementById('adminView').classList.remove('hidden');renderAdminToggles();renderAdminCompat();refreshAdminUsers();let m=localStorage.getItem('pf_msg')||'';document.getElementById('admMsgNow').innerText=m?('الرسالة الحالية: '+m):'ماكو رسالة';window.scrollTo(0,0);}
 function renderAdminToggles(){let labels={unlock:"🔓 UnlockTool",compat:"🔧 التوافقات",borneo:"📜 مخططات فون فلكس",scanner:"📷 الكاميرا",repair:"🛠️ معلومات العميل",lessons:"🎓 الدورات",live:"📺 البث"};document.getElementById('adminToggles').innerHTML=Object.keys(labels).map(k=>`<label style="display:flex;justify-content:space-between;background:#222;padding:10px;border-radius:8px;margin:6px 0"><span>${labels[k]}</span><input type="checkbox" ${appSettings[k]?'checked':''} onchange="toggleSetting('${k}',this.checked)" style="width:22px;height:22px"></label>`).join('');}
@@ -558,7 +590,7 @@ function adminDeleteUser(i){let users=getUsers();if(users[i])adminDeleteUserByNa
 function copyUserLogin(user,pass){let txt="فون فلكس - حسابك:\nالمعرف: "+user+"\nكلمة السر: "+pass;if(navigator.clipboard)navigator.clipboard.writeText(txt);alert("تم نسخ معلومات الدخول ✅\n"+txt);}
 function adminSaveMsg(){if(!requireAdmin())return;let m=document.getElementById('admMsg').value.trim();localStorage.setItem('pf_msg',m);alert("تم حفظ الرسالة ✅");}
 function adminClearMsg(){localStorage.removeItem('pf_msg');alert("تم مسح الرسالة ✅");}
-document.getElementById('countAll').innerText=compatData.length+' توافق + مخطط - اضغط للدخول';
+let _c=document.getElementById('countAll');if(_c)_c.innerText=compatData.length+' توافق + مخطط - اضغط للدخول';
 renderCompat(compatData);
 syncUsersFromCloud();
 checkLogin();
