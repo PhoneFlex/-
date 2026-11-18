@@ -17,7 +17,6 @@ let repairs=[];
 let currentUser=null;
 let cloudUsers=[];
 let DEV_PASS=localStorage.getItem('pf_dev_pass')||"1988";
-// ===== الاشتراك: 100 يوم ويوكف تلقائي =====
 const SUB_DAYS_DEFAULT=100;
 let appSettings={unlock:true,compat:true,borneo:true,scanner:true,repair:true,lessons:true,live:true};
 try{let s=JSON.parse(localStorage.getItem('pf_settings')||'{}');if(s&&Object.keys(s).length)appSettings=s;}catch(e){}
@@ -27,7 +26,7 @@ async function fbSaveSettings(){if(!db)return;try{await db.collection("settings"
 async function fbLoadSettings(){if(!db)return;try{let d=await db.collection("settings").doc("main").get();if(d.exists&&d.data().settings){appSettings=d.data().settings;localStorage.setItem('pf_settings',JSON.stringify(appSettings));}}catch(e){}}
 async function fbSaveMsg(msg){if(!db)return;try{await db.collection("settings").doc("msg").set({msg:msg||'',updatedAt:Date.now()});}catch(e){}}
 async function fbLoadMsg(){if(!db)return '';try{let d=await db.collection("settings").doc("msg").get();if(d.exists)return d.data().msg||'';}catch(e){}return '';}
-async function fbSaveCompatAll(){if(!db)return;try{await db.collection("settings").doc("compat").set({data:compatData,updatedAt:Date.now()});}catch(e){}}
+async function fbSaveCompatAll(){if(!db)return;try{await db.collection("settings").doc("compat").set({data:compatData,[STRIPPED]
 async function fbLoadCompat(){if(!db)return;try{let d=await db.collection("settings").doc("compat").get();if(d.exists&&d.data().data){compatData=d.data().data;}}catch(e){}}
 
 function applySettings(){let map={unlock:'unlockCard',compat:'compatCard',borneo:'borneoCard',scanner:'scannerCard',repair:'repairCard',lessons:'lessonsCard',live:'liveCard'};for(let k in map){let el=document.getElementById(map[k]);if(el)el.style.display=appSettings[k]?"flex":"none";}}
@@ -35,9 +34,42 @@ function calcSubEnd(start,days){return Number(start)+Number(days)*86400000;}
 function daysLeft(u){if(!u||u.role==='admin')return 9999;if(u.subActive===false)return 0;if(!u.subEnd){if(u.subStart&&u.subDays)return Math.max(0,Math.ceil((calcSubEnd(u.subStart,u.subDays)-Date.now())/86400000));return SUB_DAYS_DEFAULT;}return Math.max(0,Math.ceil((Number(u.subEnd)-Date.now())/86400000));}
 function isSubExpired(u){if(!u||u.role==='admin')return false;if(u.subActive===false)return true;return daysLeft(u)<=0;}
 function fmtDate(ts){if(!ts)return '---';try{return new Date(Number(ts)).toLocaleDateString('ar-IQ');}catch(e){return '---';}}
+function fmtDateTime(ts){try{let d=new Date(Number(ts||Date.now()));return d.toLocaleDateString('ar-IQ')+' - '+d.toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'});}catch(e){return '---';}}
 function subStatusHTML(u){if(u.role==='admin')return '<span style="color:#ffb400">👑 مطور - دائمي</span>';let left=daysLeft(u);if(u.subActive===false)return '<span style="color:#ff4444;font-weight:700">⛔ ملغي</span>';if(left<=0)return '<span style="color:#ff4444;font-weight:700">❌ منتهي - 100 يوم خلصت</span>';if(left<=10)return '<span style="color:#ffb400;font-weight:700">⚠️ متبقي '+left+' يوم من 100</span>';return '<span style="color:#00d26a;font-weight:700">✅ فعال - متبقي '+left+' يوم من 100</span>';}
 
-// ===== واتساب - نفس الترتيب الي تريده بالضبط =====
+// ===== لوجو دائري مزخرف للصيانة =====
+function shopLogoHTML(shopName,size){
+  let n=(shopName||'فون فلكس').trim();
+  let letter=n.replace('صيانة','').trim().charAt(0)||'ف';
+  let s=size||52;
+  return '<div style="width:'+s+'px;height:'+s+'px;min-width:'+s+'px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffd700,#ff8c00 60%,#b45309);border:2px solid #fff;box-shadow:0 0 0 2px #ffb400,0 4px 10px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:'+Math.round(s*0.45)+'px;font-weight:900;color:#000">'+letter+'</div>';
+}
+function shopNameOf(u){return (u&&u.shopName)?u.shopName:'صيانة سيد عباس';}
+function shopPhoneOf(u){return (u&&u.shopPhone)?u.shopPhone:'07738105665';}
+function shopAddressOf(u){return (u&&u.shopAddress)?u.shopAddress:'البصرة - العشار';}
+// رسالة الحساب للزبون - بيها لوجو + اسم الصيانة + رقم + عنوان + تاريخ ووقت
+function buildAccountMsg(u){
+  let now=fmtDateTime(Date.now());
+  return '✦ ━━━━━━━━━━━ ✦\n'
+    + '📱 فون فلكس - '+shopNameOf(u)+'\n'
+    + '✦ ━━━━━━━━━━━ ✦\n'
+    + 'هلا '+u.name+' 👋\n'
+    + 'حسابك جاهز ✅\n\n'
+    + '👤 الاسم: '+u.name+'\n'
+    + '🆔 المعرف: '+u.user+'\n'
+    + '🔑 كلمة السر: '+u.pass+'\n'
+    + '📅 الاشتراك: 100 يوم\n'
+    + '🗓️ يبدأ: '+fmtDate(u.subStart)+'\n'
+    + '⏳ ينتهي: '+fmtDate(u.subEnd)+'\n\n'
+    + '🏪 الصيانة: '+shopNameOf(u)+'\n'
+    + '📞 رقم الصيانة: '+shopPhoneOf(u)+'\n'
+    + '📍 العنوان: '+shopAddressOf(u)+'\n\n'
+    + '🕒 تاريخ الارسال: '+now+'\n'
+    + '━━━━━━━━━━━\n'
+    + '📍 صيانة سيد عباس - البصرة العشار';
+}
+
+// ===== واتساب =====
 function cleanWaNumber(raw){
   if(!raw)return '';
   let n=String(raw).replace(/[^0-9]/g,'');
@@ -56,14 +88,15 @@ function openWhatsApp(phone,msg){
 }
 function buildRepairMsg(r,statusText,footer){
   return 'هلا '+r.customer+' 👋\n'
-    + '📞 رقمك: '+r.phone+'\n'
-    + '📱 نوع الجهاز: '+r.device+'\n'
-    + '🔧 العطل: '+r.fault+'\n'
-    + '💰 السعر: '+(r.price||0)+' دينار\n'
-    + '⏱️ الوقت: '+(r.duration||'يومين')+'\n'
-    + '📊 الحالة: '+statusText+'\n'
-    + '\n'+footer+'\n'
-    + '\n📍 صيانة سيد عباس - البصرة العشار';
+        + '📞 رقمك: '+r.phone+'\n'
+        + '📱 نوع الجهاز: '+r.device+'\n'
+        + '🔧 العطل: '+r.fault+'\n'
+        + '💰 السعر: '+(r.price||0)+' دينار\n'
+        + '⏱️ الوقت: '+(r.duration||'يومين')+'\n'
+        + '📊 الحالة: '+statusText+'\n'
+        + '\n'+footer+'\n'
+        + '\n📍 '+(currentUser?shopNameOf(currentUser):'صيانة سيد عباس')+' - '+(currentUser?shopAddressOf(currentUser):'البصرة العشار')
+        + '\n🕒 '+fmtDateTime(Date.now());
 }
 function sendRepairWhatsApp(idx,type){
   let r=repairs[idx];if(!r)return;
@@ -84,7 +117,7 @@ async function syncUsersFromCloud(){if(!db)return [];try{let snap=await db.colle
 function getUsers(){let merged=[];let seen={};cloudUsers.forEach(u=>{if(!u.user||seen[u.user])return;seen[u.user]=1;merged.push(u);});return merged;}
 async function fbSaveRepair(r){if(!db)return;try{if(r._docId){await db.collection("repairs").doc(r._docId).set(Object.assign({},r,{createdAt:r.createdAt||Date.now()}));}else{let doc=await db.collection("repairs").add(Object.assign({},r,{createdAt:Date.now()}));r._docId=doc.id;}}catch(e){}}
 async function fbDeleteRepair(docId){if(!db)return;try{await db.collection("repairs").doc(docId).delete();}catch(e){}}
-async function fbSaveUser(u){if(!db)throw new Error("no db");let data={name:u.name,user:u.user,pass:String(u.pass),phone:u.phone||'',role:u.role||'user',subActive:u.subActive!==false,subDays:Number(u.subDays||SUB_DAYS_DEFAULT),subStart:Number(u.subStart||Date.now()),subEnd:Number(u.subEnd||calcSubEnd(u.subStart||Date.now(),u.subDays||SUB_DAYS_DEFAULT))};if(u._docId){await db.collection("users").doc(u._docId).set(data);}else{let q=await db.collection("users").where("user","==",u.user).get();if(!q.empty){let docId=q.docs[0].id;await db.collection("users").doc(docId).set(data);u._docId=docId;}else{let doc=await db.collection("users").add(data);u._docId=doc.id;}}return true;}
+async function fbSaveUser(u){if(!db)throw new Error("no db");let data={name:u.name,user:u.user,pass:String(u.pass),phone:u.phone||'',role:u.role||'user',shopName:u.shopName||'صيانة سيد عباس',shopPhone:u.shopPhone||'07738105665',shopAddress:u.shopAddress||'البصرة - العشار',subActive:u.subActive!==false,subDays:Number(u.subDays||SUB_DAYS_DEFAULT),subStart:Number(u.subStart||Date.now()),subEnd:Number(u.subEnd||calcSubEnd(u.subStart||Date.now(),u.subDays||SUB_DAYS_DEFAULT))};if(u._docId){await db.collection("users").doc(u._docId).set(data);}else{let q=await db.collection("users").where("user","==",u.user).get();if(!q.empty){let docId=q.docs[0].id;await db.collection("users").doc(docId).set(data);u._docId=docId;}else{let doc=await db.collection("users").add(data);u._docId=doc.id;}}return true;}
 async function fbDeleteUser(u){if(!db)return;try{if(u._docId){await db.collection("users").doc(u._docId).delete();}else{let q=await db.collection("users").where("user","==",u.user).get();for(let d of q.docs){await db.collection("users").doc(d.id).delete();}}}catch(e){}}
 function isAdmin(){return currentUser&&currentUser.role==="admin";}
 function requireAdmin(){if(!isAdmin()){alert("⛔ هذا الخيار للمطور فقط");return false;}return true;}
@@ -97,7 +130,7 @@ async function doLogin(){
   let u=uEl?uEl.value.trim():'';let p=pEl?pEl.value.trim():'';
   if(!u||!p){alert("اكتب المعرف وكلمة السر");return false;}
   if(u==="admin"&&(p==="1988"||p===DEV_PASS)){
-    currentUser={name:"سيد عباس - المطور",user:"admin",pass:p,phone:"07738105665",role:"admin",subActive:true,subDays:9999,subStart:Date.now(),subEnd:Date.now()+9999*86400000};
+    currentUser={name:"سيد عباس - المطور",user:"admin",pass:p,phone:"07738105665",role:"admin",shopName:"صيانة سيد عباس",shopPhone:"07738105665",shopAddress:"البصرة - العشار",subActive:true,subDays:9999,subStart:Date.now(),subEnd:Date.now()+9999*86400000};
     try{localStorage.setItem('pf_session',JSON.stringify(currentUser));}catch(e){}
     alert("هلا بيك سيد عباس ✅");
     showApp();return true;
@@ -118,7 +151,27 @@ async function doLogin(){
 }
 function doLogout(){try{localStorage.removeItem('pf_session');}catch(e){}currentUser=null;location.reload();}
 async function adminChangePass(){if(!requireAdmin())return;let oldP=document.getElementById('admOldPass').value.trim();let newP=document.getElementById('admChangeNewPass').value.trim();if(!oldP||!newP){alert("اكتب القديمة والجديدة");return;}if(oldP!=="1988"&&oldP!==DEV_PASS&&oldP!==currentUser.pass){alert("❌ القديمة غلط");return;}DEV_PASS=newP;localStorage.setItem('pf_dev_pass',newP);currentUser=Object.assign({},currentUser,{pass:newP});localStorage.setItem('pf_session',JSON.stringify(currentUser));alert("تم تغيير كلمة سر المطور ✅ - الجديدة: "+newP+" - والقديمة 1988 هم تبقى تشتغل");}
-async function adminCreateUser(){if(!requireAdmin())return;let name=document.getElementById('admNewName').value.trim();let phone=document.getElementById('admNewPhone').value.trim();let u=document.getElementById('admNewUser').value.trim();let p=document.getElementById('admNewUserPass').value.trim();let days=parseInt(document.getElementById('admNewDays')?document.getElementById('admNewDays').value:'100');if(!name||!phone||!u||!p){alert("املأ كل الحقول");return;}if(!days||days<1)days=SUB_DAYS_DEFAULT;await syncUsersFromCloud();if(getUsers().find(function(x){return x.user===u;})){alert("هذا المعرف مستخدم بالفايربيس");return;}let start=Date.now();let nu={name:name,user:u,pass:p,phone:phone,role:"user",subActive:true,subDays:days,subStart:start,subEnd:calcSubEnd(start,days)};try{await fbSaveUser(nu);alert("✅ تم انشاء الحساب بالفايربيس ☁️\nالمعرف: "+u+"\nكلمة السر: "+p+"\nالاشتراك: 100 يوم");}catch(e){alert("❌ ما انحفظ بالفايربيس: "+e.message);}document.getElementById('admNewName').value='';document.getElementById('admNewPhone').value='';document.getElementById('admNewUser').value='';document.getElementById('admNewUserPass').value='';if(typeof renderAdminUsers==='function')renderAdminUsers();}
+async function adminCreateUser(){
+  if(!requireAdmin())return;
+  let name=document.getElementById('admNewName').value.trim();
+  let phone=document.getElementById('admNewPhone').value.trim();
+  let u=document.getElementById('admNewUser').value.trim();
+  let p=document.getElementById('admNewUserPass').value.trim();
+  let shopName=document.getElementById('admShopName')?document.getElementById('admShopName').value.trim():'صيانة سيد عباس';
+  let shopPhone=document.getElementById('admShopPhone')?document.getElementById('admShopPhone').value.trim():'07738105665';
+  let shopAddress=document.getElementById('admShopAddress')?document.getElementById('admShopAddress').value.trim():'البصرة - العشار';
+  let days=parseInt(document.getElementById('admNewDays')?document.getElementById('admNewDays').value:'100');
+  if(!name||!phone||!u||!p){alert("املأ كل الحقول");return;}
+  if(!shopName)shopName='صيانة سيد عباس';
+  if(!days||days<1)days=SUB_DAYS_DEFAULT;
+  await syncUsersFromCloud();
+  if(getUsers().find(function(x){return x.user===u;})){alert("هذا المعرف مستخدم بالفايربيس");return;}
+  let start=Date.now();
+  let nu={name:name,user:u,pass:p,phone:phone,role:"user",shopName:shopName,shopPhone:shopPhone,shopAddress:shopAddress,subActive:true,subDays:days,subStart:start,subEnd:calcSubEnd(start,days)};
+  try{await fbSaveUser(nu);alert("✅ تم انشاء الحساب ☁️\n🏪 "+shopName+"\nالمعرف: "+u+"\nكلمة السر: "+p+"\nالاشتراك: 100 يوم\n🕒 "+fmtDateTime(Date.now()));}catch(e){alert("❌ ما انحفظ بالفايربيس: "+e.message);}
+  document.getElementById('admNewName').value='';document.getElementById('admNewPhone').value='';document.getElementById('admNewUser').value='';document.getElementById('admNewUserPass').value='';
+  if(typeof renderAdminUsers==='function')renderAdminUsers();
+}
 </script>
 <style>
 *{box-sizing:border-box}
@@ -211,6 +264,7 @@ body{margin:0;background:#111;color:#fff;font-family:Arial,Tahoma,sans-serif;dir
 .admin-box{background:#1e1e1e;border:1px solid #333;border-radius:14px;padding:14px;margin:10px 0}
 .admin-box label{display:block;margin:10px 0 4px;font-size:13px;color:#ccc}
 .admin-box input,.admin-box select{width:100%;padding:12px;border-radius:10px;border:1px solid #444;background:#111;color:#fff;margin:4px 0}
+.shop-preview{display:flex;align-items:center;gap:10px;background:#111;border:1px dashed #ffb400;border-radius:12px;padding:10px;margin:8px 0;text-align:right}
 </style>
 </head>
 <body>
@@ -265,6 +319,14 @@ body{margin:0;background:#111;color:#fff;font-family:Arial,Tahoma,sans-serif;dir
 <label>رقم الزبون</label><input id="admNewPhone" placeholder="077XXXXXXXXX">
 <label>المعرف</label><input id="admNewUser" placeholder="مثال: ali123">
 <label>كلمة السر</label><input id="admNewUserPass" placeholder="كلمة السر">
+<div style="background:#111;border:1px solid #ffb400;border-radius:12px;padding:10px;margin-top:12px">
+<h3 style="margin:0;color:#ffb400">🏪 بيانات الصيانة / المركز - تطلع للزبون</h3>
+<label>🏪 اسم الصيانة / المركز</label><input id="admShopName" placeholder="مثال: صيانة سيد عباس - صيانة علي - مركز النور" value="صيانة سيد عباس" oninput="updateShopPreview()">
+<label>📞 رقم الصيانة</label><input id="admShopPhone" placeholder="077XXXXXXXXX" value="07738105665">
+<label>📍 عنوان الصيانة</label><input id="admShopAddress" placeholder="مثال: البصرة - العشار - شارع..." value="البصرة - العشار">
+<div class="shop-preview" id="shopPreview"><div id="shopPreviewLogo"></div><div><b id="shopPreviewName">صيانة سيد عباس</b><br><small id="shopPreviewInfo" style="color:#aaa">📞 07738105665 | 📍 البصرة - العشار</small><br><small style="color:#ffb400">🕒 راح ينضاف التاريخ والوقت تلقائي من تدزها</small></div></div>
+<script>function updateShopPreview(){let n=document.getElementById('admShopName').value||'صيانة سيد عباس';document.getElementById('shopPreviewName').innerText=n;document.getElementById('shopPreviewInfo').innerText='📞 '+(document.getElementById('admShopPhone').value||'')+' | 📍 '+(document.getElementById('admShopAddress').value||'');document.getElementById('shopPreviewLogo').innerHTML=shopLogoHTML(n,52);}</script>
+</div>
 <label>مدة الاشتراك بالايام - ثابت 100 يوم</label><input id="admNewDays" type="number" value="100" readonly style="background:#222;color:#ffb400;font-weight:900">
 <button class="btn btn-green" onclick="adminCreateUser()">➕ انشاء الحساب - 100 يوم - فايربيس</button>
 </div>
@@ -421,11 +483,11 @@ function filterCompat(type,btn){compatFilter=type;document.querySelectorAll('.co
 function renderCompat(){let list=compatData.filter(function(c){return compatFilter==='all'||c[2]===compatFilter;});let map={screen:'📱 شاشة',battery:'🔋 بطارية',charge:'🔌 قاعدة',schematic:'📜 مخطط'};document.getElementById('compatList').innerHTML=list.map(function(c){return '<div class="compat-card '+c[2]+'"><b>'+(map[c[2]]||'')+' '+c[0]+'</b><br><small>'+c[1]+'</small></div>';}).join('')||'<p>ماكو</p>';}
 async function renderSubBar(){
   let el=document.getElementById('subBar');if(!el||!currentUser)return;
-  if(isAdmin()){el.innerHTML='<div class="sub-bar">👑 <b>المطور سيد عباس</b> - كل الصلاحيات مفتوحة</div>';return;}
+  if(isAdmin()){el.innerHTML='<div class="sub-bar"><div style="display:flex;align-items:center;gap:10px;justify-content:center">'+shopLogoHTML(shopNameOf(currentUser),44)+'<div style="text-align:right"><b>👑 المطور سيد عباس</b><br><small>'+shopNameOf(currentUser)+' | '+shopAddressOf(currentUser)+'</small></div></div></div>';return;}
   let left=daysLeft(currentUser);
   let total=currentUser.subDays||100;
   let pct=Math.max(0,Math.min(100,Math.round(left/total*100)));
-  el.innerHTML='<div class="sub-bar '+(left<=0?'expired':'')+'"><b>اشتراكك: '+subStatusHTML(currentUser)+'</b><br>ينتهي: '+fmtDate(currentUser.subEnd)+'<div class="sub-progress"><div style="width:'+pct+'%"></div></div><button class="btn btn-green" style="width:auto;padding:8px 14px" onclick="window.open(\'https://wa.me/9647738105665?text=\'+encodeURIComponent(\'هلا سيد عباس، اريد اجدد اشتراكي\'))">💬 تجديد - واتساب</button></div>';
+  el.innerHTML='<div class="sub-bar '+(left<=0?'expired':'')+'"><div style="display:flex;align-items:center;gap:10px;justify-content:center">'+shopLogoHTML(shopNameOf(currentUser),48)+'<div style="text-align:right"><b>'+shopNameOf(currentUser)+'</b><br><small>📞 '+shopPhoneOf(currentUser)+' | 📍 '+shopAddressOf(currentUser)+'</small><br><b>اشتراكك: '+subStatusHTML(currentUser)+'</b></div></div><br>ينتهي: '+fmtDate(currentUser.subEnd)+' | 🕒 اليوم: '+fmtDateTime(Date.now())+'<div class="sub-progress"><div style="width:'+pct+'%"></div></div><button class="btn btn-green" style="width:auto;padding:8px 14px" onclick="window.open(\'https://wa.me/9647738105665?text=\'+encodeURIComponent(\'هلا سيد عباس، اريد اجدد اشتراكي\'))">💬 تجديد - واتساب</button></div>';
   let msg=await fbLoadMsg();if(msg){el.innerHTML+='<div class="sub-bar" style="border-color:#ffb400">📢 <b>'+msg+'</b></div>';}
 }
 
@@ -463,12 +525,13 @@ function renderRepairs(){
     let realIdx=allList.indexOf(r);
     return '<div class="repair-card '+(r.status==='تم'?'done':'')+' '+(r.works==='لا يعمل'?'notwork':'')+'">'
     +'<div class="top"><b>📱 '+r.device+'</b><span class="badge '+(r.status==='تم'?'badge-done':'badge-wait')+'">'+r.status+'</span></div>'
+    +'<div style="display:flex;align-items:center;gap:8px;background:#111;border:1px solid #333;border-radius:10px;padding:8px;margin:6px 0">'+shopLogoHTML(shopNameOf(currentUser),40)+'<div><b>'+shopNameOf(currentUser)+'</b><br><small>📞 '+shopPhoneOf(currentUser)+' | 📍 '+shopAddressOf(currentUser)+'<br>🕒 '+fmtDateTime(r.createdAt||Date.now())+'</small></div></div>'
     +'<div>👤 '+r.customer+' - 📞 <span dir="ltr">'+r.phone+'</span></div>'
     +'<div>📱 نوع الجهاز: '+r.device+'</div>'
     +'<div>🔧 العطل: '+r.fault+'</div>'
     +'<div>💰 السعر: '+(r.price||0)+' دينار | ⏱️ الوقت: '+(r.duration||'---')+'</div>'
     +'<div>📊 الحالة: '+r.status+'</div>'
-    +'<div style="background:#111;border:1px solid #333;border-radius:8px;padding:8px;margin:8px 0;font-size:12px;color:#aaa">📩 معاينة رسالة الواتساب:<br>هلا '+r.customer+' 👋<br>📞 رقمك: '+r.phone+'<br>📱 نوع الجهاز: '+r.device+'<br>🔧 العطل: '+r.fault+'<br>💰 السعر: '+(r.price||0)+' دينار<br>⏱️ الوقت: '+(r.duration||'يومين')+'<br>📊 الحالة: ...</div>'
+    +'<div style="background:#111;border:1px solid #333;border-radius:8px;padding:8px;margin:8px 0;font-size:12px;color:#aaa">📩 معاينة رسالة الواتساب:<br>هلا '+r.customer+' 👋<br>📞 رقمك: '+r.phone+'<br>📱 نوع الجهاز: '+r.device+'<br>🔧 العطل: '+r.fault+'<br>💰 السعر: '+(r.price||0)+' دينار<br>⏱️ الوقت: '+(r.duration||'يومين')+'<br>📊 الحالة: ...<br>🏪 '+shopNameOf(currentUser)+' - '+shopAddressOf(currentUser)+'<br>🕒 '+fmtDateTime(Date.now())+'</div>'
     +'<div class="repair-btns">'
     +'<button class="btn-wa" onclick="sendRepairWhatsApp('+realIdx+',\'received\')">📥 تم استلام جهازك</button>'
     +'<button class="btn-wa" onclick="sendRepairWhatsApp('+realIdx+',\'inprogress\')">🛠️ قيد الصيانة</button>'
@@ -483,7 +546,7 @@ async function markRepairDone(idx){let r=repairs[idx];if(!r)return;r.status='ت�
 function editRepair(idx){let r=repairs[idx];if(!r)return;document.getElementById('repDevice').value=r.device;document.getElementById('repFault').value=r.fault;document.getElementById('repWorks').value=r.works||'لا يعمل';document.getElementById('repCustomer').value=r.customer;document.getElementById('repPhone').value=r.phone;document.getElementById('repPrice').value=r.price||'';document.getElementById('repDuration').value=r.duration||'';document.getElementById('repStatus').value=r.status;window.scrollTo(0,0);}
 async function deleteRepair(idx){if(!confirm('تحذف هذا الجهاز؟'))return;let r=repairs[idx];if(!r)return;if(r._docId)await fbDeleteRepair(r._docId);repairs=repairs.filter(function(x,i){return i!==idx;});renderRepairs();}
 
-function openAdmin(){if(!requireAdmin())return;hideAllViews();document.getElementById('adminView').classList.remove('hidden');renderAdminToggles();renderAdminUsers();renderAdminCompat();fbLoadMsg().then(function(m){document.getElementById('admMsgNow').innerText='الرسالة الحالية: '+(m||'ماكو');});window.scrollTo(0,0);}
+function openAdmin(){if(!requireAdmin())return;hideAllViews();document.getElementById('adminView').classList.remove('hidden');renderAdminToggles();renderAdminUsers();renderAdminCompat();fbLoadMsg().then(function(m){document.getElementById('admMsgNow').innerText='الرسالة الحالية: '+(m||'ماكو');});if(document.getElementById('shopPreviewLogo'))document.getElementById('shopPreviewLogo').innerHTML=shopLogoHTML(document.getElementById('admShopName').value||'صيانة سيد عباس',52);window.scrollTo(0,0);}
 function renderAdminToggles(){
   let labels={unlock:'🔓 UnlockTool',compat:'🔧 التوافقات',borneo:'📜 المخططات',scanner:'📷 صور الجهاز',repair:'🛠️ معلومات العميل',lessons:'🎓 الدورات',live:'📺 البث'};
   document.getElementById('adminToggles').innerHTML=Object.keys(labels).map(function(k){return '<div style="display:flex;justify-content:space-between;align-items:center;background:#2a2a2a;padding:10px;border-radius:8px;margin:6px 0"><span>'+labels[k]+'</span><button class="btn" style="width:auto;padding:8px 12px;background:'+(appSettings[k]?'#00d26a':'#ff4444')+'" onclick="toggleSetting(\''+k+'\')">'+(appSettings[k]?'✅ شغال':'⛔ مطفي')+'</button></div>';}).join('');
@@ -496,14 +559,23 @@ async function renderAdminUsers(){
   let q=document.getElementById('admUserSearch')?document.getElementById('admUserSearch').value.trim().toLowerCase():'';
   let list=getUsers().filter(function(u){return u.user!=='admin';});
   if(q)list=list.filter(function(u){return JSON.stringify(u).toLowerCase().includes(q);});
-  document.getElementById('adminUsersList').innerHTML=list.length?list.map(function(u){return '<div class="user-card"><b>'+u.name+'</b> - @'+u.user+'<br>📞 '+(u.phone||'---')+' | 🔑 '+u.pass+'<br>'+subStatusHTML(u)+' | ينتهي: '+fmtDate(u.subEnd)+'<br><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><button class="btn btn-green" style="width:auto;padding:8px 10px" onclick="adminExtendUser(\''+u.user+'\')">➕ تجديد 100 يوم</button><button class="btn btn-dark" style="width:auto;padding:8px 10px" onclick="adminToggleUser(\''+u.user+'\')">⏸️ ايقاف/تشغيل</button><button class="btn" style="width:auto;padding:8px 10px;background:#ff4444" onclick="adminDeleteUser(\''+u.user+'\')">🗑️ حذف</button><button class="btn btn-dark" style="width:auto;padding:8px 10px" onclick="adminCopyUser(\''+u.user+'\')">📋 نسخ</button><button class="btn-wa" style="padding:8px 10px;border:none;border-radius:8px;cursor:pointer;font-weight:700" onclick="openWhatsApp(\''+u.phone+'\',\'هلا '+u.name+' 👋 حسابك بفون فلكس جاهز ✅\')">💬 واتساب للزبون</button></div></div>';}).join(''):'<p>ماكو زبائن</p>';
+  document.getElementById('adminUsersList').innerHTML=list.length?list.map(function(u){
+    return '<div class="user-card">'
+    +'<div style="display:flex;align-items:center;gap:10px;background:#111;border:1px solid #ffb400;border-radius:12px;padding:10px;margin-bottom:8px">'+shopLogoHTML(shopNameOf(u),52)+'<div><b style="font-size:16px;color:#ffb400">'+shopNameOf(u)+'</b><br><small>📞 '+shopPhoneOf(u)+' | 📍 '+shopAddressOf(u)+'</small><br><small style="color:#aaa">🕒 انشئ: '+fmtDateTime(u.subStart)+'</small></div></div>'
+    +'<b>👤 '+u.name+'</b> - @'+u.user+'<br>📞 '+(u.phone||'---')+' | 🔑 '+u.pass+'<br>'+subStatusHTML(u)+' | ينتهي: '+fmtDate(u.subEnd)
+    +'<br><div style="background:#111;border:1px dashed #444;border-radius:8px;padding:8px;margin:6px 0;font-size:12px;color:#aaa">📩 معاينة رسالة الزبون:<br>'+buildAccountMsg(u).replace(/\n/g,'<br>')+'</div>'
+    +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><button class="btn btn-green" style="width:auto;padding:8px 10px" onclick="adminExtendUser(\''+u.user+'\')">➕ تجديد 100 يوم</button><button class="btn btn-dark" style="width:auto;padding:8px 10px" onclick="adminToggleUser(\''+u.user+'\')">⏸️ ايقاف/تشغيل</button><button class="btn" style="width:auto;padding:8px 10px;background:#ff4444" onclick="adminDeleteUser(\''+u.user+'\')">🗑️ حذف</button><button class="btn btn-dark" style="width:auto;padding:8px 10px" onclick="adminCopyUser(\''+u.user+'\')">📋 نسخ</button><button class="btn-wa" style="padding:8px 10px;border:none;border-radius:8px;cursor:pointer;font-weight:700" onclick="sendAccountWhatsApp(\''+u.user+'\')">💬 دز الحساب للزبون</button></div></div>';
+  }).join(''):'<p>ماكو زبائن</p>';
 }
-function adminCopyUser(user){let u=getUsers().find(function(x){return x.user===user;});if(!u)return;let txt='فون فلكس\nالاسم: '+u.name+'\nالمعرف: '+u.user+'\nكلمة السر: '+u.pass+'\nالاشتراك: '+u.subDays+' يوم';if(navigator.clipboard)navigator.clipboard.writeText(txt).then(function(){alert('تم النسخ ✅');});else alert(txt);}
-// ===== التجديد: 100 يوم - اذا منتهي يبدي من اليوم =====
+function sendAccountWhatsApp(user){
+  let u=getUsers().find(function(x){return x.user===user;});if(!u)return;
+  openWhatsApp(u.phone, buildAccountMsg(u));
+}
+function adminCopyUser(user){let u=getUsers().find(function(x){return x.user===user;});if(!u)return;let txt=buildAccountMsg(u);if(navigator.clipboard)navigator.clipboard.writeText(txt).then(function(){alert('تم النسخ ✅ - بيها اسم الصيانة والتاريخ والوقت');});else alert(txt);}
 async function adminExtendUser(user){
   let u=getUsers().find(function(x){return x.user===user;});
   if(!u)return;
-  if(!confirm('تجدد لـ '+u.name+' 100 يوم؟'))return;
+  if(!confirm('تجدد لـ '+u.name+' 100 يوم؟\n🏪 '+shopNameOf(u)))return;
   let now=Date.now();
   let stillActive = u.subActive!==false && Number(u.subEnd||0) > now;
   let base = stillActive ? Number(u.subEnd) : now;
@@ -511,7 +583,7 @@ async function adminExtendUser(user){
   u.subEnd = base + 100*86400000;
   u.subDays = 100;
   u.subActive = true;
-  try{await fbSaveUser(u);alert('✅ تم التجديد 100 يوم\nينتهي: '+new Date(u.subEnd).toLocaleDateString('ar-IQ'));}catch(e){alert(e.message);}
+  try{await fbSaveUser(u);alert('✅ تم التجديد 100 يوم\n🏪 '+shopNameOf(u)+'\nينتهي: '+new Date(u.subEnd).toLocaleDateString('ar-IQ')+'\n🕒 '+fmtDateTime(Date.now()));}catch(e){alert(e.message);}
   renderAdminUsers();
 }
 async function adminToggleUser(user){let u=getUsers().find(function(x){return x.user===user;});if(!u)return;u.subActive=!u.subActive;try{await fbSaveUser(u);}catch(e){}renderAdminUsers();}
@@ -573,7 +645,7 @@ function openLive(){if(!appSettings.live&&!isAdmin()){alert("هذا القسم �
 function openLivePlatform(p){let urls={tiktok:'https://www.tiktok.com/@phoneflex',facebook:'https://www.facebook.com/phoneflex',youtube:'https://www.youtube.com/@phoneflex'};window.open(urls[p]);}
 function setLiveLink(){let link=document.getElementById('liveLinkInput').value.trim();if(!link){alert('الصق الرابط');return;}document.getElementById('liveFrameWrap').innerHTML='<iframe src="'+link+'" style="width:100%;height:300px;border:none" allowfullscreen></iframe>';}
 
-document.addEventListener('DOMContentLoaded',function(){ checkLogin(); });
+document.addEventListener('DOMContentLoaded',function(){ checkLogin(); if(document.getElementById('shopPreviewLogo'))document.getElementById('shopPreviewLogo').innerHTML=shopLogoHTML('صيانة سيد عباس',52); });
 window.addEventListener('load',function(){ if(!currentUser) showLogin(); });
 </script>
 </body>
