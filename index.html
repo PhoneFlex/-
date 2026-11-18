@@ -76,7 +76,6 @@ function buildAccountMsg(u){
     + '🕒 تاريخ الارسال: '+now+'\n'
     + '━━━━━━━━━━━\n'+DISCLAIMER_TEXT;
 }
-
 function cleanWaNumber(raw){
   if(!raw)return '';
   let n=String(raw).replace(/[^0-9]/g,'');
@@ -93,7 +92,6 @@ function openWhatsApp(phone,msg){
   if(!num || num.length<10){alert('رقم الواتساب مو صحيح: '+(phone||''));return;}
   window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg||''),'_blank');
 }
-// ===== رسالة الصيانة - لوكو دائري فوك + وقت وتاريخ تلقائي + ملاحظة ثابتة جوه =====
 function buildRepairMsg(r,statusText,footer){
   let shop=currentUser?shopNameOf(currentUser):'صيانة سيد عباس';
   let addr=currentUser?shopAddressOf(currentUser):'البصرة - العشار';
@@ -535,7 +533,6 @@ async function addRepair(){
   let price=parseInt(document.getElementById('repPrice').value||'0');
   let status=document.getElementById('repStatus').value;
   if(!device||!fault||!customer||!phone){alert("املأ الحقول المطلوبة *");return;}
-  // الوقت والتاريخ تلقائي - من لحظة الحفظ
   let now=Date.now();
   let r={device:device,fault:fault,works:works,customer:customer,phone:phone,price:price,duration:fmtDateTime(now),repairTime:fmtTimeOnly(now),repairDate:fmtDate(now),status:status,owner:currentUser?currentUser.user:'',ownerName:currentUser?currentUser.name:'',createdAt:now};
   await fbSaveRepair(r);
@@ -557,7 +554,6 @@ function renderRepairs(){
     let realIdx=allList.indexOf(r);
     let when=r.createdAt||Date.now();
     return '<div class="repair-card '+(r.status==='تم'?'done':'')+' '+(r.works==='لا يعمل'?'notwork':'')+'">'
-    // فوك الكارت: لوكو دائري باسم صاحب الصيانة
     +'<div style="display:flex;align-items:center;gap:10px;background:#111;border:1px solid #ffb400;border-radius:12px;padding:10px;margin-bottom:8px">'+shopLogoHTML(shopNameOf(currentUser),56)+'<div style="text-align:right"><b style="font-size:17px;color:#ffb400">⭕ '+shopNameOf(currentUser)+' ⭕</b><br><small>📞 '+shopPhoneOf(currentUser)+' | 📍 '+shopAddressOf(currentUser)+'</small><br><small style="color:#00d26a">🕒 '+fmtTimeOnly(when)+' | 📅 '+fmtDate(when)+'</small></div></div>'
     +'<div class="top"><b>📱 '+r.device+'</b><span class="badge '+(r.status==='تم'?'badge-done':'badge-wait')+'">'+r.status+'</span></div>'
     +'<div>👤 '+r.customer+' - 📞 <span dir="ltr">'+r.phone+'</span></div>'
