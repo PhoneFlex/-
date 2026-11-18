@@ -18,6 +18,7 @@ let currentUser=null;
 let cloudUsers=[];
 let DEV_PASS=localStorage.getItem('pf_dev_pass')||"1988";
 const SUB_DAYS_DEFAULT=100;
+const DISCLAIMER_TEXT="⚠️ ملاحظة ثابتة: غير مسؤولين عن الرام والشريحة ويسقط حق المطالبة بالجهاز بعد مرور شهر من الاستلام";
 let appSettings={unlock:true,compat:true,borneo:true,scanner:true,repair:true,lessons:true,live:true};
 try{let s=JSON.parse(localStorage.getItem('pf_settings')||'{}');if(s&&Object.keys(s).length)appSettings=s;}catch(e){}
 
@@ -26,7 +27,7 @@ async function fbSaveSettings(){if(!db)return;try{await db.collection("settings"
 async function fbLoadSettings(){if(!db)return;try{let d=await db.collection("settings").doc("main").get();if(d.exists&&d.data().settings){appSettings=d.data().settings;localStorage.setItem('pf_settings',JSON.stringify(appSettings));}}catch(e){}}
 async function fbSaveMsg(msg){if(!db)return;try{await db.collection("settings").doc("msg").set({msg:msg||'',updatedAt:Date.now()});}catch(e){}}
 async function fbLoadMsg(){if(!db)return '';try{let d=await db.collection("settings").doc("msg").get();if(d.exists)return d.data().msg||'';}catch(e){}return '';}
-async function fbSaveCompatAll(){if(!db)return;try{await db.collection("settings").doc("compat").set({data:compatData,updatedAt:Date.now()});}catch(e){}}
+async function fbSaveCompatAll(){if(!db)return;try{await db.collection("settings").doc("compat").set({data:compatData,[STRIPPED]
 async function fbLoadCompat(){if(!db)return;try{let d=await db.collection("settings").doc("compat").get();if(d.exists&&d.data().data){compatData=d.data().data;}}catch(e){}}
 
 function applySettings(){let map={unlock:'unlockCard',compat:'compatCard',borneo:'borneoCard',scanner:'scannerCard',repair:'repairCard',lessons:'lessonsCard',live:'liveCard'};for(let k in map){let el=document.getElementById(map[k]);if(el)el.style.display=appSettings[k]?"flex":"none";}}
@@ -35,6 +36,7 @@ function daysLeft(u){if(!u||u.role==='admin')return 9999;if(u.subActive===false)
 function isSubExpired(u){if(!u||u.role==='admin')return false;if(u.subActive===false)return true;return daysLeft(u)<=0;}
 function fmtDate(ts){if(!ts)return '---';try{return new Date(Number(ts)).toLocaleDateString('ar-IQ');}catch(e){return '---';}}
 function fmtDateTime(ts){try{let d=new Date(Number(ts||Date.now()));return d.toLocaleDateString('ar-IQ')+' - '+d.toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'});}catch(e){return '---';}}
+function fmtTimeOnly(ts){try{return new Date(Number(ts||Date.now())).toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}catch(e){return '---';}}
 function subStatusHTML(u){if(u.role==='admin')return '<span style="color:#ffb400">👑 مطور - دائمي</span>';let left=daysLeft(u);if(u.subActive===false)return '<span style="color:#ff4444;font-weight:700">⛔ ملغي</span>';if(left<=0)return '<span style="color:#ff4444;font-weight:700">❌ منتهي - 100 يوم خلصت</span>';if(left<=10)return '<span style="color:#ffb400;font-weight:700">⚠️ متبقي '+left+' يوم من 100</span>';return '<span style="color:#00d26a;font-weight:700">✅ فعال - متبقي '+left+' يوم من 100</span>';}
 
 function shopLogoHTML(shopName,size){
@@ -55,8 +57,10 @@ function updateShopPreview(){
 }
 function buildAccountMsg(u){
   let now=fmtDateTime(Date.now());
-  return '✦ ━━━━━━━━━━━ ✦\n'
-    + '📱 فون فلكس - '+shopNameOf(u)+'\n'
+  let shop=shopNameOf(u);
+  return '⭕ '+shop+' ⭕\n'
+    + '✦ ━━━━━━━━━━━ ✦\n'
+    + '📱 فون فلكس - '+shop+'\n'
     + '✦ ━━━━━━━━━━━ ✦\n'
     + 'هلا '+u.name+' 👋\n'
     + 'حسابك جاهز ✅\n\n'
@@ -66,12 +70,11 @@ function buildAccountMsg(u){
     + '📅 الاشتراك: 100 يوم\n'
     + '🗓️ يبدأ: '+fmtDate(u.subStart)+'\n'
     + '⏳ ينتهي: '+fmtDate(u.subEnd)+'\n\n'
-    + '🏪 الصيانة: '+shopNameOf(u)+'\n'
+    + '🏪 الصيانة: '+shop+'\n'
     + '📞 رقم الصيانة: '+shopPhoneOf(u)+'\n'
     + '📍 العنوان: '+shopAddressOf(u)+'\n\n'
     + '🕒 تاريخ الارسال: '+now+'\n'
-    + '━━━━━━━━━━━\n'
-    + '📍 صيانة سيد عباس - البصرة العشار';
+    + '━━━━━━━━━━━\n'+DISCLAIMER_TEXT;
 }
 
 function cleanWaNumber(raw){
@@ -90,17 +93,31 @@ function openWhatsApp(phone,msg){
   if(!num || num.length<10){alert('رقم الواتساب مو صحيح: '+(phone||''));return;}
   window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg||''),'_blank');
 }
+// ===== رسالة الصيانة - لوكو دائري فوك + وقت وتاريخ تلقائي + ملاحظة ثابتة جوه =====
 function buildRepairMsg(r,statusText,footer){
-  return 'هلا '+r.customer+' 👋\n'
+  let shop=currentUser?shopNameOf(currentUser):'صيانة سيد عباس';
+  let addr=currentUser?shopAddressOf(currentUser):'البصرة - العشار';
+  let shopPhone=currentUser?shopPhoneOf(currentUser):'07738105665';
+  let when=fmtDateTime(r.createdAt||Date.now());
+  return '⭕ '+shop+' ⭕\n'
+        + '✦ ━━━━━━━━━━━ ✦\n'
+        + '📱 فون فلكس - '+shop+'\n'
+        + '✦ ━━━━━━━━━━━ ✦\n'
+        + 'هلا '+r.customer+' 👋\n'
         + '📞 رقمك: '+r.phone+'\n'
         + '📱 نوع الجهاز: '+r.device+'\n'
         + '🔧 العطل: '+r.fault+'\n'
         + '💰 السعر: '+(r.price||0)+' دينار\n'
-        + '⏱️ الوقت: '+(r.duration||'يومين')+'\n'
         + '📊 الحالة: '+statusText+'\n'
+        + '🕒 الوقت: '+fmtTimeOnly(r.createdAt||Date.now())+'\n'
+        + '📅 التاريخ: '+fmtDate(r.createdAt||Date.now())+'\n'
         + '\n'+footer+'\n'
-        + '\n📍 '+(currentUser?shopNameOf(currentUser):'صيانة سيد عباس')+' - '+(currentUser?shopAddressOf(currentUser):'البصرة العشار')
-        + '\n🕒 '+fmtDateTime(Date.now());
+        + '\n🏪 '+shop+'\n'
+        + '📞 '+shopPhone+'\n'
+        + '📍 '+addr+'\n'
+        + '🕒 ارسلت: '+when+'\n'
+        + '━━━━━━━━━━━\n'
+        + DISCLAIMER_TEXT;
 }
 function sendRepairWhatsApp(idx,type){
   let r=repairs[idx];if(!r)return;
@@ -267,6 +284,8 @@ body{margin:0;background:#111;color:#fff;font-family:Arial,Tahoma,sans-serif;dir
 .admin-box label{display:block;margin:10px 0 4px;font-size:13px;color:#ccc}
 .admin-box input,.admin-box select{width:100%;padding:12px;border-radius:10px;border:1px solid #444;background:#111;color:#fff;margin:4px 0}
 .shop-preview{display:flex;align-items:center;gap:10px;background:#111;border:1px dashed #ffb400;border-radius:12px;padding:10px;margin:8px 0;text-align:right}
+.auto-time{background:#111;border:1px solid #00d26a;border-radius:10px;padding:10px;margin:8px 0;text-align:center;font-weight:800;color:#00d26a}
+.disclaimer-box{background:#2a0000;border:1px solid #ff4444;border-radius:10px;padding:10px;margin:10px 0;font-size:12px;line-height:1.7;color:#ffb3b3;text-align:center}
 </style>
 </head>
 <body>
@@ -384,14 +403,15 @@ body{margin:0;background:#111;color:#fff;font-family:Arial,Tahoma,sans-serif;dir
 </div>
 <div class="repair-form" id="repairFormBox">
 <h3 style="color:#ff8c00">➕ اضافة جهاز جديد للصيانة</h3>
+<div class="auto-time" id="repAutoTime">🕒 الوقت والتاريخ تلقائي: جاري التحميل...</div>
 <label>📱 اسم الهاتف *</label><input id="repDevice" placeholder="مثال: Samsung A12 - Redmi 10C">
 <label>🔧 نوع العطل *</label><input id="repFault" placeholder="مثال: شاشة مكسورة - ما يشحن - FRP">
 <label>⚙️ يعمل او لا ؟ *</label><select id="repWorks"><option value="لا يعمل">❌ لا يعمل</option><option value="يعمل">✅ يعمل</option><option value="يعمل لكن بيه مشكلة">⚠️ يعمل لكن بيه مشكلة</option></select>
 <label>👤 اسم الزبون *</label><input id="repCustomer" placeholder="اسم الزبون">
 <label>📞 رقم الهاتف *</label><input id="repPhone" type="tel" dir="ltr" placeholder="077XXXXXXXXX" style="text-align:right">
 <label>💰 السعر (دينار)</label><input id="repPrice" type="number" placeholder="مثال: 25000">
-<label>⏱️ مدة العمل</label><input id="repDuration" placeholder="مثال: ساعة - يوم - يومين">
 <label>📊 حالة الجهاز</label><select id="repStatus"><option value="قيد الصيانة">🛠️ قيد الصيانة</option><option value="تم">✅ كمل - جاهز للتسليم</option><option value="بانتظار القطعة">⏳ بانتظار القطعة</option><option value="تم التسليم">📦 تم التسليم</option></select>
+<div class="disclaimer-box">⚠️ غير مسؤولين عن الرام والشريحة<br>ويسقط حق المطالبة بالجهاز بعد مرور شهر من الاستلام</div>
 <button class="btn btn-green" onclick="addRepair()">➕ حفظ الجهاز - سحابي ☁️</button>
 <button class="btn btn-dark" onclick="clearRepairForm()">مسح الحقول</button>
 </div>
@@ -435,8 +455,8 @@ body{margin:0;background:#111;color:#fff;font-family:Arial,Tahoma,sans-serif;dir
 <div id="listView" class="hidden"><button class="back-btn" onclick="goHome()">← رجوع</button><h2 id="viewTitle" class="section-title"></h2><div id="viewGrid"></div></div>
 </div>
 <footer style="text-align:center;padding:15px;background:#000;margin-top:15px;font-size:11px;color:#777">© 2026 فون فلكس - البصرة العشار</footer>
-                               </div>
-                               <script>
+</div>
+<script>
 const MODEL_URL="https://teachablemachine.withgoogle.com/models/PUT_YOUR_MODEL_URL_HERE/";
 let tmModel=null,camStream=null,isModelLoaded=false;
 const CAMERA_PHONES=[
@@ -491,9 +511,21 @@ async function renderSubBar(){
 }
 
 let repairFilter='الكل';
-function openRepair(){if(!appSettings.repair&&!isAdmin()){alert("هذا القسم مغلق");return;}hideAllViews();document.getElementById('repairView').classList.remove('hidden');renderRepairs();window.scrollTo(0,0);}
+let repClockTimer=null;
+function updateRepAutoTime(){
+  let el=document.getElementById('repAutoTime');if(!el)return;
+  el.innerHTML='🕒 الوقت تلقائي: '+fmtTimeOnly(Date.now())+'<br>📅 التاريخ تلقائي: '+fmtDate(Date.now());
+}
+function openRepair(){
+  if(!appSettings.repair&&!isAdmin()){alert("هذا القسم مغلق");return;}
+  hideAllViews();document.getElementById('repairView').classList.remove('hidden');
+  updateRepAutoTime();
+  if(repClockTimer)clearInterval(repClockTimer);
+  repClockTimer=setInterval(updateRepAutoTime,1000);
+  renderRepairs();window.scrollTo(0,0);
+}
 function filterRepair(f){repairFilter=f;renderRepairs();}
-function clearRepairForm(){['repDevice','repFault','repCustomer','repPhone','repPrice','repDuration'].forEach(function(id){let e=document.getElementById(id);if(e)e.value='';});}
+function clearRepairForm(){['repDevice','repFault','repCustomer','repPhone','repPrice'].forEach(function(id){let e=document.getElementById(id);if(e)e.value='';});updateRepAutoTime();}
 async function addRepair(){
   let device=document.getElementById('repDevice').value.trim();
   let fault=document.getElementById('repFault').value.trim();
@@ -501,13 +533,14 @@ async function addRepair(){
   let customer=document.getElementById('repCustomer').value.trim();
   let phone=document.getElementById('repPhone').value.trim();
   let price=parseInt(document.getElementById('repPrice').value||'0');
-  let duration=document.getElementById('repDuration').value.trim();
   let status=document.getElementById('repStatus').value;
   if(!device||!fault||!customer||!phone){alert("املأ الحقول المطلوبة *");return;}
-  let r={device:device,fault:fault,works:works,customer:customer,phone:phone,price:price,duration:duration,status:status,owner:currentUser?currentUser.user:'',ownerName:currentUser?currentUser.name:'',createdAt:Date.now()};
+  // الوقت والتاريخ تلقائي - من لحظة الحفظ
+  let now=Date.now();
+  let r={device:device,fault:fault,works:works,customer:customer,phone:phone,price:price,duration:fmtDateTime(now),repairTime:fmtTimeOnly(now),repairDate:fmtDate(now),status:status,owner:currentUser?currentUser.user:'',ownerName:currentUser?currentUser.name:'',createdAt:now};
   await fbSaveRepair(r);
   if(!r._docId)repairs.unshift(r);
-  alert("✅ تم حفظ الجهاز بالفايربيس ☁️");
+  alert("✅ تم حفظ الجهاز ☁️\n🕒 "+fmtTimeOnly(now)+"\n📅 "+fmtDate(now));
   clearRepairForm();renderRepairs();
 }
 function renderRepairs(){
@@ -522,15 +555,19 @@ function renderRepairs(){
   set('repTotal',total);set('repWait',wait);set('repDone',done);set('repMoney',money.toLocaleString()+' د.ع');
   document.getElementById('repairList').innerHTML=list.length?list.map(function(r){
     let realIdx=allList.indexOf(r);
+    let when=r.createdAt||Date.now();
     return '<div class="repair-card '+(r.status==='تم'?'done':'')+' '+(r.works==='لا يعمل'?'notwork':'')+'">'
+    // فوك الكارت: لوكو دائري باسم صاحب الصيانة
+    +'<div style="display:flex;align-items:center;gap:10px;background:#111;border:1px solid #ffb400;border-radius:12px;padding:10px;margin-bottom:8px">'+shopLogoHTML(shopNameOf(currentUser),56)+'<div style="text-align:right"><b style="font-size:17px;color:#ffb400">⭕ '+shopNameOf(currentUser)+' ⭕</b><br><small>📞 '+shopPhoneOf(currentUser)+' | 📍 '+shopAddressOf(currentUser)+'</small><br><small style="color:#00d26a">🕒 '+fmtTimeOnly(when)+' | 📅 '+fmtDate(when)+'</small></div></div>'
     +'<div class="top"><b>📱 '+r.device+'</b><span class="badge '+(r.status==='تم'?'badge-done':'badge-wait')+'">'+r.status+'</span></div>'
-    +'<div style="display:flex;align-items:center;gap:8px;background:#111;border:1px solid #333;border-radius:10px;padding:8px;margin:6px 0">'+shopLogoHTML(shopNameOf(currentUser),40)+'<div><b>'+shopNameOf(currentUser)+'</b><br><small>📞 '+shopPhoneOf(currentUser)+' | 📍 '+shopAddressOf(currentUser)+'<br>🕒 '+fmtDateTime(r.createdAt||Date.now())+'</small></div></div>'
     +'<div>👤 '+r.customer+' - 📞 <span dir="ltr">'+r.phone+'</span></div>'
     +'<div>📱 نوع الجهاز: '+r.device+'</div>'
     +'<div>🔧 العطل: '+r.fault+'</div>'
-    +'<div>💰 السعر: '+(r.price||0)+' دينار | ⏱️ الوقت: '+(r.duration||'---')+'</div>'
+    +'<div>💰 السعر: '+(r.price||0)+' دينار</div>'
     +'<div>📊 الحالة: '+r.status+'</div>'
-    +'<div style="background:#111;border:1px solid #333;border-radius:8px;padding:8px;margin:8px 0;font-size:12px;color:#aaa">📩 معاينة رسالة الواتساب:<br>هلا '+r.customer+' 👋<br>📞 رقمك: '+r.phone+'<br>📱 نوع الجهاز: '+r.device+'<br>🔧 العطل: '+r.fault+'<br>💰 السعر: '+(r.price||0)+' دينار<br>⏱️ الوقت: '+(r.duration||'يومين')+'<br>📊 الحالة: ...<br>🏪 '+shopNameOf(currentUser)+' - '+shopAddressOf(currentUser)+'<br>🕒 '+fmtDateTime(Date.now())+'</div>'
+    +'<div>🕒 الوقت: '+fmtTimeOnly(when)+' | 📅 التاريخ: '+fmtDate(when)+'</div>'
+    +'<div style="background:#111;border:1px solid #333;border-radius:8px;padding:8px;margin:8px 0;font-size:12px;color:#aaa">📩 معاينة رسالة الواتساب:<br>⭕ '+shopNameOf(currentUser)+' ⭕<br>هلا '+r.customer+' 👋<br>📞 رقمك: '+r.phone+'<br>📱 نوع الجهاز: '+r.device+'<br>🔧 العطل: '+r.fault+'<br>💰 السعر: '+(r.price||0)+' دينار<br>📊 الحالة: ...<br>🕒 '+fmtTimeOnly(when)+' | 📅 '+fmtDate(when)+'<br>🏪 '+shopNameOf(currentUser)+' - '+shopAddressOf(currentUser)+'<br>⚠️ '+DISCLAIMER_TEXT+'</div>'
+    +'<div class="disclaimer-box">⚠️ غير مسؤولين عن الرام والشريحة<br>ويسقط حق المطالبة بالجهاز بعد مرور شهر من الاستلام</div>'
     +'<div class="repair-btns">'
     +'<button class="btn-wa" onclick="sendRepairWhatsApp('+realIdx+',\'received\')">📥 تم استلام جهازك</button>'
     +'<button class="btn-wa" onclick="sendRepairWhatsApp('+realIdx+',\'inprogress\')">🛠️ قيد الصيانة</button>'
@@ -542,7 +579,7 @@ function renderRepairs(){
   }).join(''):'<p style="text-align:center;color:#aaa">ماكو اجهزة</p>';
 }
 async function markRepairDone(idx){let r=repairs[idx];if(!r)return;r.status='تم';await fbSaveRepair(r);renderRepairs();}
-function editRepair(idx){let r=repairs[idx];if(!r)return;document.getElementById('repDevice').value=r.device;document.getElementById('repFault').value=r.fault;document.getElementById('repWorks').value=r.works||'لا يعمل';document.getElementById('repCustomer').value=r.customer;document.getElementById('repPhone').value=r.phone;document.getElementById('repPrice').value=r.price||'';document.getElementById('repDuration').value=r.duration||'';document.getElementById('repStatus').value=r.status;window.scrollTo(0,0);}
+function editRepair(idx){let r=repairs[idx];if(!r)return;document.getElementById('repDevice').value=r.device;document.getElementById('repFault').value=r.fault;document.getElementById('repWorks').value=r.works||'لا يعمل';document.getElementById('repCustomer').value=r.customer;document.getElementById('repPhone').value=r.phone;document.getElementById('repPrice').value=r.price||'';document.getElementById('repStatus').value=r.status;updateRepAutoTime();window.scrollTo(0,0);}
 async function deleteRepair(idx){if(!confirm('تحذف هذا الجهاز؟'))return;let r=repairs[idx];if(!r)return;if(r._docId)await fbDeleteRepair(r._docId);repairs=repairs.filter(function(x,i){return i!==idx;});renderRepairs();}
 
 function openAdmin(){if(!requireAdmin())return;hideAllViews();document.getElementById('adminView').classList.remove('hidden');renderAdminToggles();renderAdminUsers();renderAdminCompat();fbLoadMsg().then(function(m){document.getElementById('admMsgNow').innerText='الرسالة الحالية: '+(m||'ماكو');});if(document.getElementById('shopPreviewLogo'))document.getElementById('shopPreviewLogo').innerHTML=shopLogoHTML(document.getElementById('admShopName').value||'صيانة سيد عباس',52);window.scrollTo(0,0);}
@@ -563,6 +600,7 @@ async function renderAdminUsers(){
     +'<div style="display:flex;align-items:center;gap:10px;background:#111;border:1px solid #ffb400;border-radius:12px;padding:10px;margin-bottom:8px">'+shopLogoHTML(shopNameOf(u),52)+'<div><b style="font-size:16px;color:#ffb400">'+shopNameOf(u)+'</b><br><small>📞 '+shopPhoneOf(u)+' | 📍 '+shopAddressOf(u)+'</small><br><small style="color:#aaa">🕒 انشئ: '+fmtDateTime(u.subStart)+'</small></div></div>'
     +'<b>👤 '+u.name+'</b> - @'+u.user+'<br>📞 '+(u.phone||'---')+' | 🔑 '+u.pass+'<br>'+subStatusHTML(u)+' | ينتهي: '+fmtDate(u.subEnd)
     +'<br><div style="background:#111;border:1px dashed #444;border-radius:8px;padding:8px;margin:6px 0;font-size:12px;color:#aaa">📩 معاينة رسالة الزبون:<br>'+buildAccountMsg(u).replace(/\n/g,'<br>')+'</div>'
+    +'<div class="disclaimer-box">⚠️ غير مسؤولين عن الرام والشريحة<br>ويسقط حق المطالبة بالجهاز بعد مرور شهر من الاستلام</div>'
     +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><button class="btn btn-green" style="width:auto;padding:8px 10px" onclick="adminExtendUser(\''+u.user+'\')">➕ تجديد 100 يوم</button><button class="btn btn-dark" style="width:auto;padding:8px 10px" onclick="adminToggleUser(\''+u.user+'\')">⏸️ ايقاف/تشغيل</button><button class="btn" style="width:auto;padding:8px 10px;background:#ff4444" onclick="adminDeleteUser(\''+u.user+'\')">🗑️ حذف</button><button class="btn btn-dark" style="width:auto;padding:8px 10px" onclick="adminCopyUser(\''+u.user+'\')">📋 نسخ</button><button class="btn-wa" style="padding:8px 10px;border:none;border-radius:8px;cursor:pointer;font-weight:700" onclick="sendAccountWhatsApp(\''+u.user+'\')">💬 دز الحساب للزبون</button></div></div>';
   }).join(''):'<p>ماكو زبائن</p>';
 }
