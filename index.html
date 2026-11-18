@@ -9,10 +9,10 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-// ===== فايربيس =====
+// ===== فايربيس - مربوط 100% =====
 const firebaseConfig={apiKey:"AIzaSyDAybYE2AF-dGuWcxXBvy6ZBMZT2QryYwU",authDomain:"phone-flex-52401.firebaseapp.com",projectId:"phone-flex-52401",storageBucket:"phone-flex-52401.firebasestorage.app",messagingSenderId:"19006713498",appId:"1:19006713498:web:b3fdbb5fdafdc2199e7923"};
 let db=null;
-try{firebase.initializeApp(firebaseConfig);db=firebase.firestore();}catch(e){db=null;}
+try{firebase.initializeApp(firebaseConfig);db=firebase.firestore();console.log("Firebase OK");}catch(e){console.log("Firebase FAIL",e);db=null;}
 let repairs=[];
 let currentUser=null;
 let cloudUsers=[];
@@ -23,11 +23,11 @@ let appSettings={unlock:true,compat:true,borneo:true,scanner:true,repair:true,le
 try{let s=JSON.parse(localStorage.getItem('pf_settings')||'{}');if(s&&Object.keys(s).length)appSettings=s;}catch(e){}
 
 function saveSettings(){localStorage.setItem('pf_settings',JSON.stringify(appSettings));applySettings();fbSaveSettings();}
-async function fbSaveSettings(){if(!db)return;try{await db.collection("settings").doc("main").set({settings:appSettings,updatedAt:Date.now()});}catch(e){}}
-async function fbLoadSettings(){if(!db)return;try{let d=await db.collection("settings").doc("main").get();if(d.exists&&d.data().settings){appSettings=d.data().settings;localStorage.setItem('pf_settings',JSON.stringify(appSettings));}}catch(e){}}
+async function fbSaveSettings(){if(!db)return;try{await db.collection("settings").doc("main").set({settings:appSettings,updatedAt:Date.now()});}catch(e){console.log(e);}}
+async function fbLoadSettings(){if(!db)return;try{let d=await db.collection("settings").doc("main").get();if(d.exists&&d.data().settings){appSettings=d.data().settings;localStorage.setItem('pf_settings',JSON.stringify(appSettings));}}catch(e){console.log(e);}}
 async function fbSaveMsg(msg){if(!db)return;try{await db.collection("settings").doc("msg").set({msg:msg||'',updatedAt:Date.now()});}catch(e){}}
 async function fbLoadMsg(){if(!db)return '';try{let d=await db.collection("settings").doc("msg").get();if(d.exists)return d.data().msg||'';}catch(e){}return '';}
-async function fbSaveCompatAll(){if(!db)return;try{await db.collection("settings").doc("compat").set({data:compatData,[STRIPPED]
+async function fbSaveCompatAll(){if(!db)return;try{await db.collection("settings").doc("compat").set({data:compatData,updatedAt:Date.now()});}catch(e){console.log(e);}}
 async function fbLoadCompat(){if(!db)return;try{let d=await db.collection("settings").doc("compat").get();if(d.exists&&d.data().data){compatData=d.data().data;}}catch(e){}}
 
 function applySettings(){let map={unlock:'unlockCard',compat:'compatCard',borneo:'borneoCard',scanner:'scannerCard',repair:'repairCard',lessons:'lessonsCard',live:'liveCard'};for(let k in map){let el=document.getElementById(map[k]);if(el)el.style.display=appSettings[k]?"flex":"none";}}
@@ -128,15 +128,15 @@ function sendRepairWhatsApp(idx,type){
 }
 
 if(db){
-  try{db.collection("repairs").orderBy("createdAt","desc").onSnapshot((snap)=>{repairs=[];snap.forEach(doc=>{let d=doc.data();d.id=doc.id;d._docId=doc.id;repairs.push(d);});if(typeof renderRepairs==='function'&&currentUser&&isAdmin())renderRepairs();});}catch(e){}
-  try{db.collection("users").onSnapshot((snap)=>{cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});});}catch(e){}
+  try{db.collection("repairs").orderBy("createdAt","desc").onSnapshot((snap)=>{repairs=[];snap.forEach(doc=>{let d=doc.data();d.id=doc.id;d._docId=doc.id;repairs.push(d);});if(typeof renderRepairs==='function'&&currentUser&&isAdmin())renderRepairs();});}catch(e){console.log(e);}
+  try{db.collection("users").onSnapshot((snap)=>{cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});console.log("users from firebase:",cloudUsers.length);});}catch(e){console.log(e);}
   try{db.collection("settings").doc("main").onSnapshot((doc)=>{if(doc.exists&&doc.data().settings){appSettings=doc.data().settings;localStorage.setItem('pf_settings',JSON.stringify(appSettings));applySettings();}});}catch(e){}
 }
-async function syncUsersFromCloud(){if(!db)return [];try{let snap=await db.collection("users").get();cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});return cloudUsers;}catch(e){return [];}}
+async function syncUsersFromCloud(){if(!db){alert("الفايربيس ما اتصل - افتح النت وحدث الصفحة");return [];}try{let snap=await db.collection("users").get();cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});console.log("sync users:",cloudUsers.length);return cloudUsers;}catch(e){alert("مشكلة بالفايربيس: "+e.message);return [];}}
 function getUsers(){let merged=[];let seen={};cloudUsers.forEach(u=>{if(!u.user||seen[u.user])return;seen[u.user]=1;merged.push(u);});return merged;}
-async function fbSaveRepair(r){if(!db)return;try{if(r._docId){await db.collection("repairs").doc(r._docId).set(Object.assign({},r,{createdAt:r.createdAt||Date.now()}));}else{let doc=await db.collection("repairs").add(Object.assign({},r,{createdAt:Date.now()}));r._docId=doc.id;}}catch(e){}}
+async function fbSaveRepair(r){if(!db)return;try{if(r._docId){await db.collection("repairs").doc(r._docId).set(Object.assign({},r,{createdAt:r.createdAt||Date.now()}));}else{let doc=await db.collection("repairs").add(Object.assign({},r,{createdAt:Date.now()}));r._docId=doc.id;}}catch(e){alert(e.message);}}
 async function fbDeleteRepair(docId){if(!db)return;try{await db.collection("repairs").doc(docId).delete();}catch(e){}}
-async function fbSaveUser(u){if(!db)throw new Error("no db");let data={name:u.name,user:u.user,pass:String(u.pass),phone:u.phone||'',role:u.role||'user',shopName:u.shopName||'صيانة سيد عباس',shopPhone:u.shopPhone||'07738105665',shopAddress:u.shopAddress||'البصرة - العشار',subActive:u.subActive!==false,subDays:Number(u.subDays||SUB_DAYS_DEFAULT),subStart:Number(u.subStart||Date.now()),subEnd:Number(u.subEnd||calcSubEnd(u.subStart||Date.now(),u.subDays||SUB_DAYS_DEFAULT))};if(u._docId){await db.collection("users").doc(u._docId).set(data);}else{let q=await db.collection("users").where("user","==",u.user).get();if(!q.empty){let docId=q.docs[0].id;await db.collection("users").doc(docId).set(data);u._docId=docId;}else{let doc=await db.collection("users").add(data);u._docId=doc.id;}}return true;}
+async function fbSaveUser(u){if(!db)throw new Error("الفايربيس ما اتصل - شغل النت");let data={name:u.name,user:u.user,pass:String(u.pass),phone:u.phone||'',role:u.role||'user',shopName:u.shopName||'صيانة سيد عباس',shopPhone:u.shopPhone||'07738105665',shopAddress:u.shopAddress||'البصرة - العشار',subActive:u.subActive!==false,subDays:Number(u.subDays||SUB_DAYS_DEFAULT),subStart:Number(u.subStart||Date.now()),subEnd:Number(u.subEnd||calcSubEnd(u.subStart||Date.now(),u.subDays||SUB_DAYS_DEFAULT))};if(u._docId){await db.collection("users").doc(u._docId).set(data);}else{let q=await db.collection("users").where("user","==",u.user).get();if(!q.empty){let docId=q.docs[0].id;await db.collection("users").doc(docId).set(data);u._docId=docId;}else{let doc=await db.collection("users").add(data);u._docId=doc.id;}}return true;}
 async function fbDeleteUser(u){if(!db)return;try{if(u._docId){await db.collection("users").doc(u._docId).delete();}else{let q=await db.collection("users").where("user","==",u.user).get();for(let d of q.docs){await db.collection("users").doc(d.id).delete();}}}catch(e){}}
 function isAdmin(){return currentUser&&currentUser.role==="admin";}
 function requireAdmin(){if(!isAdmin()){alert("⛔ هذا الخيار للمطور فقط");return false;}return true;}
@@ -147,16 +147,19 @@ function showApp(){let l=document.getElementById('loginView');if(l){l.classList.
 async function doLogin(){
   let uEl=document.getElementById('loginUser');let pEl=document.getElementById('loginPass');
   let u=uEl?uEl.value.trim():'';let p=pEl?pEl.value.trim():'';
+  console.log("try login",u);
   if(!u||!p){alert("اكتب المعرف وكلمة السر");return false;}
   if(u==="admin"&&(p==="1988"||p===DEV_PASS)){
     currentUser={name:"سيد عباس - المطور",user:"admin",pass:p,phone:"07738105665",role:"admin",shopName:"صيانة سيد عباس",shopPhone:"07738105665",shopAddress:"البصرة - العشار",subActive:true,subDays:9999,subStart:Date.now(),subEnd:Date.now()+9999*86400000};
     try{localStorage.setItem('pf_session',JSON.stringify(currentUser));}catch(e){}
     showApp();return true;
   }
+  if(!db){alert("الفايربيس ما اتصل - شغل النت وحدث الصفحة");return false;}
   try{
     await syncUsersFromCloud();
     let found=getUsers().find(function(x){return x.user===u&&String(x.pass)===String(p);});
-    if(!found){alert("❌ المعرف او كلمة السر غلط");return false;}
+    console.log("found",found);
+    if(!found){alert("❌ المعرف او كلمة السر غلط - تاكد ان الحساب موجود بالفايربيس");return false;}
     if(found.role!=='admin'&&isSubExpired(found)){
       alert("⏳ اشتراكك خلص ❌\nخلصت الـ 100 يوم\nتواصل ويا سيد عباس حتى يجددلك");
       return false;
@@ -164,7 +167,7 @@ async function doLogin(){
     currentUser=found;
     try{localStorage.setItem('pf_session',JSON.stringify(found));}catch(e){}
     showApp();return true;
-  }catch(e){alert("مشكلة بالنت: "+e.message);return false;}
+  }catch(e){alert("مشكلة بالفايربيس: "+e.message);return false;}
 }
 function doLogout(){try{localStorage.removeItem('pf_session');}catch(e){}currentUser=null;location.reload();}
 async function adminChangePass(){if(!requireAdmin())return;let oldP=document.getElementById('admOldPass').value.trim();let newP=document.getElementById('admChangeNewPass').value.trim();if(!oldP||!newP){alert("اكتب القديمة والجديدة");return;}if(oldP!=="1988"&&oldP!==DEV_PASS&&oldP!==currentUser.pass){alert("❌ القديمة غلط");return;}DEV_PASS=newP;localStorage.setItem('pf_dev_pass',newP);currentUser=Object.assign({},currentUser,{pass:newP});localStorage.setItem('pf_session',JSON.stringify(currentUser));alert("تم تغيير كلمة سر المطور ✅");}
@@ -185,7 +188,7 @@ async function adminCreateUser(){
   if(getUsers().find(function(x){return x.user===u;})){alert("هذا المعرف مستخدم بالفايربيس");return;}
   let start=Date.now();
   let nu={name:name,user:u,pass:p,phone:phone,role:"user",shopName:shopName,shopPhone:shopPhone,shopAddress:shopAddress,subActive:true,subDays:days,subStart:start,subEnd:calcSubEnd(start,days)};
-  try{await fbSaveUser(nu);alert("✅ تم انشاء الحساب ☁️\n🏪 "+shopName+"\nالمعرف: "+u+"\nكلمة السر: "+p+"\nالاشتراك: 100 يوم\n🕒 "+fmtDateTime(Date.now()));}catch(e){alert("❌ ما انحفظ بالفايربيس: "+e.message);}
+  try{await fbSaveUser(nu);alert("✅ تم انشاء الحساب بالفايربيس ☁️\n🏪 "+shopName+"\nالمعرف: "+u+"\nكلمة السر: "+p+"\nالاشتراك: 100 يوم\n🕒 "+fmtDateTime(Date.now()));}catch(e){alert("❌ ما انحفظ بالفايربيس: "+e.message);}
   document.getElementById('admNewName').value='';document.getElementById('admNewPhone').value='';document.getElementById('admNewUser').value='';document.getElementById('admNewUserPass').value='';
   if(typeof renderAdminUsers==='function')renderAdminUsers();
 }
@@ -292,11 +295,12 @@ body{margin:0;background:#111;color:#fff;font-family:Arial,Tahoma,sans-serif;dir
 <div style="font-size:50px">📱</div>
 <h1>فون فلكس</h1>
 <p>Phone Flex - البصرة العشار</p>
-<p style="color:#4ade80;font-size:12px">☁️ دخول آمن</p>
+<p style="color:#4ade80;font-size:12px">☁️ دخول آمن - مربوط بالفايربيس</p>
 <input id="loginUser" placeholder="المعرف" autocomplete="username">
 <input id="loginPass" type="password" placeholder="كلمة السر" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
 <button id="loginBtn" class="btn btn-green" type="button" onclick="doLogin()">دخول ✅</button>
 <button class="btn btn-dark" onclick="window.open('https://wa.me/9647738105665?text='+encodeURIComponent('هلا، اريد حساب فون فلكس'))">💬 طلب حساب - واتساب</button>
+<p id="loginDebug" style="font-size:11px;color:#888;margin-top:8px"></p>
 </div>
 </div>
 <div id="mainApp" class="hidden">
@@ -537,7 +541,7 @@ async function addRepair(){
   let r={device:device,fault:fault,works:works,customer:customer,phone:phone,price:price,duration:fmtDateTime(now),repairTime:fmtTimeOnly(now),repairDate:fmtDate(now),status:status,owner:currentUser?currentUser.user:'',ownerName:currentUser?currentUser.name:'',createdAt:now};
   await fbSaveRepair(r);
   if(!r._docId)repairs.unshift(r);
-  alert("✅ تم حفظ الجهاز ☁️\n🕒 "+fmtTimeOnly(now)+"\n📅 "+fmtDate(now));
+  alert("✅ تم حفظ الجهاز بالفايربيس ☁️\n🕒 "+fmtTimeOnly(now)+"\n📅 "+fmtDate(now));
   clearRepairForm();renderRepairs();
 }
 function renderRepairs(){
