@@ -39,7 +39,6 @@ async function fbLoadLogs(){
     let snap=await db.collection("logs").orderBy("time","desc").limit(200).get();
     let all=[];
     snap.forEach(function(doc){let d=doc.data();d._docId=doc.id;all.push(d);});
-    // فلترة: اشعاراتي + الاضافات الجديدة للكل + كلشي للمطور
     if(isAdmin()){pfLogs=all;}
     else{
       pfLogs=all.filter(function(l){
@@ -56,8 +55,6 @@ async function fbLoadLogs(){
 }
 function addLog(icon,title,detail,opts){
   opts=opts||{};
-  // isGlobal=true => يطلع عند الكل (اضافات جديدة)
-  // isGlobal=false => بس لصاحب الحساب
   let entry={
     icon:icon||'🔔',
     title:title||'',
@@ -69,14 +66,12 @@ function addLog(icon,title,detail,opts){
     isGlobal:opts.isGlobal?true:false,
     time:Date.now()
   };
-  // اذا اضافة جديدة للكل
   if(opts.isGlobal){entry.owner='all';}
   pfLogs.unshift(entry);pfLogs=pfLogs.slice(0,300);saveLogs();fbSaveLogEntry(entry);
   if(typeof renderLogs==='function'){try{renderLogs();}catch(e){}}
   if(typeof renderUserLogs==='function'){try{renderUserLogs();}catch(e){}}
   return entry;
 }
-// للزبون: اشعاراته بس + الاضافات الجديدة
 function myLogs(){
   if(!currentUser) return [];
   if(isAdmin()) return pfLogs;
@@ -111,16 +106,14 @@ async function clearLogs(){
   if(db){try{let snap=await db.collection("logs").get();for(let d of snap.docs){await db.collection("logs").doc(d.id).delete();}}catch(e){}}
   renderLogs();renderUserLogs();alert('تم مسح السجل ✅');
 }
-
 function saveSettings(){localStorage.setItem('pf_settings',JSON.stringify(appSettings));applySettings();fbSaveSettings();}
 async function fbSaveSettings(){if(!db)return;try{await db.collection("settings").doc("main").set({settings:appSettings,updatedAt:Date.now()});}catch(e){console.log(e);}}
 async function fbLoadSettings(){if(!db)return;try{let d=await db.collection("settings").doc("main").get();if(d.exists&&d.data().settings){appSettings=d.data().settings;localStorage.setItem('pf_settings',JSON.stringify(appSettings));}}catch(e){console.log(e);}}
 async function fbSaveMsg(msg){if(!db)return;try{await db.collection("settings").doc("msg").set({msg:msg||'',updatedAt:Date.now()});}catch(e){}}
 async function fbLoadMsg(){if(!db)return '';try{let d=await db.collection("settings").doc("msg").get();if(d.exists)return d.data().msg||'';}catch(e){}return '';}
-async function fbSaveCompatAll(){if(!db)return;try{await db.collection("settings").doc("compat").set({data:compatData,updatedAt:Date.now()});}catch(e){console.log(e);}}
+async function fbSaveCompatAll(){if(!db)return;try{await db.collection("settings").doc("compat").set({data:compatData,[STRIPPED]
 async function fbLoadCompat(){if(!db)return;try{let d=await db.collection("settings").doc("compat").get();if(d.exists&&d.data().data){compatData=d.data().data;}}catch(e){}}
 async function fbSaveVideosMeta(){if(!db)return;try{let meta=pfVideos.map(function(v){return {id:v.id,title:v.title,duration:v.duration,createdAt:v.createdAt};});await db.collection("settings").doc("videos_meta").set({videos:meta,updatedAt:Date.now()});}catch(e){console.log(e);}}
-
 function applySettings(){let map={unlock:'unlockCard',compat:'compatCard',borneo:'borneoCard',scanner:'scannerCard',repair:'repairCard',lessons:'lessonsCard',live:'liveCard'};for(let k in map){let el=document.getElementById(map[k]);if(el)el.style.display=appSettings[k]?"flex":"none";}}
 function calcSubEnd(start,days){return Number(start)+Number(days)*86400000;}
 function daysLeft(u){if(!u||u.role==='admin')return 9999;if(u.subActive===false)return 0;if(!u.subEnd){if(u.subStart&&u.subDays)return Math.max(0,Math.ceil((calcSubEnd(u.subStart,u.subDays)-Date.now())/86400000));return SUB_DAYS_DEFAULT;}return Math.max(0,Math.ceil((Number(u.subEnd)-Date.now())/86400000));}
@@ -195,7 +188,6 @@ function printInvoice(idx){
   w.document.close();
   addLog('🖨️','تمت طباعة فاتورة','👤 '+r.customer+' - 📱 '+r.device+' - 💰 '+(r.price||0)+' دينار',{owner:currentUser?currentUser.user:'all'});
 }
-
 if(db){
   try{db.collection("repairs").orderBy("createdAt","desc").onSnapshot((snap)=>{repairs=[];snap.forEach(doc=>{let d=doc.data();d.id=doc.id;d._docId=doc.id;repairs.push(d);});if(typeof renderRepairs==='function'&&currentUser&&isAdmin())renderRepairs();});}catch(e){console.log(e);}
   try{db.collection("users").onSnapshot((snap)=>{cloudUsers=[];snap.forEach(doc=>{let d=doc.data();d._docId=doc.id;cloudUsers.push(d);});});}catch(e){console.log(e);}
@@ -219,19 +211,15 @@ async function fbDeleteUser(u){if(!db)return;try{if(u._docId){await db.collectio
 function isAdmin(){return currentUser&&currentUser.role==="admin";}
 function requireAdmin(){if(!isAdmin()){alert("⛔ هذا الخيار للمطور فقط");return false;}return true;}
 function checkLogin(){
-  // 1) حاول ترجع الجلسة المحفوظة - يبقى مسجل دخول
   try{
     let saved=localStorage.getItem('pf_session');
     if(saved){
       let s=JSON.parse(saved);
       if(s&&s.user&&s.pass){
-        // اذا مطور - دخول مباشر بدون فايربيس
         if(s.user==="admin"&&(s.pass==="1988"||s.pass===DEV_PASS)){
           currentUser=s;showApp();fbLoadSettings().then(function(){applySettings();});fbLoadCompat();fbLoadLogs();return;
         }
-        // اذا زبون - تحقق من الفايربيس بالخلفية، بس افتح التطبيق فورا حتى ما يعلق
         currentUser=s;showApp();fbLoadSettings().then(function(){applySettings();});fbLoadCompat();fbLoadLogs();
-        // تحقق بالخلفية: اذا خلص الاشتراك او انحذف، اطرده
         if(db){syncUsersFromCloud().then(function(){
           let fresh=getUsers().find(function(x){return x.user===s.user;});
           if(!fresh){localStorage.removeItem('pf_session');currentUser=null;showLogin();alert("تم حذف حسابك");return;}
@@ -518,8 +506,11 @@ body{margin:0;background:#111;color:#fff;font-family:Arial,Tahoma,sans-serif;dir
 <button class="back-btn" onclick="goHome()">← رجوع للرئيسية</button>
 <h2 class="section-title">📷 صور الجهاز - التعرف التلقائي</h2>
 <p style="color:#aaa;font-size:13px">وجه الكاميرا على ظهر الجهاز، وخلي الاضاءة قوية.</p>
-<div class="scan-box"><div class="scan-line" id="scanLine" style="display:none"></div><video id="camVideo" playsinline muted></video><canvas id="camCanvas" style="display:none"></canvas></div>
-<button class="btn btn-green" onclick="startCamera()">📷 افتح الكاميرا</button>
+<div class="scan-box"><div class="scan-line" id="scanLine" style="display:none"></div><video id="camVideo" playsinline muted autoplay></video><canvas id="camCanvas" style="display:none"></canvas><img id="camCapturedImg" style="display:none;width:100%;max-height:360px;object-fit:contain;border-radius:10px"></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<button class="btn btn-green" style="flex:1" onclick="startCamera()">📷 افتح الكاميرا</button>
+<button class="btn btn-dark" style="flex:1" onclick="switchCamera()">🔄 تبديل الكامرة</button>
+</div>
 <button class="btn btn-blue" onclick="captureAndIdentify()">🔍 صور واعرف الموديل</button>
 <label class="btn btn-dark" style="display:block;text-align:center">📁 او اختار صورة من الاستوديو<input type="file" id="fileInput" accept="image/*" style="display:none" onchange="onFilePicked(event)"></label>
 <button class="btn btn-dark" onclick="stopCamera()">⏹️ اطفاء الكاميرا</button>
@@ -593,25 +584,124 @@ body{margin:0;background:#111;color:#fff;font-family:Arial,Tahoma,sans-serif;dir
 <div id="printArea" style="display:none"></div>
 
 <script>
-const MODEL_URL="https://teachablemachine.withgoogle.com/models/PUT_YOUR_MODEL_URL_HERE/";
+// ===== الكامرة - بحدها داخل التطبيق - بدون Teachable Machine وبدون كروم خارجي =====
 let tmModel=null,camStream=null,isModelLoaded=false;
+let camFacing='environment';
+let camCapturedDataURL='';
 const CAMERA_PHONES=[
 {name:"SAMSUNG A30s",code:"A30s",ram:"4",rom:"128",cpu:"Exynos 7885",cam:"25MP ثلاثية",bat:"4000",screen:"6.4 Super AMOLED",price:"125,000",img:"https://fdn.gsmarena.com/imgroot/reviews/19/samsung-galaxy-a30s/-1024x768w2/gsmarena_001.jpg"},
 {name:"Redmi 10C",code:"10C",ram:"4",rom:"128",cpu:"Snapdragon 680",cam:"50MP",bat:"5000",screen:"6.71 HD+",price:"125,000",img:"https://fdn.gsmarena.com/imgroot/reviews/22/xiaomi-redmi-10c/-1024x768w2/gsmarena_001.jpg"},
 {name:"SAMSUNG A12",code:"A12",ram:"4",rom:"128",cpu:"Helio P35",cam:"16MP",bat:"5000",screen:"6.5 IPS",price:"150,000",img:"https://fdn.gsmarena.com/imgroot/reviews/20/samsung-galaxy-a12/-1024x768w2/gsmarena_001.jpg"},
 {name:"Infinix Hot 30",code:"Hot 30",ram:"8",rom:"128",cpu:"Helio G88",cam:"50MP",bat:"5000",screen:"6.78 90Hz",price:"180,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/infinix-hot-30/-1024x768w2/gsmarena_001.jpg"},
 {name:"Tecno Spark 10",code:"Spark 10",ram:"8",rom:"128",cpu:"Helio G37",cam:"50MP",bat:"5000",screen:"6.6 90Hz",price:"170,000",img:"https://fdn.gsmarena.com/imgroot/reviews/23/tecno-spark-10/-1024x768w2/gsmarena_001.jpg"}];
-function findPhoneByCode(code){code=String(code).toLowerCase().replace(/\s/g,'');for(let p of CAMERA_PHONES){let pc=p.code.toLowerCase().replace(/\s/g,'');if(pc===code||p.name.toLowerCase().replace(/\s/g,'').includes(code)||code.includes(pc))return p;}return null;}
-function findCompatForCamera(code){return (typeof compatData!=='undefined'?compatData:[]).filter(function(c){return c[0].includes(code)||c[1].includes(code);});}
-function manualPickHTML(){let opts=CAMERA_PHONES.map(function(p){return '<option value="'+p.code+'">'+p.name+'</option>';}).join('');return '<div style="margin-top:10px"><select id="manualCode" style="width:100%;padding:12px;border-radius:10px;background:#1e1e1e;color:#fff;border:1px solid #444">'+opts+'</select><button class="btn btn-green" onclick="showPhoneResult(document.getElementById(\'manualCode\').value,100)">عرض الجهاز</button></div>';}
-async function loadModel(){if(isModelLoaded)return true;try{document.getElementById('scanResult').innerHTML='<p style="text-align:center">⏳ جاري تحميل الموديل...</p>';if(MODEL_URL.includes("PUT_YOUR_MODEL")){document.getElementById('scanResult').innerHTML='<p style="color:#fbbf24;text-align:center">⚠️ بعدك ما حاط رابط الموديل.</p>'+manualPickHTML();return false;}tmModel=await tmImage.load(MODEL_URL+"model.json",MODEL_URL+"metadata.json");isModelLoaded=true;return true;}catch(e){document.getElementById('scanResult').innerHTML='<p style="color:#f87171">❌ ما كدرت احمل الموديل.</p>'+manualPickHTML();return false;}}
-function openScanner(){if(!appSettings.scanner&&!isAdmin()){alert("هذا القسم مغلق من المطور");return;}hideAllViews();document.getElementById('scannerView').classList.remove('hidden');document.getElementById('scanResult').innerHTML='';document.getElementById('scanTop3').innerHTML='';loadModel();window.scrollTo(0,0);}
-async function startCamera(){await loadModel();try{camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"},audio:false});let v=document.getElementById('camVideo');v.srcObject=camStream;v.play();document.getElementById('scanLine').style.display='block';}catch(e){alert('ما كدرت افتح الكاميرا - لازم تسمح للمتصفح ولازم https');}}
-function stopCamera(){if(camStream){camStream.getTracks().forEach(function(t){t.stop();});camStream=null;}let sl=document.getElementById('scanLine');if(sl)sl.style.display='none';}
-async function captureAndIdentify(){let v=document.getElementById('camVideo');let canvas=document.getElementById('camCanvas');if(!v.srcObject){alert('افتح الكاميرا اولاً');return;}canvas.width=v.videoWidth;canvas.height=v.videoHeight;canvas.getContext('2d').drawImage(v,0,0);await identifyImage(canvas);}
-async function onFilePicked(e){let file=e.target.files[0];if(!file)return;let img=new Image();img.onload=async function(){let canvas=document.getElementById('camCanvas');canvas.width=img.width;canvas.height=img.height;canvas.getContext('2d').drawImage(img,0,0);await identifyImage(canvas);};img.src=URL.createObjectURL(file);}
-async function identifyImage(canvas){let ok=await loadModel();if(!ok||!tmModel)return;document.getElementById('scanResult').innerHTML='<p style="text-align:center">🔍 جاري التعرف...</p>';try{let preds=await tmModel.predict(canvas);preds=preds.sort(function(a,b){return b.probability-a.probability;});let top=preds[0];let conf=Math.round(top.probability*100);let top3=preds.slice(0,3).map(function(p){return '<div style="background:#222;padding:8px;border-radius:8px;margin:4px 0"><b>'+p.className+'</b> - '+Math.round(p.probability*100)+'%<div class="conf-bar"><div class="conf-fill" style="width:'+Math.round(p.probability*100)+'%"></div></div></div>';}).join('');document.getElementById('scanTop3').innerHTML='<h3>اقرب 3 نتائج:</h3>'+top3;if(conf<55){document.getElementById('scanResult').innerHTML='<div class="result-card"><h2>⚠️ مو متأكد ('+conf+'%)</h2></div>'+manualPickHTML();return;}showPhoneResult(top.className,conf);}catch(e){alert('خطأ: '+e.message);}}
-function showPhoneResult(code,conf){let p=findPhoneByCode(code);if(!p){document.getElementById('scanResult').innerHTML='<p>ما لكيت الجهاز.</p>';return;}let compat=findCompatForCamera(p.code);let compatHTML=compat.length?compat.map(function(c){return '<div class="compat-card">'+c[0]+' - '+c[1]+'</div>';}).join(''):'<p>ماكو توافق</p>';document.getElementById('scanResult').innerHTML='<div class="result-card"><p style="color:#4ade80">✅ تم التعرف - دقة '+conf+'%</p><div style="font-size:22px;font-weight:900">'+p.name+'</div><p>النوع: '+p.name+' | الموديل: '+p.code+'</p><img src="'+p.img+'" style="width:100%;max-height:220px;object-fit:contain;background:#111;border-radius:10px;margin:8px 0"><p>📱 الشاشة: '+p.screen+'</p><p>🧠 المعالج: '+p.cpu+'</p><p>💾 الذاكرة: '+p.rom+' | الرام: '+p.ram+'</p><p>📷 الكاميرا: '+p.cam+'</p><p>🔋 البطارية: '+p.bat+'</p><p style="color:#fbbf24;font-size:18px;font-weight:900">السعر: '+p.price+' دينار</p><h3>🔧 توافقات:</h3>'+compatHTML+'</div>';stopCamera();}
+function getAllCameraPhones(){
+  let list=CAMERA_PHONES.slice();
+  try{
+    let fromCompat=(typeof compatData!=='undefined'?compatData:[]).map(function(c){return c[0];});
+    let seen={};list.forEach(function(p){seen[p.name]=1;});
+    fromCompat.forEach(function(n){if(!seen[n]){seen[n]=1;list.push({name:n,code:n,ram:"---",rom:"---",cpu:"---",cam:"---",bat:"---",screen:"---",price:"---",img:""});}});
+  }catch(e){}
+  return list;
+}
+function findPhoneByCode(code){
+  code=String(code||'').toLowerCase().replace(/\s/g,'');
+  let all=getAllCameraPhones();
+  for(let p of all){let pc=String(p.code||'').toLowerCase().replace(/\s/g,'');if(pc===code||String(p.name).toLowerCase().replace(/\s/g,'').includes(code)||code.includes(pc))return p;}
+  return null;
+}
+function findCompatForCamera(code){
+  let all=(typeof compatData!=='undefined'?compatData:[]);
+  let c=String(code||'').toLowerCase();
+  let byCode=all.filter(function(x){return String(x[0]).toLowerCase().includes(c)||String(x[1]).toLowerCase().includes(c);});
+  if(byCode.length) return byCode;
+  return all.filter(function(x){return String(x[0]).toLowerCase().includes(c.split(' ')[0]||c);});
+}
+function manualPickHTML(){
+  let all=getAllCameraPhones();
+  let opts=all.map(function(p){return '<option value="'+p.code+'">'+p.name+'</option>';}).join('');
+  return '<div style="background:#111;border:1px solid #ffb400;border-radius:12px;padding:12px;margin-top:10px">'
+  +'<b>📸 صورت الجهاز؟ هسه اختار اسمه الصحيح من القائمة:</b><br>'
+  +'<input id="camSearchInput" class="search-box" placeholder="🔍 ابحث باسم الجهاز: A12 , 10C , Hot 30 ..." oninput="filterCamList()">'
+  +'<select id="manualCode" style="width:100%;padding:12px;border-radius:10px;background:#1e1e1e;color:#fff;border:1px solid #444">'+opts+'</select>'
+  +'<button class="btn btn-green" onclick="showPhoneResult(document.getElementById(\'manualCode\').value,100)">✅ عرض الجهاز + التوافق</button>'
+  +'<p style="color:#aaa;font-size:12px">التوافق يطلع من قائمة التوافقات مالك نفسه، مو من النت.</p></div>';
+}
+function filterCamList(){
+  let q=(document.getElementById('camSearchInput').value||'').trim().toLowerCase();
+  let sel=document.getElementById('manualCode');if(!sel)return;
+  let all=getAllCameraPhones();
+  let filtered=q?all.filter(function(p){return p.name.toLowerCase().includes(q)||String(p.code).toLowerCase().includes(q);}):all;
+  sel.innerHTML=filtered.map(function(p){return '<option value="'+p.code+'">'+p.name+'</option>';}).join('')||'<option>ماكو نتيجة</option>';
+}
+async function loadModel(){return false;}
+function openScanner(){
+  if(!appSettings.scanner&&!isAdmin()){alert("هذا القسم مغلق من المطور");return;}
+  hideAllViews();document.getElementById('scannerView').classList.remove('hidden');
+  document.getElementById('scanResult').innerHTML='';document.getElementById('scanTop3').innerHTML='';
+  let cap=document.getElementById('camCapturedImg');if(cap){cap.style.display='none';cap.src='';}
+  let v=document.getElementById('camVideo');if(v)v.style.display='block';
+  window.scrollTo(0,0);
+}
+async function startCamera(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){alert('متصفحك ما يدعم الكامرة - افتح التطبيق من كروم وفعّل HTTPS');return;}
+  stopCamera();
+  try{
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:camFacing,width:{ideal:1280},height:{ideal:720}},audio:false});
+  }catch(e){
+    try{camStream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});}catch(e2){alert('ما كدرت افتح الكاميرا - اسمح للكامرة من اعدادات المتصفح، ولازم الموقع https');return;}
+  }
+  let v=document.getElementById('camVideo');let cap=document.getElementById('camCapturedImg');
+  if(cap)cap.style.display='none';if(v)v.style.display='block';
+  v.srcObject=camStream;
+  try{await v.play();}catch(e){}
+  document.getElementById('scanLine').style.display='block';
+}
+async function switchCamera(){
+  camFacing=(camFacing==='environment'?'user':'environment');
+  await startCamera();
+}
+function stopCamera(){
+  if(camStream){try{camStream.getTracks().forEach(function(t){t.stop();});}catch(e){}camStream=null;}
+  let sl=document.getElementById('scanLine');if(sl)sl.style.display='none';
+}
+async function captureAndIdentify(){
+  let v=document.getElementById('camVideo');let canvas=document.getElementById('camCanvas');
+  if(!v.srcObject||!v.videoWidth){alert('افتح الكاميرا اولاً');return;}
+  canvas.width=v.videoWidth;canvas.height=v.videoHeight;
+  canvas.getContext('2d').drawImage(v,0,0);
+  try{camCapturedDataURL=canvas.toDataURL('image/jpeg',0.85);}catch(e){camCapturedDataURL='';}
+  let cap=document.getElementById('camCapturedImg');
+  if(cap&&camCapturedDataURL){cap.src=camCapturedDataURL;cap.style.display='block';if(v)v.style.display='none';}
+  document.getElementById('scanLine').style.display='none';
+  document.getElementById('scanResult').innerHTML='<div class="result-card" style="border-color:#00d26a"><h2>📸 تم التقاط الصورة ✅</h2><p>هسه اختار اسم الجهاز الصحيح من القائمة جوة، وراح يطلع التوافق مالته مباشرة.</p></div>'+manualPickHTML();
+  document.getElementById('scanTop3').innerHTML='';
+  stopCamera();
+}
+async function onFilePicked(e){
+  let file=e.target.files[0];if(!file)return;
+  let img=new Image();
+  img.onload=async function(){
+    let canvas=document.getElementById('camCanvas');canvas.width=img.width;canvas.height=img.height;canvas.getContext('2d').drawImage(img,0,0);
+    try{camCapturedDataURL=canvas.toDataURL('image/jpeg',0.85);}catch(err){camCapturedDataURL=URL.createObjectURL(file);}
+    let cap=document.getElementById('camCapturedImg');if(cap){cap.src=camCapturedDataURL;cap.style.display='block';}
+    let v=document.getElementById('camVideo');if(v)v.style.display='none';
+    document.getElementById('scanResult').innerHTML='<div class="result-card" style="border-color:#00d26a"><h2>📁 تم اختيار الصورة ✅</h2><p>اختار اسم الجهاز من القائمة:</p></div>'+manualPickHTML();
+    stopCamera();
+  };
+  img.src=URL.createObjectURL(file);
+}
+async function identifyImage(canvas){return;}
+function showPhoneResult(code,conf){
+  let p=findPhoneByCode(code);
+  if(!p){document.getElementById('scanResult').innerHTML='<p>ما لكيت الجهاز.</p>'+manualPickHTML();return;}
+  let compat=findCompatForCamera(p.code);
+  let compatHTML=compat.length?compat.map(function(c){return '<div class="compat-card" style="cursor:pointer" onclick="openCat(\'compat\')"><b>'+c[0]+'</b><br><small>'+c[1]+'</small></div>';}).join(''):'<p>ماكو توافق لهذا الجهاز بعد - ضيفه من لوحة المطور</p>';
+  let imgHtml=p.img?'<img src="'+p.img+'" style="width:100%;max-height:220px;object-fit:contain;background:#111;border-radius:10px;margin:8px 0">':'';
+  let capHtml=camCapturedDataURL?'<img src="'+camCapturedDataURL+'" style="width:100%;max-height:220px;object-fit:contain;background:#111;border-radius:10px;margin:8px 0;border:2px solid #00d26a"><small style="color:#00d26a">📸 صورتك اللي صورتهة</small>':'';
+  document.getElementById('scanResult').innerHTML='<div class="result-card"><p style="color:#4ade80">✅ تم التعرف - '+p.name+'</p><div style="font-size:22px;font-weight:900">'+p.name+'</div><p>النوع: '+p.name+' | الموديل: '+p.code+'</p>'+capHtml+imgHtml+'<p>📱 الشاشة: '+p.screen+'</p><p>🧠 المعالج: '+p.cpu+'</p><p>💾 الذاكرة: '+p.rom+' | الرام: '+p.ram+'</p><p>📷 الكاميرا: '+p.cam+'</p><p>🔋 البطارية: '+p.bat+'</p><p style="color:#fbbf24;font-size:18px;font-weight:900">السعر: '+p.price+' دينار</p><h3>🔧 توافقات '+p.name+' - من قائمتك:</h3>'+compatHTML+'<button class="btn btn-dark" onclick="document.getElementById(\'camCapturedImg\').style.display=\'none\';document.getElementById(\'camVideo\').style.display=\'block\';startCamera()">📷 صور جهاز ثاني</button></div>';
+  document.getElementById('scanTop3').innerHTML='';
+  stopCamera();
+}
 
 let compatData=[
 ["SAMSUNG A12","شاشة A12 - تتوافق A12 / M12","screen"],["SAMSUNG A12","بطارية A12 - 5000mAh - تتوافق M12","battery"],["SAMSUNG A12","قاعدة شحن A12 - تتوافق M12","charge"],["SAMSUNG A12","مخطط A12 - MT6765","schematic"],
@@ -696,7 +786,6 @@ document.addEventListener('change',function(e){
     if(pv){pv.innerHTML='';pv.appendChild(tv);tv.src=url;}
   }
 });
-
 let repairFilter='الكل';
 let repClockTimer=null;
 function updateRepAutoTime(){let el=document.getElementById('repAutoTime');if(!el)return;el.innerHTML='🕒 الوقت تلقائي: '+fmtTimeOnly(Date.now())+'<br>📅 التاريخ تلقائي: '+fmtDate(Date.now());}
@@ -715,7 +804,6 @@ async function addRepair(){
   let now=Date.now();
   let r={device:device,fault:fault,works:works,customer:customer,phone:phone,price:price,duration:fmtDateTime(now),repairTime:fmtTimeOnly(now),repairDate:fmtDate(now),status:status,owner:currentUser?currentUser.user:'',ownerName:currentUser?currentUser.name:'',createdAt:now};
   await fbSaveRepair(r);if(!r._docId)repairs.unshift(r);
-  // اضافة جديدة -> تطلع عند الكل
   addLog('✅','انضاف جهاز صيانة جديد','👤 '+customer+' - 📱 '+device+' - 🔧 '+fault+' - 💰 '+price+' دينار',{isGlobal:true,owner:currentUser?currentUser.user:'all'});
   alert("✅ تم حفظ الجهاز بالفايربيس ☁️\n🕒 "+fmtTimeOnly(now)+"\n📅 "+fmtDate(now));
   clearRepairForm();renderRepairs();
